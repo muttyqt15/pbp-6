@@ -31,14 +31,12 @@ def sanitize_value(cell):
 
 def sanitize_row(row):
     """Sanitize the row keys and return a sanitized dictionary."""
-    print("row", row.keys())
     sanitized_data = {}
     for key, value in row.items():
-        if key == "Harga":
+        if key == "Harga" or key == "Foto":
             sanitized_data[key] = value
             continue
         sanitized_data[key] = sanitize_value(value)
-    print("hello", sanitized_data)
     return sanitized_data
 
 
@@ -78,5 +76,6 @@ for index, row in df.iterrows():
             category=food_type,
             price=prices,
         )
+    print(f'Row {index} done!')
 
 print("Data successfully imported!")
