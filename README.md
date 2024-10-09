@@ -27,11 +27,9 @@ Nama "Mangan Solo" berasal dari kata "mangan" yang dalam bahasa Jawa berarti mak
 
 ## Fitur Utama
 
-- **Pencarian Terperinci**: Gunakan search bar untuk mencari berdasarkan nama hidangan, atau filter hasil pencarian pelanggan berdasarkan kategori makanan, lokasi, atau rentang harga. Temukan makanan khas Solo yang sesuai dengan anggaran dan selera pelanggan.
+- **Tambah Restoran**: Fitur ini memungkinkan pemilik restoran untuk mendaftarkan restoran mereka, mengisi informasi penting seperti nama restoran, lokasi, jenis makanan, rentang harga, dan foto-foto fasilitas. Restoran akan lebih mudah ditemukan dalam pencarian oleh pelanggan.
 
 - **Ulasan**: Fitur ulasan memberi kesempatan kepada pelanggan untuk memberi komentar dan memberikan rating berbintang pada restoran atau makanan. Setiap ulasan memungkinkan pelanggan untuk menulis judul pendek, deskripsi yang lebih mendetail, dan memberi rating antara 1 hingga 5 untuk menilai mutu. Fitur ini juga memungkinkan untuk mengunggah gambar yang melengkapi narasi pelanggan, serta menyukai ulasan yang bermanfaat.
-
-- **Tambah Restoran**: Fitur ini memungkinkan pemilik restoran untuk mendaftarkan restoran mereka, mengisi informasi penting seperti nama restoran, lokasi, jenis makanan, rentang harga, dan foto-foto fasilitas. Restoran akan lebih mudah ditemukan dalam pencarian oleh pelanggan.
 
 - **Berita dan Promosi**: Menampilkan artikel, update, dan promosi terkini terkait restoran. Fitur ini memudahkan restoran untuk memasarkan restoran mereka, serta memberikan informasi terbaru kepada pelanggan mengenai penawaran khusus atau menu baru.
 
@@ -66,6 +64,10 @@ Modul ini memungkinkan pelanggan memberikan ulasan terhadap pengalaman mereka di
 ### Modul Thread - Muttaqin
 
 Fitur ini adalah platform diskusi yang memungkinkan semua pengguna untuk berinteraksi dan berbagi pendapat tentang topik terkait kuliner Solo. Fitur ini memperkuat komunitas dalam aplikasi.
+
+### Modul Main - Adel, Muttaqin
+
+Fitur frontend seperti Landing Page, dll yang mungkin belum memenuhi CRUD.
 
 ### Modul Bookmark - Ali
 
@@ -144,6 +146,7 @@ Pemilik Restoran memiliki akses untuk membuat, membaca, memperbarui, dan menghap
 ## Sumber Initial Dataset
 
 ### Dataset A07 PBP - UTS
+
 Dataset kami merupakan hasil scraping dari Internet untuk menemukan makanan khas di kecamatan-kecamatan Surakarta.
 
 [DATASET](https://docs.google.com/spreadsheets/d/1txREr6OPf12FaUS8rfti79dRXVMz9-th0x-sfVrwtws/edit?gid=0#gid=0)
