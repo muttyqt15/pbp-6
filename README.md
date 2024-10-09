@@ -145,10 +145,10 @@ Pemilik Restoran memiliki akses untuk membuat, membaca, memperbarui, dan menghap
 
 Dataset A07 PBP - UTS
 Dataset kami merupakan hasil scraping dari Internet untuk menemukan makanan khas di kecamatan-kecamatan Surakarta.
-[https://docs.google.com/spreadsheets/d/1txREr6OPf12FaUS8rfti79dRXVMz9-th0x-sfVrwtws/edit?gid=0#gid=0](DATASET)
+[DATASET](https://docs.google.com/spreadsheets/d/1txREr6OPf12FaUS8rfti79dRXVMz9-th0x-sfVrwtws/edit?gid=0#gid=0)
 
 ---
 
 ## Tautan Deployment Aplikasi
 
-[http://muttaqin-muzakkir-utspbp.pbp.cs.ui.ac.id/](http://muttaqin-muzakkir-utspbp.pbp.cs.ui.ac.id/)
+[Deployment Mangan" Solo](http://muttaqin-muzakkir-utspbp.pbp.cs.ui.ac.id/)
