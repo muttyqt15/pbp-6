@@ -7,3 +7,7 @@ urllib3
 python-dotenv
 pandas
 openpyxl
+pillow
+djangorestframework==3.14.0
+djangorestframework-simplejwt==5.3.1
+djangorestframework-stubs==3.14.5

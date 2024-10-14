@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 from dotenv import load_dotenv
 from os import environ
+import os
 
 load_dotenv()
 
@@ -33,7 +34,14 @@ DEBUG = environ.get("PRODUCTION", True)
 
 ALLOWED_HOSTS = ["muttaqin-muzakkir-utspbp.pbp.cs.ui.ac.id", "localhost", "127.0.0.1"]
 
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "resources/media")
 
+STATIC_URL = "/static/"
+
+STATICFILES_DIRS = [
+    BASE_DIR / "resources/static",
+]
 # Application definition
 
 INSTALLED_APPS = [
@@ -62,7 +70,7 @@ ROOT_URLCONF = "cooking_uts.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "templates"],
+        "DIRS": [BASE_DIR / "cooking_uts/templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
