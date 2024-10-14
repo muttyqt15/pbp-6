@@ -3,7 +3,7 @@
   <h2 class="text-4xl text-clifford">Login</h2>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %} {{ form.as_p }}
-    <button type="submit">Sign Up</button>
+    <button type="submit" onclick="{() => alert('submit')}">Sign Up</button>
   </form>
   <img src="{% static 'images/ucd.png' %}" alt="cooking" class="w-1/4" />
 </div>
