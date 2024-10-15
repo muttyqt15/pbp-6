@@ -4,7 +4,7 @@ from .models import Food, Restaurant
 
 @admin.register(Restaurant)
 class RestaurantAdmin(admin.ModelAdmin):
-    list_display = ("name", "district", "address", "operational_hours")
+    list_display = ("name", "district", "address", "operational_hours", "photo_url")
 
 
 @admin.register(Food)

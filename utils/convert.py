@@ -15,7 +15,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "cooking_uts.settings")
 # Initialize Django
 django.setup()
 
-from restaurant.models import Restaurant, Food
+from api.restaurant.models import Restaurant, Food
 
 
 def sanitize_value(cell):
