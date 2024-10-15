@@ -10,7 +10,7 @@ from django.dispatch import receiver
 class RestaurantOwner(models.Model):
     user = models.OneToOneField("authentication.User", on_delete=models.CASCADE)
     restaurant = models.OneToOneField("restaurant.Restaurant", on_delete=models.CASCADE)
-    phone_number = models.CharField(max_length=15)
+    campaigns = models.ManyToManyField("campaign.Campaign", blank=True)
 
     def __str__(self) -> str:
         return f"{self.restaurant_name} - {self.user.username}"
@@ -18,27 +18,45 @@ class RestaurantOwner(models.Model):
 
 class Customer(models.Model):
     user = models.OneToOneField("authentication.User", on_delete=models.CASCADE)
-    address = models.TextField()
-    phone_number = models.CharField(max_length=15)
+    reviews = models.ManyToManyField("review.Review", blank=True)
 
     def __str__(self) -> str:
         return f"{self.user.username} - {self.phone_number}"
 
 
-class User(AbstractUser):
+class Profile(models.Model):
     def generate_profile_path(self, filename: str) -> str:
         extension: str = filename.split(".")[-1]
         filename = f"{uuid4().hex}.{extension}"
         return path.join("profile", filename)
 
+    user = models.OneToOneField("authentication.User", on_delete=models.CASCADE)
+    address = models.TextField()
+    phone_number = models.CharField(max_length=15)
+    profile_image = models.ImageField(
+        upload_to=generate_profile_path, null=True, blank=True
+    )
+    bookmarks = models.ManyToManyField("restaurant.Restaurant", blank=True)
+    threads = models.ManyToManyField("chat.Thread", blank=True)
+
+    def __str__(self) -> str:
+        return f"{self.user.username} - {self.phone_number}"
+
+
+# Already has
+# - username
+# - email
+# - first_name
+# - last_name
+# - password
+class User(AbstractUser):
+
     username = models.CharField(max_length=150, unique=True)
+    # profile = models.OneToOneField()
     email = models.EmailField(unique=True)
     is_active = models.BooleanField(default=True)
     date_joined = models.DateTimeField(auto_now_add=True)
     role = models.CharField(max_length=150, default=Role.CUSTOMER)
-    profile_image = models.ImageField(
-        upload_to=generate_profile_path, null=True, blank=True
-    )
 
     groups = models.ManyToManyField(
         "auth.Group",
