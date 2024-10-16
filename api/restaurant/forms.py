@@ -1,5 +1,5 @@
-from django import ModelForm
-from models import Restaurant, Food
+from django.forms import ModelForm
+from .models import Restaurant, Food
 
 class RestaurantForm(ModelForm):
     class Meta:
