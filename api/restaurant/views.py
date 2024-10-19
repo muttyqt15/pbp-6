@@ -54,6 +54,17 @@ def edit_restaurant(request, id):
     return render(request, "edit_restaurant.html", {"form": form})  # placeholder
         
 
+def get_restaurant(request, id):
+    """Returns a single restaurant by ID"""
+    restaurant = get_object_or_404(Restaurant, id=id)
+    return render(request, "restaurant.html", {"restaurant": restaurant})
+
+def get_restaurant_menu(request, id):
+    """Returns a single restaurant's menu by ID"""
+    restaurant = get_object_or_404(Restaurant, id=id)
+    food = Food.objects.filter(restaurant=restaurant)
+    return render(request, "restaurant_menu.html", {"restaurant": restaurant, "food": food})
+
 def get_restaurant_xml(request):
     """Returns a list of all restaurants in XML format"""
     restaurants = Restaurant.objects.all()
@@ -80,3 +91,4 @@ def get_restaurants_json_by_id(request, id):
     restaurants = Restaurant.objects.filter(id=id)
     data = serializers.serialize("json", restaurants)
     return JsonResponse(data, safe=False)
+
