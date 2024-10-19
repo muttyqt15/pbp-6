@@ -8,6 +8,9 @@ from django.views.decorators.http import require_http_methods, require_POST
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 
+
+
+
 @login_required # TODO add link to login page
 @require_http_methods(["GET", "POST"])
 def add_restaurant(request):
@@ -54,10 +57,21 @@ def edit_restaurant(request, id):
     return render(request, "edit_restaurant.html", {"form": form})  # placeholder
         
 
-def get_restaurant(request, id):
-    """Returns a single restaurant by ID"""
-    restaurant = get_object_or_404(Restaurant, id=id)
-    return render(request, "restaurant.html", {"restaurant": restaurant})
+def my_restaurant(request):
+    """Main restaurant page"""
+    restaurant = None
+    if request.user.is_authenticated:
+        try:
+            restaurant = Restaurant.objects.get(user=request.user)
+        except Restaurant.DoesNotExist:
+            restaurant = None
+
+    context = {
+        "user": request.user,
+        "restaurant": restaurant,
+    }
+    return render(request, "my_restaurant.html", context)
+
 
 def get_restaurant_menu(request, id):
     """Returns a single restaurant's menu by ID"""

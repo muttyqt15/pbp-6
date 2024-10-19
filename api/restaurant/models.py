@@ -1,13 +1,14 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Restaurant(models.Model):
-    id = models.PositiveBigIntegerField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     district = models.CharField(max_length=255)
     address = models.TextField()
     operational_hours = models.CharField(max_length=255)
     photo_url = models.URLField()
-
+    
     def __str__(self):
         return self.name
 

@@ -9,55 +9,63 @@
 </head>
 <body class="bg-gray-100 p-6">
     <div class="container mx-auto bg-white p-6 rounded-lg shadow-md">
-        <!-- Restaurant Photo -->
-        <div class="photo-container relative mb-6">
-            <img src="{{ restaurant.photo_url }}" alt="Restaurant Photo" class="w-full h-64 object-cover rounded-md">
-            <a href="{% url 'edit_restaurant' restaurant.id %}" class="edit-button absolute top-4 right-4 bg-gray-800 text-white p-2 rounded-full">
-                <i class="fas fa-pencil-alt"></i>
-            </a>
-        </div>
-        
-        <!-- Restaurant Info -->
-        <div class="restaurant-info space-y-4">
-            <div class="restaurant-name flex items-center justify-between">
-                <h2 class="text-2xl font-bold">{{ restaurant.name }}</h2>
-                <a href="{% url 'edit_restaurant' restaurant.id %}" class="edit-button bg-gray-800 text-white p-2 rounded-full">
-                    <i class="fas fa-pencil-alt"></i>
-                </a>
-            </div>
-            <div class="food-categories flex items-center gap-2">
-                {% for category in restaurant.categories.all %}
-                    <div class="category bg-blue-500 text-white px-4 py-1 rounded-full">{{ category.name }}</div>
-                {% endfor %}
-                <a href="{% url 'edit_restaurant' restaurant.id %}" class="edit-button bg-gray-800 text-white p-2 rounded-full">
-                    <i class="fas fa-pencil-alt"></i>
-                </a>
-            </div>
-            <div class="restaurant-address flex items-center justify-between">
-                <p>{{ restaurant.address }}</p>
-                <a href="{% url 'edit_restaurant' restaurant.id %}" class="edit-button bg-gray-800 text-white p-2 rounded-full">
-                    <i class="fas fa-pencil-alt"></i>
-                </a>
-            </div>
-            <div class="operating-hours flex items-center justify-between">
-                <p>{{ restaurant.operational_hours }}</p>
-                <a href="{% url 'edit_restaurant' restaurant.id %}" class="edit-button bg-gray-800 text-white p-2 rounded-full">
-                    <i class="fas fa-pencil-alt"></i>
-                </a>
-            </div>
-        </div>
-
-        <!-- Menu Section -->
-        <hr class="my-6">
-        <div class="menu-section space-y-4">
-            <button class="add-category bg-green-500 text-white px-4 py-2 rounded-md">Tambah Kategori +</button>
-            {% for food in food_items %}
-                <div class="category bg-gray-100 p-4 rounded-lg shadow-sm flex items-center justify-between">
-                    <h3 class="text-lg font-semibold">{{ food.name }}</h3>
-                    <button class="add-menu bg-blue-500 text-white px-4 py-2 rounded-md">+ menu</button>
+        {% if user.is_authenticated %}
+            {% if restaurant %}
+                <!-- Restaurant Photo -->
+                <div class="photo-container relative mb-6">
+                    <img src="{{ restaurant.photo_url }}" alt="Restaurant Photo" class="w-full h-64 object-cover rounded-md">
+                    <a href="{% url 'edit_restaurant' restaurant.id %}" class="edit-button absolute top-4 right-4 bg-gray-800 text-white p-2 rounded-full">
+                        <i class="fas fa-pencil-alt"></i>
+                    </a>
                 </div>
-            {% endfor %}
-        </div>
+                
+                <!-- Restaurant Info -->
+                <div class="restaurant-info space-y-4">
+                    <div class="restaurant-name flex items-center justify-between">
+                        <h2 class="text-2xl font-bold">{{ restaurant.name }}</h2>
+                        <a href="{% url 'edit_restaurant' restaurant.id %}" class="edit-button bg-gray-800 text-white p-2 rounded-full">
+                            <i class="fas fa-pencil-alt"></i>
+                        </a>
+                    </div>
+                    <div class="food-categories flex items-center gap-2">
+                        {% for category in restaurant.categories.all %}
+                            <div class="category bg-blue-500 text-white px-4 py-1 rounded-full">{{ category.name }}</div>
+                        {% endfor %}
+                        <a href="{% url 'edit_restaurant' restaurant.id %}" class="edit-button bg-gray-800 text-white p-2 rounded-full">
+                            <i class="fas fa-pencil-alt"></i>
+                        </a>
+                    </div>
+                    <div class="restaurant-address flex items-center justify-between">
+                        <p>{{ restaurant.address }}</p>
+                        <a href="{% url 'edit_restaurant' restaurant.id %}" class="edit-button bg-gray-800 text-white p-2 rounded-full">
+                            <i class="fas fa-pencil-alt"></i>
+                        </a>
+                    </div>
+                    <div class="operating-hours flex items-center justify-between">
+                        <p>{{ restaurant.operational_hours }}</p>
+                        <a href="{% url 'edit_restaurant' restaurant.id %}" class="edit-button bg-gray-800 text-white p-2 rounded-full">
+                            <i class="fas fa-pencil-alt"></i>
+                        </a>
+                    </div>
+                </div>
+            {% else %}
+                <p class="text-center text-gray-600">No restaurant available. Please add your restaurant information.</p>
+            {% endif %}
+
+            <!-- Menu Section -->
+            <hr class="my-6">
+            <div class="menu-section space-y-4">
+                <button class="add-category bg-green-500 text-white px-4 py-2 rounded-md">Tambah Kategori +</button>
+                {% for food in food_items %}
+                    <div class="category bg-gray-100 p-4 rounded-lg shadow-sm flex items-center justify-between">
+                        <h3 class="text-lg font-semibold">{{ food.name }}</h3>
+                        <button class="add-menu bg-blue-500 text-white px-4 py-2 rounded-md">+ menu</button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-center text-gray-600">You need to be logged in to view your restaurant information. Please <a class="text-blue-500 underline">log in</a> to proceed.</p>
+        {% endif %}
     </div>
 </body>
 </html>
