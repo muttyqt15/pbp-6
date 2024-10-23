@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from .constant import Role
+from api.restaurant.models import Restaurant
 
 # Create your models here.
 
@@ -20,7 +21,7 @@ class User(AbstractUser):
 
 class RestaurantOwner(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    # restaurant = models.OneToOneField(Restaurant, on_delete=models.CASCADE)
+    restaurant = models.OneToOneField(Restaurant, on_delete=models.CASCADE, blank=True, null=True)
     # beritas = models.ForeignKey("berita.Berita", blank=True)
 
     def __str__(self) -> str:
