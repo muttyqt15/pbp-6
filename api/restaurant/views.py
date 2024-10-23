@@ -1,11 +1,14 @@
 from django.shortcuts import render, get_object_or_404
-from models import Restaurant, Food
-from forms import RestaurantForm, FoodForm
+from .models import Restaurant, Food
+from .forms import RestaurantForm, FoodForm
 from django.utils.html import strip_tags
 from django.http import HttpResponse, JsonResponse
 from django.core import serializers
 
 # Create your views here.
+
+def index(request):
+    render(request, 'login.html')
 
 
 def add_restaurant(request):
