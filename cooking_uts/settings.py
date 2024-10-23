@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     "api.restaurant",
     "api.authentication",
     "api.review",
-    "api.thread"
+    "api.thread",
 ]
 
 MIDDLEWARE = [
@@ -90,6 +90,9 @@ DATABASES = {
     }
 }
 
+# Login URL
+LOGIN_URL = "/auth/login"
+LOGIN_REDIRECT_URL = "/auth/login"
 AUTH_USER_MODEL = "authentication.User"
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
