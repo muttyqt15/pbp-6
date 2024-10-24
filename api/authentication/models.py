@@ -21,11 +21,13 @@ class User(AbstractUser):
 
 class RestaurantOwner(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    restaurant = models.OneToOneField(Restaurant, on_delete=models.CASCADE, blank=True, null=True)
+    restaurant = models.OneToOneField(
+        Restaurant, on_delete=models.CASCADE, blank=True, null=True
+    )
     # beritas = models.ForeignKey("berita.Berita", blank=True)
 
     def __str__(self) -> str:
-        return f"{self.restaurant_name} - {self.user.username}"
+        return f"{self.user.username} - {self.restaurant.name if self.restaurant else 'No Restaurant'}"
 
 
 class Customer(models.Model):
