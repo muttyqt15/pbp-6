@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include, URLResolver
+from django.contrib.auth.decorators import login_required
 
 urlpatterns: list[URLResolver] = [
     path("", include("api.main.urls")),

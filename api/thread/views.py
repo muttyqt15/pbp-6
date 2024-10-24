@@ -12,14 +12,18 @@ from django.shortcuts import (
 from django.contrib.auth.decorators import login_required
 
 
+@login_required()
 def index(request):
     if request.method == "POST":
-        form = ThreadForm(request.POST)
+        form = ThreadForm(request.POST, request.FILES)
         if form.is_valid():
             thread = form.save(commit=False)
-            thread.user = request.user
+            thread.author = request.user
             thread.save()
-            return redirect(reverse("index"))
+            return redirect("main:index")
     else:
         form = ThreadForm()
-    return render(request, "index.html", {"form": form})
+    threads = Thread.objects.all()
+    print(request.user.id)
+    print([[thread.image.url, thread.author.id] for thread in threads if thread.image], 'hei')
+    return render(request, "index.html", {"form": form, "threads": threads, "user": request.user})

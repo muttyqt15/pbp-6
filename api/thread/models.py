@@ -11,15 +11,23 @@ class Thread(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     @property
-    def likes_count(self):
+    def comment_count(self):
+        return self.comments.count()
+
+    @property
+    def like_count(self):
         return self.likes.count()
 
     @property
     def max_length(self):
-        return self.content.max_length
+        return 456
+    
+    @property
+    def get_comments(self):
+        return self.comments.all()
     
     def __str__(self):
-        return self.content if len(self.content) > 50 else f'{self.content[:50]}...'
+        return self.content if len(self.content) > 50 else f"{self.content[:50]}..."
 
 
 class Comment(models.Model):
@@ -33,13 +41,13 @@ class Comment(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     @property
-    def likes_count(self):
+    def like_count(self):
         return self.likes.count()
 
     @property
     def get_thread(self):
         return self.thread
-    
+
     @property
     def max_length(self):
-        return self.content.max_length
+        return 
