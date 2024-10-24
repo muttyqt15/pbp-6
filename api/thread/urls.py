@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include, URLResolver
-from .views import index
+from . import views
 
 urlpatterns: list[URLResolver] = [
-    path("", index, name="index"),
+    path("", views.index, name="index"),
+    path("like/<int:thread_id>/", views.like_thread, name="like"),
 ]
