@@ -30,7 +30,7 @@
                     <a class="edit-button bg-gray-800 text-white p-2 rounded-full bg-opacity-25 transition duration-300 ease-in-out hover:bg-opacity-100" onclick="makeEditable(this)">
                         <i class="fas fa-pencil-alt"></i>
                     </a>
-                </div>
+                </div>  
 
                 <!-- Food Categories -->
                 <div class="food-categories flex items-center gap-2">
@@ -55,11 +55,11 @@
 
                 <!-- Operating Hours -->
                 <div class="operating-hours flex items-center justify-between">
-                    <input type="text" value="{{ restaurant.operational_hours }}" class="border rounded-md p-2 w-full mr-4 hidden" placeholder="00:00 - 00:00" onblur="saveField(this, 'operational_hours', '00:00 - 00:00')">
+                    <input type="text" value="{{ restaurant.operational_hours }}" class="border rounded-md p-2 w-full mr-4 hidden" placeholder="00:00 - 00:00" onblur="saveField(this, 'operational_hours', '00:00 - 00:00', 'hour')">
                     {% if restaurant.operational_hours %}
                         <p>{{ restaurant.operational_hours }}</p>
                     {% else %}
-                        <p class="text-red-500">00.00 - 00.00</p>
+                        <p class="text-black-500">00.00 - 00.00</p>
                     {% endif %}
                     <a class="edit-button bg-gray-800 text-white p-2 rounded-full bg-opacity-25 transition duration-300 ease-in-out hover:bg-opacity-100" onclick="makeEditable(this)">
                         <i class="fas fa-pencil-alt"></i>
@@ -102,7 +102,7 @@
             }
         }
 
-        function saveField(input, fieldName, defaultValue) {
+        function saveField(input, fieldName, defaultValue, identifier='string') {
             // Get the value of the input field
             const value = input.value.trim();
             // Hide the input field and show the text element
@@ -110,6 +110,13 @@
             const text = parent.querySelector('p') || parent.querySelector('h2');
             if (text) {
                 // Only save the value if it's different from the default value
+                if (identifier === 'hour') {
+                    const pattern = /^([01]?[0-9]|2[0-3]):[0-5][0-9] - ([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
+                    if (!pattern.test(value)) {
+                        alert('Format harus JAM:MENIT - JAM:MENIT dengan format 24 jam');
+                        return;
+                    }
+                }
                 if (value !== "" && value !== defaultValue) {
                     text.textContent = value;
                 }
