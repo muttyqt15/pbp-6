@@ -18,9 +18,6 @@ class SignupForm(UserCreationForm):
         self.fields['password1'].widget.attrs['placeholder'] = 'Create a password'
         self.fields['password2'].widget.attrs['placeholder'] = 'Confirm your password'
         
-        # Optionally, you can also set custom labels
-        self.fields['username'].label = 'Username'
-        self.fields['email'].label = 'Email Address'
         self.fields['password1'].label = 'Password'
         self.fields['password2'].label = 'Confirm Password'
         self.fields['role'].label = 'Role'
@@ -30,6 +27,12 @@ class SignupForm(UserCreationForm):
         if User.objects.filter(email=email).exists():
             raise forms.ValidationError("Email is already in use.")
         return email
+    
+    def clean_username(self):
+        username = self.cleaned_data.get("username")
+        if User.objects.filter(username=username).exists():
+            raise forms.ValidationError("Username is already in use.")
+        return username
 
     def save(self, commit=True):
         user = super().save(commit=False)

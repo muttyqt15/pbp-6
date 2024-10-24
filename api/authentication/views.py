@@ -9,7 +9,7 @@ def signup(request):
         form = SignupForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect("auth:login")  # Redirect to login after successful signup
+            return redirect("authentication:login")  # Redirect to login after successful signup
     else:
         form = SignupForm()
     return render(request, "signup.html", {"form": form})
@@ -25,7 +25,7 @@ def login(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 auth_login(request, user)
-                return redirect("main:main")  # Redirect to home after login
+                return redirect("main:index")  # Redirect to home after login
             else:
                 # Invalid credentials
                 form.add_error(None, "Invalid username or password")

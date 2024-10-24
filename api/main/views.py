@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
-def main(request):
+def index(request):
     user = request.user
     ctx = {"user": user}
     return render(request, "main.html", ctx)
