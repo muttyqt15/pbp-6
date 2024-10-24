@@ -1,0 +1,75 @@
+{% extends 'base.html' %} {% load static %} {% block meta %}
+<title>Create a Thread</title>
+<link rel="stylesheet" href="{% static 'css/tailwind.css' %}" />
+{% endblock meta %} {% block content %}
+<div class="grid place-items-center w-full h-full max-w-2xl mx-auto">
+  <div class="bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-3xl font-bold mb-4">What's happening?</h2>
+    <form method="POST" enctype="multipart/form-data" class="space-y-4">
+      <!-- Updated -->
+      {% csrf_token %}
+      <textarea
+        id="content"
+        name="content"
+        rows="4"
+        placeholder="Share your thoughts..."
+        required
+        class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
+
+      <input
+        type="file"
+        id="image"
+        name="image"
+        accept="image/*"
+        class="border border-gray-300 rounded-md p-2" />
+
+      <!-- Image preview element -->
+      <img
+        id="image-preview"
+        src=""
+        alt="Image Preview"
+        class="hidden mt-4 max-w-full h-auto rounded-md" />
+
+      <div class="flex justify-between items-center">
+        <span id="char-count" class="text-gray-500"
+          >456 characters remaining</span
+        >
+        <button
+          type="submit"
+          class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-700">
+          Tweet
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  const textarea = document.getElementById("content");
+  const charCount = document.getElementById("char-count");
+  const imageInput = document.getElementById("image");
+  const imagePreview = document.getElementById("image-preview");
+
+  textarea.addEventListener("input", function () {
+    const remaining = 456 - textarea.value.length;
+    charCount.textContent = `${remaining} characters remaining`;
+    if (remaining < 0) {
+      charCount.textContent = "You've exceeded the limit!";
+    }
+  });
+
+  imageInput.addEventListener("change", function () {
+    const file = imageInput.files[0]; // Get the uploaded file
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        imagePreview.src = e.target.result; // Set the preview source
+        imagePreview.classList.remove("hidden"); // Show the preview
+      };
+      reader.readAsDataURL(file); // Read the file as a data URL
+    } else {
+      imagePreview.classList.add("hidden"); // Hide the preview if no file
+    }
+  });
+</script>
+{% endblock content %}
