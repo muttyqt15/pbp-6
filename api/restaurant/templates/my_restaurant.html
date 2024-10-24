@@ -1,0 +1,132 @@
+{% extends 'base.html' %} {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@^2.0/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="bg-gray-100 p-6">
+    <div class="container mx-auto bg-white p-6 rounded-lg shadow-md">
+        <!-- Restaurant Photo and Info -->
+        <div class="flex mb-6">
+            <!-- Restaurant Photo -->
+            <div class="photo-container relative w-1/2 pr-4">
+                <img src="{{ restaurant.photo_url|default:'https://placehold.co/600x400' }}" alt="Restaurant Photo" class="w-full h-64 object-cover rounded-md">
+                <a class="edit-button absolute top-2 right-6 bg-gray-800 text-white p-2 rounded-full bg-opacity-25 transition duration-300 ease-in-out hover:bg-opacity-100">
+                    <i class="fas fa-pencil-alt"></i>
+                </a>
+            </div>
+
+            <!-- Restaurant Info -->
+            <div class="restaurant-info w-1/2 space-y-4">
+                <!-- Restaurant Name -->
+                <div class="restaurant-name flex items-center justify-between">
+                    <input type="text" value="{{ restaurant.name }}" class="border rounded-md p-2 w-full mr-4 hidden" placeholder="Ex : Mangan Solo" onblur="saveField(this, 'name', 'Restaurant Name')">
+                    <h2 class="text-2xl font-bold">{{ restaurant.name|default:"Nama Restoran" }}</h2>
+                    <a class="edit-button bg-gray-800 text-white p-2 rounded-full bg-opacity-25 transition duration-300 ease-in-out hover:bg-opacity-100" onclick="makeEditable(this)">
+                        <i class="fas fa-pencil-alt"></i>
+                    </a>
+                </div>  
+
+                <!-- Food Categories -->
+                <div class="food-categories flex items-center gap-2">
+                    {% if restaurant.categories.all|length == 0 %}
+                        <a class="edit-button bg-gray-800 text-white p-2 rounded-full">Tambah Kategori</a>
+                    {% else %}
+                        {% for category in restaurant.categories.all %}
+                            <div class="category bg-blue-500 text-white px-4 py-1 rounded-full">{{ category.name }}</div>
+                        {% endfor %}
+                        <a class="edit-button bg-gray-800 text-white p-2 rounded-full">+</a>
+                    {% endif %}
+                </div>
+
+                <!-- Restaurant Address -->
+                <div class="restaurant-address flex items-center justify-between">
+                    <input type="text" value="{{ restaurant.address }}" class="border rounded-md p-2 w-full mr-4 hidden" placeholder="Ex : Jl. Sigmakarta" onblur="saveField(this, 'address', 'Enter Address Here')">
+                    <p>{{ restaurant.address|default:"Alamat Restoran" }}</p>
+                    <a class="edit-button bg-gray-800 text-white p-2 rounded-full bg-opacity-25 transition duration-300 ease-in-out hover:bg-opacity-100" onclick="makeEditable(this)">
+                        <i class="fas fa-pencil-alt"></i>
+                    </a>
+                </div>
+
+                <!-- Operating Hours -->
+                <div class="operating-hours flex items-center justify-between">
+                    <input type="text" value="{{ restaurant.operational_hours }}" class="border rounded-md p-2 w-full mr-4 hidden" placeholder="00:00 - 00:00" onblur="saveField(this, 'operational_hours', '00:00 - 00:00', 'hour')">
+                    {% if restaurant.operational_hours %}
+                        <p>{{ restaurant.operational_hours }}</p>
+                    {% else %}
+                        <p class="text-black-500">00.00 - 00.00</p>
+                    {% endif %}
+                    <a class="edit-button bg-gray-800 text-white p-2 rounded-full bg-opacity-25 transition duration-300 ease-in-out hover:bg-opacity-100" onclick="makeEditable(this)">
+                        <i class="fas fa-pencil-alt"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menu Section -->
+        <hr class="my-6">
+        <div class="menu-section space-y-4">
+            <h3 class="text-xl font-bold">MENU</h3>
+            <button class="add-category bg-green-500 text-white px-4 py-2 rounded-md">Tambah Kategori +</button>
+            {% for category in restaurant.categories.all %}
+                <div class="category bg-gray-100 p-4 rounded-lg shadow-sm">
+                    <h4 class="font-semibold">{{ category.name }}</h4>
+                    <button class="add-menu bg-blue-500 text-white px-4 py-2 rounded-md">+ menu</button>
+                    <ul class="pl-4 list-disc">
+                        {% for food in category.food_items.all %}
+                            <li class="py-1">{{ food.name }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        function makeEditable(button) {
+            // Get the parent container
+            const parent = button.parentElement;
+            // Hide the current display element and show the input field
+            const input = parent.querySelector('input');
+            const text = parent.querySelector('p') || parent.querySelector('h2');
+            if (input && text) {
+                input.classList.remove('hidden');
+                input.focus();
+                text.classList.add('hidden');
+            }
+        }
+
+        function saveField(input, fieldName, defaultValue, identifier='string') {
+            // Get the value of the input field
+            const value = input.value.trim();
+            // Hide the input field and show the text element
+            const parent = input.parentElement;
+            const text = parent.querySelector('p') || parent.querySelector('h2');
+            if (text) {
+                // Only save the value if it's different from the default value
+                if (identifier === 'hour') {
+                    const pattern = /^([01]?[0-9]|2[0-3]):[0-5][0-9] - ([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
+                    if (!pattern.test(value)) {
+                        alert('Format harus JAM:MENIT - JAM:MENIT dengan format 24 jam');
+                        return;
+                    }
+                }
+                if (value !== "" && value !== defaultValue) {
+                    text.textContent = value;
+                }
+                input.classList.add('hidden');
+                text.classList.remove('hidden');
+            }
+            // TODO: Add an AJAX call here to update the value on the server, only if value is not default
+            console.log(`Field '${fieldName}' updated to:`, value !== defaultValue ? value : "(not saved)");
+        }
+    </script>
+</body>
+</html>
+{% endblock content %}
