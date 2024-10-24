@@ -25,7 +25,7 @@ def login(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 auth_login(request, user)
-                return redirect("main:index")  # Redirect to home after login
+                return redirect("main:index")  # Redirect to home after login OR authenticated page
             else:
                 # Invalid credentials
                 form.add_error(None, "Invalid username or password")
@@ -38,4 +38,4 @@ def login(request):
 # Logout view
 def logout(request):
     auth_logout(request)
-    return redirect("login")  # Redirect to login page after logout
+    return redirect("authentication:login")  # Redirect to login page after logout
