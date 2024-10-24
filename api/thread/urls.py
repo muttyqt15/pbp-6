@@ -4,5 +4,5 @@ from . import views
 
 urlpatterns: list[URLResolver] = [
     path("", views.index, name="index"),
-    path("like/<int:thread_id>/", views.like_thread, name="like"),
+    path("like/<int:id>/", views.like_thread, name="like"),
 ]

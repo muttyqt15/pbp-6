@@ -12,7 +12,7 @@
       <div class="flex items-center gap-4">
         <button
           id="like-button-{{ thread.id }}"
-          class="like-button text-blue-500 hover:text-blue-600 transition"
+          class="like-button"
           onclick="toggleLike({{ thread.id }})">
           {{ thread.like_count }} Likes
         </button>
@@ -55,15 +55,15 @@
         .then(response => response.json())
         .then(data => {
           // Update the button with the new like count
-          likeButton.textContent = `${data.likes_count ?? 0} Likes`;
+          likeButton.textContent = `${data.likes ?? 0} Likes`;
   
           // Change button color based on whether it's liked or not
           if (data.liked) {
-            likeButton.classList.add('text-blue-600');
+            likeButton.classList.add('text-red-600');
             likeButton.classList.remove('text-blue-500');
           } else {
             likeButton.classList.add('text-blue-500');
-            likeButton.classList.remove('text-blue-600');
+            likeButton.classList.remove('text-red-600');
           }
         })
         .catch(error => {

@@ -24,15 +24,16 @@ def index(request):
     else:
         form = ThreadForm()
     threads = Thread.objects.all()
-    print(request.user.id)
-    print([[thread.image.url, thread.author.id] for thread in threads if thread.image], 'hei')
     return render(request, "index.html", {"form": form, "threads": threads, "user": request.user})
 
+@login_required()
 def like_thread(request, id):
-    print(request.POST, 'hey')
     if request.method == "POST":
         thread = get_object_or_404(Thread, id=id)
-        if request.user in thread.likes.all(): # O(n), is this ok?
+        status_liked = request.user in thread.likes.all()
+        if status_liked: # O(n), is this ok?
             thread.likes.remove(request.user)
         else:
             thread.likes.add(request.user)
+        return JsonResponse({"likes": thread.like_count, "liked": status_liked})
+    return HttpResponseForbidden()
