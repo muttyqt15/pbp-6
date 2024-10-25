@@ -2,12 +2,13 @@ from django.db import models
 
 
 class Restaurant(models.Model):
-    id = models.PositiveBigIntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     district = models.CharField(max_length=255)
     address = models.TextField()
     operational_hours = models.CharField(max_length=255)
-    photo_url = models.URLField()
+    photo_url = models.URLField(blank=True) 
+
     def __str__(self):
         return self.name
 

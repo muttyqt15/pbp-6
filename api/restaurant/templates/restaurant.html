@@ -76,7 +76,7 @@
                 <div class="operating-hours flex items-center justify-between">
                     <input type="text" value="" class="border rounded-md p-2 w-full mr-4 hidden" placeholder="00:00 - 00:00" onblur="saveField(this, 'operational_hours', '00:00 - 00:00')">
                     {% if restaurant.operational_hours %}
-                        <p>{{ restaurant.operational_hours }}</p>
+                        <p class="text-[#FFFBF2]">{{ restaurant.operational_hours }}</p>
                     {% else %}
                         <p class="text-[#FFFBF2]">00.00 - 00.00</p>
                     {% endif %}
