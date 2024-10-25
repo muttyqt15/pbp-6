@@ -10,7 +10,7 @@
 {% block content %}
 {% include 'navbar.html' %}
 <div class="bg-[#f3ebdb]">
-    <div class="container mx-auto px-4 py-8 mt-16 ">
+    <div class="container mx-auto px-4 py-8 mt-20 ">
         <h1 class="text-4xl font-bold text-center mb-8 text-[#c1a386]">
             Daftar Berita
         </h1>
@@ -23,9 +23,9 @@
 
    <!--MODAL SPESIFIK BERITA  -->
     <div id="specificModel" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-50 w-full flex items-center justify-center bg-gray-800 bg-opacity-50 overflow-x-hidden overflow-y-auto transition-opacity duration-300 ease-out">
-    <div id="specificModalContent" style="background-color: rgba(125, 110, 95, 0.9);" class="relative rounded-lg shadow-lg w-11/12 sm:w-4/5 md:w-3/5 lg:w-2/5 xl:w-2/3 mx-auto transform scale-95 opacity-0 transition-transform transition-opacity duration-300 ease-out">
+    <div id="specificModalContent" style="background-color: rgba(125, 110, 95, 0.9);" class="relative rounded-lg shadow-lg w-11/12 xl:w-2/3 mx-auto transform scale-95 opacity-0 transition-transform transition-opacity duration-300 ease-out">
         <!-- Modal header -->
-        <div class="relative flex items-center justify-center p-6 border-b border-gray-300 rounded-t">
+        <div class="relative flex items-center justify-between p-6 border-b border-gray-300 rounded-t">
             <h3 id="modalJudulBerita" class="text-2xl font-semibold text-[#fffbf2]">
                 Judul Berita
             </h3>
@@ -54,12 +54,14 @@
             <p id="modalKontenBerita" class="text-xl text-[#fffbf2] mb-3">${konten}</p>
             <div class="">
                 <div class="text-sm mb-1 flex items-center justify-between">
-                    <p class="flex items-center" id="modalAuthorBerita"></p>
+                    <p class="flex items-center text-[#fffbf2]" id="modalAuthorBerita"></p>
                     <small class="text-[#fffbf2] text-lg" id="modalTanggapanUpdate"></small>
                 </div>
                 <p class="text-sm mb-1 flex text-[#fffbf2] items-center justify-center">
-                    <button>
-                        <svg class="w-11 h-11 text-[#b9b1a9] transition-colors duration-300 hover:text-[#fffbf2] p-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path fill="currentColor" d="M4 21h1V8H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2zM20 8h-7l1.122-3.368A2 2 0 0 0 12.225 2H12L7 7.438V21h11l3.912-8.596L22 12v-2a2 2 0 0 0-2-2z"></path></svg>
+                    <button 
+                        id="like-button"
+                        class="like-button">
+                        <svg id="like-icon" class="w-11 h-11 text-[#b9b1a9] hover:text-[#fffbf2] transition-colors duration-300  p-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path fill="currentColor" d="M4 21h1V8H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2zM20 8h-7l1.122-3.368A2 2 0 0 0 12.225 2H12L7 7.438V21h11l3.912-8.596L22 12v-2a2 2 0 0 0-2-2z"></path></svg>
                     </button>
                     <small class="text-[#fffbf2] text-lg" id="modalJumlahLike">${jumlah_like}</small>
                 </p>
@@ -97,19 +99,21 @@
                 const author = item.fields.author;
                 const id = item.pk;
                 const judul = DOMPurify.sanitize(item.fields.judul);
-                const gambar = item.fields.gambar;
+                const gambar = `/news${item.fields.gambar}`;
                 let konten = DOMPurify.sanitize(item.fields.konten);
                 const jumlah_like = item.fields.jumlah_like;
+                const liked = item.fields.liked;
                 const tanggal = new Date(item.fields.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
                 const tanggal_pembaruan = new Date(item.fields.tanggal_pembaruan).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-
+                
                 const data = {
                     "id": id,
                     "judul": judul,
-                    "gambar": `media/${gambar}`,
+                    "gambar": gambar,
                     "konten": konten,
                     "author": author,
                     "jumlah_like": jumlah_like,
+                    "liked": liked,
                     "tanggal": tanggal,
                     "tanggal_pembaruan": tanggal_pembaruan
                 };
@@ -123,7 +127,7 @@
                 // Tambahkan card berita
                 htmlString += `
                     <div class="card w-11/12 lg:w-2/3 mb-3 bg-[rgba(125,110,95,0.9)] text-[#fffbf2] rounded-lg shadow-lg transition-transform transform hover:scale-105 flex flex-col lg:flex-row">
-                        <img src="media/${gambar}" alt="${judul}" class="rounded-t-lg lg:rounded-l-lg w-full lg:w-1/2 h-56 object-cover lg:h-auto">
+                        <img src="${gambar}" alt="${judul}" class="rounded-t-lg lg:rounded-l-lg w-full lg:w-1/2 h-56 object-cover lg:h-auto">
                         <div class="p-4 flex flex-col justify-between">
                             <h5 class="text-2xl font-semibold mb-2">${judul}</h5>
                             <small>${tanggal}</small>
@@ -138,10 +142,13 @@
                                     <small>Last Update:  ${tanggal_pembaruan}</small>
                                 </div>
                                 <p class="text-sm mb-1 flex text-[#fffbf2] items-center justify-center">
-                                    <button>
-                                        <svg class="w-11 h-11 text-[#b9b1a9] transition-colors duration-300 hover:text-[#fffbf2] p-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path fill="currentColor" d="M4 21h1V8H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2zM20 8h-7l1.122-3.368A2 2 0 0 0 12.225 2H12L7 7.438V21h11l3.912-8.596L22 12v-2a2 2 0 0 0-2-2z"></path></svg>
+                                    <button 
+                                        id="like-button-${id}"
+                                        class="like-button" 
+                                        onclick='toggleLike("${id}", this)'>
+                                        <svg id="like-icon-${id}" class="w-11 h-11 ${liked ? 'text-[#fffbf2] hover:text-[#b9b1a9]' : 'text-[#b9b1a9] hover:text-[#fffbf2]' } transition-colors duration-300 hover:text-[#fffbf2] p-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path fill="currentColor" d="M4 21h1V8H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2zM20 8h-7l1.122-3.368A2 2 0 0 0 12.225 2H12L7 7.438V21h11l3.912-8.596L22 12v-2a2 2 0 0 0-2-2z"></path></svg>
                                     </button>
-                                    <small>${jumlah_like}</small>
+                                    <small id="jumlah-like-${id}">${jumlah_like}</small>
                                 </p>
                             </div>
                             <div id="data-${id}" style="display: none;">
@@ -151,6 +158,7 @@
                         </div>
                     </div>
                 `;
+
 
 
             });
@@ -175,8 +183,22 @@
         document.getElementById('modalAuthorBerita').innerHTML = `<svg class="h-11 w-11 text-[#fffbf2] p-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path fill="currentColor" d="M7.5 6.5C7.5 8.981 9.519 11 12 11s4.5-2.019 4.5-4.5S14.481 2 12 2 7.5 4.019 7.5 6.5zM20 21h1v-1c0-3.859-3.141-7-7-7h-4c-3.86 0-7 3.141-7 7v1h17z"></path></svg>${data.author ? data.author : 'Unknown'}`;
         document.getElementById('modalJumlahLike').innerHTML = `<span class="font-semibold">${data.jumlah_like}</span>`;
         document.getElementById('modalTanggalBerita').innerHTML = `<span class="font-semibold right-0">${data.tanggal}</span>`;
-        document.getElementById('modalTanggapanUpdate').innerHTML = `Update Terakhir: <span class="font-semibold">${data.tanggal_pembaruan}</span>`;
+        document.getElementById('modalTanggapanUpdate').innerHTML = `Last Update: <span class="font-semibold">${data.tanggal_pembaruan}</span>`;
+        document.getElementById('like-button').addEventListener("click", () => toggleLike(id));
 
+        const likeIcon = document.getElementById('like-icon');
+        if (data.liked) {
+            likeIcon.classList.add('text-[#fffbf2]');
+            likeIcon.classList.add('hover:text-[#b9b1a9]');
+            likeIcon.classList.remove('text-[#b9b1a9]');
+            likeIcon.classList.remove('hover:text-[#fffbf2]');
+        } else {
+            likeIcon.classList.add('text-[#b9b1a9]');
+            likeIcon.classList.add('hover:text-[#fffbf2]');
+            likeIcon.classList.remove('text-[#fffbf2]');
+            likeIcon.classList.remove('hover:text-[#b9b1a9]');
+        }
+      
         const modal = document.getElementById('specificModel');
         const modalContent = document.getElementById('specificModalContent');
 
@@ -201,5 +223,53 @@
     }
 
     document.getElementById("closeModalBtn").addEventListener("click", hideModal);
+</script>
+
+<script>
+    function toggleLike(threadId) {
+        const likeButton = document.getElementById('like-button');
+        const likeIcon = document.getElementById('like-icon'); // Ambil elemen SVG
+        const originalText = likeButton.textContent;
+
+        // Set the loading state
+        likeButton.disabled = true;
+
+        fetch(`/news/like_berita/${threadId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            
+            // Update jumlah like di interface
+            document.getElementById('modalJumlahLike').textContent = `${data.likes}`;
+
+            // Ganti warna button berdasarkan status like
+            if (data.liked) {
+                likeIcon.classList.add('text-[#fffbf2]');
+                likeIcon.classList.add('hover:text-[#b9b1a9]');
+                likeIcon.classList.remove('text-[#b9b1a9]');
+                likeIcon.classList.remove('hover:text-[#fffbf2]');
+            } else {
+                likeIcon.classList.add('text-[#b9b1a9]');
+                likeIcon.classList.add('hover:text-[#fffbf2]');
+                likeIcon.classList.remove('text-[#fffbf2]');
+                likeIcon.classList.remove('hover:text-[#b9b1a9]');
+            }
+        })
+        .catch(error => {
+            likeButton.textContent = originalText;  // Reset to original text in case of error
+        })
+        .finally(() => {
+            // Remove loading state
+            refreshBeritaList();
+            likeButton.disabled = false;
+        });
+    }
+
 </script>
 {% endblock content %}

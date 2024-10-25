@@ -13,3 +13,7 @@ class Berita(models.Model):
     tanggal = models.DateTimeField(auto_now_add=True)
     tanggal_pembaruan = models.DateTimeField(auto_now=True)
 
+    @property
+    def like_count(self):
+        return self.jumlah_like.count()
+

@@ -1,15 +1,15 @@
 {% load static %}
-
+<!-- style="background-color: rgba(125, 110, 95, 0.9);" -->
 <nav class="bg-gradient-to-r from-[#c1a386] to-[#8d7762] shadow-lg fixed top-0 left-0 z-40 w-screen">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+  <div class="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 py-2">
     <div class="relative flex items-center justify-between h-full">
       <!-- Logo Section -->
-      <div class="flex items-center space-x-4">
-        <img src="{% static 'image/mangan-solo-logo.jpg' %}" alt="logo" class="h-16">
+      <div class="flex items-center space-x-4 mx-auto lg:mx-0">
         <a
-          href="/"
-          class="text-2xl font-bold text-center text-[#fffbf2] transition-transform duration-300 hover:scale-105"
+        href="/"
+        class="text-2xl font-bold text-center text-[#fffbf2] transition-transform duration-300 hover:scale-105 flex items-center "
         >
+        <img src="{% static 'image/manganSolo-logo.svg' %}" alt="logo" class="h-20 mr-2">
           MANGAN" SOLO
         </a>
       </div>
@@ -18,7 +18,7 @@
       <div class="sm:relative lg:absolute lg:inset-x-0 flex justify-center">
         <div class="hidden lg:flex items-center gap-8 text-[#fffbf2] text-lg">
           <a href="/restorant" class="hover:text-[#decdbe] transition-colors duration-200">Restorant</a>
-          <a href="/berita" class="hover:text-[#decdbe] transition-colors duration-200">Berita</a>
+          <a href="/news" class="hover:text-[#decdbe] transition-colors duration-200">Berita</a>
           <a href="/review" class="hover:text-[#decdbe] transition-colors duration-200">Review</a>
           <a href="/thread" class="hover:text-[#decdbe] transition-colors duration-200">Thread</a>
           <a href="/bookmark" class="hover:text-[#decdbe] transition-colors duration-200">Bookmark</a>
@@ -30,23 +30,28 @@
         {% if user.is_authenticated %}
         <a
           href="/"
+          class="text-[#fffbf2] hover:text-[#decdbe] py-2 px-4 transition-transform duration-300 hover:scale-105"
+        >
+          {{ user.username }}
+        </a>
+        <a
+          href="/"
+          class="bg-[#d7c3b0] hover:bg-[#c1a386] text-[#fffbf2] font-bold py-2 px-8 rounded-full border border-[#fffb2] transition-transform duration-300 hover:scale-105"
+        >
+          Logout
+        </a>
+        {% else %}
+        <a
+          href="/"
           class=" hover:bg-[#c1a386] text-[#fffbf2] font-bold py-2 px-8 rounded-full border border-[#fffb2] transition-transform duration-300 hover:scale-105"
         >
           Login
         </a>
         <a
           href="/register"
-          class="bg-[#decdbe] hover:bg-[#c1a386] text-[#fffbf2] font-bold py-2 px-8 rounded-full  transition-transform duration-300 hover:scale-105"
+          class="bg-[#d7c3b0] hover:bg-[#c1a386] text-[#fffbf2] font-bold py-2 px-8 rounded-full  transition-transform duration-300 hover:scale-105"
         >
           Register
-        </a>
-        {% else %}
-        <a href="/" class="text-[#fffbf2] hover:text-[#decdbe]">{{ user.username }}</a>
-        <a
-          href="/"
-          class="bg-[#a48b72] hover:bg-[#d7c3b0] text-[#fffbf2] font-bold py-2 px-8 rounded-full  transition-transform duration-300 hover:scale-105"
-        >
-          Logout
         </a>
         {% endif %}
       </div>
@@ -71,32 +76,33 @@
   </div>
 
   <!-- Mobile Menu (Visible on Toggle) -->
-  <div class="mobile-menu hidden lg:hidden bg-gradient-to-r from-[#c1a386] to-[#8d7762] w-full py-4 shadow-lg transition-transform duration-300 ease-in-out transform">
+   <!--  -->
+  <div class="mobile-menu hidden lg:hidden bg-gradient-to-r from-[#c1a386] to-[#8d7762] w-full py-4 px-8 shadow-lg transition-transform duration-300 ease-in-out transform">
     <div class="flex flex-col gap-4 text-lg text-[#fffbf2]">
       <a href="/restorant" class="text-center hover:text-[#decdbe] transition-colors duration-200">Restorant</a>
-      <a href="/berita" class="text-center hover:text-[#decdbe] transition-colors duration-200">Berita</a>
+      <a href="/news" class="text-center hover:text-[#decdbe] transition-colors duration-200">Berita</a>
       <a href="/review" class="text-center hover:text-[#decdbe] transition-colors duration-200">Review</a>
       <a href="/thread" class="text-center hover:text-[#decdbe] transition-colors duration-200">Thread</a>
       <a href="/bookmark" class="text-center hover:text-[#decdbe] transition-colors duration-200">Bookmark</a>
 
       {% if user.is_authenticated %}
-      <a href="/profile" class="text-center">{{ user.username }}</a>
+      <a href="/" class="text-lg text-center hover:text-[#decdbe] transition-colors duration-200">{{ user.username }}</a>
       <a
         href="/"
-        class="text-center bg-[#a48b72] hover:bg-[#d7c3b0] text-[#fffbf2] font-bold py-2 px-4 rounded-lg shadow-md transition-transform duration-300 hover:scale-105 mx-4"
+        class="text-center bg-gradient-to-r from-[#7d6e5f] to-[#6a5e51] hover:bg-[#5b5045] text-[#fffbf2] font-bold py-2 px-4 rounded-lg shadow-md transition-transform duration-300 hover:scale-105 mx-4"
       >
         Logout
       </a>
       {% else %}
       <a
         href="/"
-        class="text-center bg-[#a48b72] hover:bg-[#d7c3b0] text-[#fffbf2] font-bold py-2 px-4 rounded-lg shadow-md transition-transform duration-300 hover:scale-105 mx-4"
+        class="text-center bg-gradient-to-r from-[#7d6e5f] to-[#6a5e51] hover:bg-[#5b5045] text-[#fffbf2] font-bold py-2 px-4 rounded-lg shadow-md transition-transform duration-300 hover:scale-105 mx-4"
       >
         Login
       </a>
       <a
         href="/register"
-        class="text-center bg-[#a48b72] hover:bg-[#d7c3b0] text-[#fffbf2] font-bold py-2 px-4 rounded-lg shadow-md transition-transform duration-300 hover:scale-105 mx-4"
+        class="text-center bg-gradient-to-r from-[#7d6e5f] to-[#6a5e51] hover:bg-[#5b5045] text-[#fffbf2] font-bold py-2 px-4 rounded-lg shadow-md transition-transform duration-300 hover:scale-105 mx-4"
       >
         Register
       </a>

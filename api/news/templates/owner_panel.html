@@ -8,8 +8,9 @@
 {% endblock meta %}
 
 {% block content %}
+{% include 'navbar.html' %}
 <div class="bg-[#f3ebdb]">
-    <div class="container mx-auto px-4 py-8 mt-16 ">
+    <div class="container mx-auto px-4 py-8 mt-20 ">
         <h1 class="text-4xl font-bold text-center mb-8 text-[#c1a386]">
             Daftar Berita
         </h1>
@@ -172,7 +173,7 @@
                 const author = item.fields.author;
                 const id = item.pk;
                 const judul = DOMPurify.sanitize(item.fields.judul);
-                const gambar = item.fields.gambar;
+                const gambar = `/news${item.fields.gambar}`;
                 let konten = DOMPurify.sanitize(item.fields.konten);
                 const jumlah_like = item.fields.jumlah_like;
                 const tanggal = new Date(item.fields.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -186,7 +187,7 @@
 
                 htmlString += `
                 <div class="card w-11/12 lg:w-2/3 mb-3 bg-[rgba(125,110,95,0.9)] text-[#fffbf2] rounded-lg shadow-lg transition-transform transform hover:scale-105">
-                    <img src="/news/media/${gambar}" alt="${judul}" class="rounded-t-lg w-full h-56 object-cover">
+                    <img src="${gambar}" alt="${judul}" class="rounded-t-lg w-full h-56 object-cover">
                     <div class="p-4">
                         <h5 class="text-2xl font-semibold mb-2">${judul}</h5>
                         <div class="text-sm mb-2 flex justify-between">
@@ -199,7 +200,7 @@
                                 <svg class="h-8 w-8 text-[#fffbf2] p-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path fill="currentColor" d="M7.5 6.5C7.5 8.981 9.519 11 12 11s4.5-2.019 4.5-4.5S14.481 2 12 2 7.5 4.019 7.5 6.5zM20 21h1v-1c0-3.859-3.141-7-7-7h-4c-3.86 0-7 3.141-7 7v1h17z"></path></svg>
                                 ${author ? author : 'Unknown'}
                             </p>
-                            <p>Like: ${jumlah_like}</p>
+                            <p>Likes: ${jumlah_like}</p>
                         </div>
                         <div class="flex mx-10 justify-between items-center">
                             <button type="submit" class="bg-[#c1a386] hover:bg-[#a48b72] text-[#fffbf2] font-bold py-2 px-4 rounded-lg transition duration-300 shadow-md" onclick="showEditModal('${id}')">

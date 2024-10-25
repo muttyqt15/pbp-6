@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "api.restaurant",
     "api.authentication",
     "api.review",
+    "api.main",
     "api.news",
 ]
 
@@ -91,6 +92,8 @@ DATABASES = {
     }
 }
 
+LOGIN_URL = "/auth/login"
+LOGIN_REDIRECT_URL = "main:main"
 AUTH_USER_MODEL = "authentication.User"
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators

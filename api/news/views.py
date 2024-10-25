@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from api.news.forms import BeritaEntryForm
 from api.news.models import Berita
@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.utils.html import strip_tags
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseForbidden
 import os
 
 
@@ -42,16 +42,41 @@ def berita_entry(request):
     context = {"form": form}
     return render(request, "berita_entry.html", context)
 
+# def show_berita_json(request):
+#     try:
+#         data = Berita.objects.all()
+#         if not data:  # Jika data kosong
+#             return HttpResponse(status=404)
+#         return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+#     except Exception as e:
+#         # Tangani error dan kirimkan respons
+#         return HttpResponse(f"Error: {str(e)}", status=500)
+
+
+from django.http import JsonResponse
+
 def show_berita_json(request):
+    berita_list = []
     try:
         data = Berita.objects.all()
-        if not data:  # Jika data kosong
-            return HttpResponse(status=404)
-        return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+        for berita in data:
+            liked = berita.jumlah_like.filter(id=request.user.id).exists()  # Mengecek apakah user sudah like
+            berita_list.append({
+                'pk': berita.pk,
+                'fields': {
+                    'judul': berita.judul,
+                    'gambar': berita.gambar.url,
+                    'konten': berita.konten,
+                    'jumlah_like': berita.jumlah_like.count(),  # Ubah ini menjadi .count() jika Anda ingin menghitung jumlah
+                    'author': berita.author.user.username,
+                    'tanggal': berita.tanggal,
+                    'tanggal_pembaruan': berita.tanggal_pembaruan,
+                    'liked': liked  # Menambahkan status liked
+                }
+            })
+        return JsonResponse(berita_list, safe=False)  # Menggunakan JsonResponse untuk mengembalikan data
     except Exception as e:
-        # Tangani error dan kirimkan respons
         return HttpResponse(f"Error: {str(e)}", status=500)
-
 
 def show_berita_by_id(request, berita_id):
     try:
@@ -80,7 +105,7 @@ def show_berita_by_owner(request):
 def edit_berita(request, berita_id):
     try:
         berita = Berita.objects.get(pk=berita_id)
-        gambar = berita.gambar
+        # gambar = berita.gambar
         
         if request.method == 'POST':
             form = BeritaEntryForm(request.POST, request.FILES, instance=berita)
@@ -170,3 +195,18 @@ def add_berita_ajax(request):
     except Exception as e:
         # Kirim respons error ke frontend
         return HttpResponse(f"Error: {str(e)}", status=500)
+
+# @login_required()
+def like_berita(request, berita_id):
+
+    if request.method == "POST":
+        berita = get_object_or_404(Berita, pk=berita_id)
+        status_liked = request.user in berita.jumlah_like.all()
+
+        if status_liked: # O(n), is this ok?
+            berita.jumlah_like.remove(request.user)
+        else:
+            berita.jumlah_like.add(request.user)
+        return JsonResponse({"likes": berita.like_count, "liked": (not status_liked)})
+    return HttpResponseForbidden()
+
