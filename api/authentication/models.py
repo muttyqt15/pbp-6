@@ -25,7 +25,7 @@ class RestaurantOwner(models.Model):
     # beritas = models.ForeignKey("berita.Berita", blank=True)
 
     def __str__(self) -> str:
-        return f"{self.restaurant_name} - {self.user.username}"
+        return f"{self.restaurant.name if self.restaurant else 'No Restaurant'} - {self.user.username}"
 
 
 class Customer(models.Model):
