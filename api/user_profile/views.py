@@ -3,6 +3,28 @@ from django.contrib.auth.decorators import login_required
 from .forms import UsernameForm, CustomerProfileForm, OwnerProfileForm
 from .models import CustomerProfile, OwnerProfile
 
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from authentication.models import Customer, RestaurantOwner
+from .models import CustomerProfile, OwnerProfile
+
+@login_required
+def profile_view(request):
+    user = request.user
+    customer_profile = None
+    owner_profile = None
+
+    # Check if the user is a customer or owner
+    if user.is_customer:
+        customer_profile = CustomerProfile.objects.get(user=user)
+    elif user.is_resto_owner:
+        owner_profile = OwnerProfile.objects.get(user=user)
+
+    return render(request, 'profile.html', {
+        'customer_profile': customer_profile,
+        'owner_profile': owner_profile,
+    })
+
 @login_required
 def edit_customer_profile(request):
     user_form = UsernameForm(instance=request.user)

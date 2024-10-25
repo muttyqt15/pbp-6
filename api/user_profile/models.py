@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
 import authentication.models as auth
 
 class CustomerProfile(models.Model):
