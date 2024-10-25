@@ -6,4 +6,5 @@ urlpatterns: list[URLResolver] = [
     path("auth/", include("api.authentication.urls")),
     path("restaurant/", include("api.restaurant.urls")),
     path("review/", include("api.review.urls")),
+    path("bookmark", include("api.bookmark.urls"))
 ]
