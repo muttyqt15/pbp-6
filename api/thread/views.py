@@ -8,10 +8,9 @@ from django.shortcuts import (
     get_object_or_404,
     redirect,
     render,
-    reverse,
 )
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_http_methods
+from django.views.decorators.http import require_http_methods, require_POST
 from django.views.decorators.csrf import csrf_exempt
 
 
@@ -23,14 +22,13 @@ def index(request):
             thread = form.save(commit=False)
             thread.author = request.user
             thread.save()
-            return redirect("main:index")
+            return redirect('/thread')
     else:
         form = ThreadForm()
     threads = Thread.objects.all()
     return render(
         request, "index.html", {"form": form, "threads": threads, "user": request.user}
     )
-
 
 @login_required()
 @require_http_methods(["POST", "GET"])
@@ -45,6 +43,18 @@ def like_thread(request, id):
         return JsonResponse({"likes": thread.like_count, "liked": status_liked})
     return HttpResponseForbidden()
 
+@login_required()
+@require_http_methods(["POST", "GET"])
+def like_comment(request, comment_id):
+    if request.method == "POST":
+        comment = get_object_or_404(Comment, id=comment_id)
+        status_liked = request.user in comment.likes.all()
+        if status_liked:  # O(n), is this ok?
+            comment.likes.remove(request.user)
+        else:
+            comment.likes.add(request.user)
+        return JsonResponse({"likes": comment.like_count, "liked": status_liked})
+    return HttpResponseForbidden()
 
 @login_required()
 @require_http_methods(["POST", "GET"])
@@ -63,6 +73,28 @@ def delete_thread(request, id):
         return JsonResponse(
             {
                 "message": "You are not authorized to delete this thread.",
+                "status": "error",
+                "success": False,
+            }
+        )
+
+@login_required()
+@require_http_methods(["POST", "GET"])
+def delete_comment(request, id):
+    comment = get_object_or_404(Comment, id=id)
+    if request.user == comment.author:
+        comment.delete()
+        return JsonResponse(
+            {
+                "message": "Comment deleted successfully.",
+                "status": "success",
+                "success": True,
+            }
+        )
+    else:
+        return JsonResponse(
+            {
+                "message": "You are not authorized to delete this comment.",
                 "status": "error",
                 "success": False,
             }
@@ -132,3 +164,26 @@ def edit_thread(request, id):
                 },
             }
         )
+
+
+@login_required()
+def detail_thread(request, id):
+    thread = get_object_or_404(Thread, id=id)
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.author = request.user
+            comment.thread = thread
+            comment.save()
+            return redirect("/thread", id=id)
+        else:
+            return redirect("main:test")
+    else:
+        form = CommentForm()
+    comments = thread.comments.all()
+    return render(
+        request,
+        "detail_thread.html",
+        {"thread": thread, "comments": comments, "user": request.user, "form": form},
+    )

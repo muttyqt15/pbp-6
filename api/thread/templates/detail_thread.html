@@ -1,25 +1,19 @@
-{% extends 'base.html' %} 
-{% load static %} 
-{% block meta %}
+{% extends 'base.html' %} {% load static %} {% block meta %}
 <title>Threads</title>
-{% endblock meta %}
-
-{% block content %}
-<div class="flex flex-col w-full min-h-screen items-center justify-center bg-gray-50 p-8">
-    <!-- Thread Creation Form -->
-    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-lg">
-      <h2 class="text-2xl font-bold mb-6 text-gray-800">What's happening?</h2>
-      {% include '_components/create_thread.html' %}
-    </div>
-  
-    <!-- Display Threads -->
-    {% if threads %}
-    <div class="w-full max-w-2xl mt-8 space-y-4">
-      {% for thread in threads %}
-        {% include '_components/thread.html' with thread=thread user_id=user.id %}
-      {% endfor %}
-    </div>
-    {% endif %}
+{% endblock meta %} {% block content %}
+<div
+  class="flex flex-col w-full min-h-screen items-center mt-24 bg-gray-50 p-8">
+  <!-- Thread -->
+  {% include '_components/thread.html' with thread=thread user_id=user.id %} 
+  {% include '_components/create_comment.html' %}
+  <!-- Display Comments -->
+  {% if comments %}
+  <div class="w-full max-w-2xl mt-8 space-y-4">
+    {% for comment in comments %} 
+      {% include '_components/comment.html' with comment=comment user_id=user.id %} 
+    {% endfor %}
+  </div>
+  {% endif %}
 </div>
 
 <script>
@@ -48,14 +42,14 @@
           // Limit the image preview size
           $imagePreview.css({
             maxWidth: "48px",
-            maxHeight: "48px"
+            maxHeight: "48px",
           });
 
           // Reset the image preview size on error
           $imagePreview.on("error", function () {
             $imagePreview.css({
               maxWidth: "none",
-              maxHeight: "none"
+              maxHeight: "none",
             });
             $imagePreview.attr("src", ""); // Clear the source
           });

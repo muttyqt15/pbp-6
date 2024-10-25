@@ -1,6 +1,6 @@
 <div
   id="thread-{{ thread.id }}"
-  class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+  class="bg-white p-6 rounded-lg w-full shadow-md border border-gray-200">
   <div id="content-container-{{ thread.id }}">
     <p class="text-gray-800 mb-4">{{ thread.content }}</p>
   </div>
@@ -74,7 +74,7 @@
       const updatedContent = $(`#edit-content-${threadId}`).val();
 
       $.ajax({
-        url: `edit/${threadId}/`,
+        url: `/thread/edit/${threadId}/`,
         method: "POST",
         headers: {
           "X-CSRFToken": "{{ csrf_token }}",
@@ -125,7 +125,7 @@
 
     window.deleteThread = function (threadId) {
       $.ajax({
-        url: `delete/${threadId}/`,
+        url: `/thread/delete/${threadId}/`,
         method: "POST",
         headers: {
           "X-CSRFToken": "{{ csrf_token }}",
@@ -148,7 +148,7 @@
       likeButton.textContent = "Liking...";
       likeButton.disabled = true;
 
-      fetch(`like/${threadId}/`, {
+      fetch(`/thread/like/${threadId}/`, {
         method: "POST",
         headers: {
           "X-CSRFToken": "{{ csrf_token }}",
