@@ -10,88 +10,94 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@^2.0/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body class="bg-gray-100 p-6" >
+<body class="bg-[#240F0E] p-6" >
     <style>
         body {
             font-family: 'Lora', serif;
-            
         }
 
     </style>
-    <div class="container mx-auto bg-[#240F0E] p-6 rounded-lg shadow-md">
+    <div class="container mx-auto bg-[#7D6E5F] p-6 rounded-lg shadow-md">
         <!-- Restaurant Photo and Info -->
-        <div class="flex mb-6 ">
+        <div class="flex mb-6">
             <!-- Restaurant Photo -->
             <div class="photo-container relative w-1/2 pr-4">
                 <img src="{{ restaurant.photo_url|default:'https://placehold.co/600x400' }}" alt="Restaurant Photo" class="w-full h-64 object-cover rounded-md">
-                <a class="edit-button absolute top-4 right-4 bg-gray-800 text-white p-2 rounded-full bg-opacity-25 transition duration-300 ease-in-out hover:bg-opacity-100">
+                {% if user.is_resto_owner %}
+                <a class="edit-button absolute top-2 right-6 bg-gray-800 text-[#FFFBF2] p-2 rounded-full bg-opacity-25 transition duration-300 ease-in-out hover:bg-opacity-100">
                     <i class="fas fa-pencil-alt"></i>
                 </a>
+                {% endif %}
             </div>
 
             <!-- Restaurant Info -->
             <div class="restaurant-info w-1/2 space-y-4">
                 <!-- Restaurant Name -->
                 <div class="restaurant-name flex items-center justify-between">
-                    <input type="text" value="{{ restaurant.name }}" class="border rounded-md p-2 w-full mr-4 hidden" placeholder="Restaurant Name" onblur="saveField(this, 'name', 'Restaurant Name')">
-                    <h2 class="text-2xl font-bold" style="font-family: 'Crimson Pro', serif;">{{ restaurant.name|default:"Restaurant Name" }}</h2>
-                    <a class="edit-button bg-gray-800 text-white p-2 rounded-full bg-opacity-25 transition duration-300 ease-in-out hover:bg-opacity-100" onclick="makeEditable(this)">
+                    <input type="text" value="" class="border rounded-md p-2 w-full mr-4 hidden" placeholder="Restaurant Name" onblur="saveField(this, 'name', 'Restaurant Name')">
+                    <h2 class="text-2xl text-[#FFFBF2] font-bold" style="font-family: 'Crimson Pro', serif;">{{ restaurant.name|default:"Restaurant Name" }}</h2>
+                    {% if user.is_resto_owner %}
+                    <a class="edit-button bg-gray-800 text-[#FFFBF2] p-2 rounded-full bg-opacity-25 transition duration-300 ease-in-out hover:bg-opacity-100" onclick="makeEditable(this)">
                         <i class="fas fa-pencil-alt"></i>
                     </a>
+                    {% endif %}
                 </div>
 
                 <!-- Food Categories -->
                 <div class="food-categories flex items-center gap-2">
                     {% if restaurant.categories.all|length == 0 %}
-                        <a class="edit-button bg-gray-800 text-white p-2 rounded-full">Tambah Kategori</a>
+                    {% if user.is_resto_owner %}
+                        <a class="edit-button bg-gray-800 text-[#FFFBF2] p-2 rounded-md">Tambah Kategori +</a> 
+                        {% else %}
+                        <p class="text-[#FFFBF2]">Belum ada kategori</p>
+                        {% endif %}
                     {% else %}
                         {% for category in restaurant.categories.all %}
-                            <div class="category bg-blue-500 text-white px-4 py-1 rounded-full">{{ category.name }}</div>
+                            <div class="category bg-blue-500 text-[#FFFBF2] px-4 py-1 rounded-full">{{ category.name }}</div>
                         {% endfor %}
-                        <a class="edit-button bg-gray-800 text-white p-2 rounded-full">+</a>
+                        {% if user.is_resto_owner %}
+                        <a class="edit-button bg-gray-800 text-[#FFFBF2] p-2 rounded-full">+</a>
+                        {% endif %}
                     {% endif %}
                 </div>
 
                 <!-- Restaurant Address -->
-                <div class="restaurant-address flex items-center justify-between">
-                    <input type="text" value="{{ restaurant.address }}" class="border rounded-md p-2 w-full mr-4 hidden" placeholder="Enter Address Here" onblur="saveField(this, 'address', 'Enter Address Here')">
+                <div class="restaurant-address text-[#FFFBF2] flex items-center justify-between">
+                    <input type="text" value="" class="border rounded-md p-2 text-black w-full mr-4 hidden" placeholder="Enter Address Here" onblur="saveField(this, 'address', 'Enter Address Here')">
                     <p>{{ restaurant.address|default:"Enter Address Here" }}</p>
-                    <a class="edit-button bg-gray-800 text-white p-2 rounded-full bg-opacity-25 transition duration-300 ease-in-out hover:bg-opacity-100" onclick="makeEditable(this)">
+                    {% if user.is_resto_owner %}
+                    <a class="edit-button bg-gray-800 p-2 rounded-full bg-opacity-25 transition duration-300 ease-in-out hover:bg-opacity-100" onclick="makeEditable(this)">
                         <i class="fas fa-pencil-alt"></i>
                     </a>
+                    {% endif %}
                 </div>
 
                 <!-- Operating Hours -->
                 <div class="operating-hours flex items-center justify-between">
-                    <input type="text" value="{{ restaurant.operational_hours }}" class="border rounded-md p-2 w-full mr-4 hidden" placeholder="00:00 - 00:00" onblur="saveField(this, 'operational_hours', '00:00 - 00:00')">
+                    <input type="text" value="" class="border rounded-md p-2 w-full mr-4 hidden" placeholder="00:00 - 00:00" onblur="saveField(this, 'operational_hours', '00:00 - 00:00')">
                     {% if restaurant.operational_hours %}
                         <p>{{ restaurant.operational_hours }}</p>
                     {% else %}
-                        <p class="text-red-500">00.00 - 00.00</p>
+                        <p class="text-[#FFFBF2]">00.00 - 00.00</p>
                     {% endif %}
-                    <a class="edit-button bg-gray-800 text-white p-2 rounded-full bg-opacity-25 transition duration-300 ease-in-out hover:bg-opacity-100" onclick="makeEditable(this)">
+                    {% if user.is_resto_owner %}
+                    <a class="edit-button bg-gray-800 text-[#FFFBF2] p-2 rounded-full bg-opacity-25 transition duration-300 ease-in-out hover:bg-opacity-100" onclick="makeEditable(this)">
                         <i class="fas fa-pencil-alt"></i>
                     </a>
+                    {% endif %}
                 </div>
             </div>
         </div>
 
         <!-- Menu Section -->
-        <hr class="my-6">
-        <div class="menu-section space-y-4">
-            <h3 class="text-xl font-bold" style="font-family: 'Crimson Text', serif;">MENU</h3>
-            <button class="add-category bg-green-500 text-white px-4 py-2 rounded-md">Tambah Kategori +</button>
-            {% for category in restaurant.categories.all %}
-                <div class="category bg-gray-100 p-4 rounded-lg shadow-sm">
-                    <h4 class="font-semibold" style="font-family: 'Crimson Text', serif;">{{ category.name }}</h4>
-                    <button class="add-menu bg-blue-500 text-white px-4 py-2 rounded-md">+ menu</button>
-                    <ul class="pl-4 list-disc">
-                        {% for food in category.food_items.all %}
-                            <li class="py-1">{{ food.name }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            {% endfor %}
+<hr class="my-6">
+<div class="menu-section space-y-4">
+    <h3 class="text-xl text-[#FFFBF2] font-bold" style="font-family: 'Crimson Text', serif;">MENU</h3>
+    {% if user.is_resto_owner %}
+    <button class="add-category bg-[#262A37] text-[#FFFBF2] px-4 py-2 rounded-md">Tambah Menu +</button>
+    {% endif %}
+    {% include 'menu_card.html' %}
+</div>
         </div>
     </div>
 

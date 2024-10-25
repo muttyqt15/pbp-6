@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+{% for category in categories %}
+<div class="category-card bg-gray-100 p-4 rounded-lg shadow-sm mb-4">
+    <h4 class="font-semibold text-xl text-[#FFFBF2]" style="font-family: 'Crimson Text', serif;">{{ category }}</h4>
+    <ul class="pl-4 list-disc">
+        {% if foods|length == 0 %}
+            <li class="py-1 text-[#FFFBF2]">No food items in this category</li>
+        {% else %}
+        {% for food_item in foods %}
+            {% if food_item.category == category %}
+                <li class="py-1 text-[#FFFBF2]">{{ food_item.name }}</li>
+            {% endif %}
+        {% endfor %} 
+        {% endif %}
+        
+    </ul>       
+</div>
+{% endfor %}
+
+{% endblock content %}
