@@ -1,8 +1,10 @@
+{% load date_extras %}
 <div
   id="thread-{{ thread.id }}"
-  class="bg-white p-6 rounded-lg w-full shadow-md border border-gray-200">
+  class="bg-[#f3ebdb] p-6 rounded-3xl w-full h-full cursor-pointer z-50"
+  onclick="window.location.href = `/thread/{{ thread.id }}/`">
   <div id="content-container-{{ thread.id }}">
-    <p class="text-gray-800 mb-4">{{ thread.content }}</p>
+    <p class="text-[#240F0E] text-base mb-4">{{ thread.content }}</p>
   </div>
 
   {% if thread.image %}
@@ -12,32 +14,45 @@
     class="max-h-[96px] rounded-md object-cover opacity-70 blur-sm hover:filter-none hover:opacity-100 transition-all duration-300 ease-in-out" />
   {% endif %}
 
-  <div class="flex justify-between mt-4">
-    <div class="flex items-center gap-4">
+  <div class="flex flex-col justify-end items-end w-full gap-1">
+    <div class="flex w-full gap-2 items-center justify-end">
       <button
         id="like-button-{{ thread.id }}"
-        class="like-button"
-        onclick="toggleLike({{ thread.id }})">
+        class="like-button text-[#0d0505] font-pro font-bold"
+        onclick="toggleLike({{ thread.id }}); event.stopPropagation();">
         {{ thread.like_count }} Likes
       </button>
-      <p>{{ thread.comment_count }} Comments</p>
+      <p class="text-[#0d0505] font-pro font-bold">
+        {{ thread.comment_count }} Comments
+      </p>
     </div>
-
-    {% if thread.author.id == user_id %}
-    <div class="flex justify-end mt-4 gap-4" id="edit-buttons-{{ thread.id }}">
-      <button
-        class="text-blue-500 hover:text-blue-600 transition"
-        onclick="toggleEditMode({{ thread.id }})">
-        Edit
-      </button>
-      <button
-        class="text-red-500 hover:text-red-600 transition"
-        onclick="deleteThread({{ thread.id }})">
-        Delete
-      </button>
+    <div class="flex gap-2 w-full items-center justify-end">
+      <p class="text-[#0d0505] font-pro font-semibold text-sm">
+        {{ thread.author }}
+      </p>
+      <span>&middot;</span>
+      <p class="text-[#0d0505] font-pro font-semibold text-sm">
+        {{ thread.created_at|time_ago }}
+      </p>
     </div>
-    {% endif %}
   </div>
+
+  {% if thread.author.id == user_id %}
+  <div
+    class="flex w-full justify-start gap-4 h-8 px-6"
+    id="edit-buttons-{{ thread.id }}">
+    <button
+      class="text-gray-600 font-bold hover:text-coyote duration-300 transition text-sm"
+      onclick="toggleEditMode({{ thread.id }}); event.stopPropagation();">
+      Edit
+    </button>
+    <button
+      class="text-gray-600 hover:text-red-600 duration-300 transition text-sm font-bold"
+      onclick="deleteThread({{ thread.id }}); event.stopPropagation();">
+      Delete
+    </button>
+  </div>
+  {% endif %}
 </div>
 
 <script>
@@ -58,8 +73,8 @@
         `);
 
         editButtons.html(`
-          <button class="text-blue-500 hover:text-blue-600 transition" onclick="submitEdit(${threadId})">Save</button>
-          <button class="text-gray-500 hover:text-gray-600 transition" onclick="cancelEdit(${threadId})">Cancel</button>
+          <button class="text-coyote hover:text-lion duration-300 ease-in-out transition text-sm" onclick="submitEdit(${threadId})">Save</button>
+          <button class="text-gray-500 hover:text-raisin duration-300 ease-in-out transition text-sm" onclick="cancelEdit(${threadId})">Cancel</button>
         `);
 
         $(`#edit-content-${threadId}`).focus();
@@ -92,8 +107,8 @@
 
             const editButtons = $(`#edit-buttons-${threadId}`);
             editButtons.html(`
-              <button class="text-blue-500 hover:text-blue-600 transition" onclick="toggleEditMode(${threadId})">Edit</button>
-              <button class="text-red-500 hover:text-red-600 transition" onclick="deleteThread(${threadId})">Delete</button>
+              <button class="text-gray-600 font-bold hover:text-coyote duration-300 transition text-sm" onclick="toggleEditMode(${threadId})">Edit</button>
+              <button class="text-gray-600 font-bold hover:text-red-500 duration-300 transition text-sm" onclick="deleteThread(${threadId})">Delete</button>
             `);
 
             isEditMode = false;
@@ -116,8 +131,8 @@
 
       // Reset buttons
       editButtons.html(`
-        <button class="text-blue-500 hover:text-blue-600 transition" onclick="toggleEditMode(${threadId})">Edit</button>
-        <button class="text-red-500 hover:text-red-600 transition" onclick="deleteThread(${threadId})">Delete</button>
+        <button class="text-gray-600 font-bold hover:text-coyote duration-300 transition text-sm" onclick="toggleEditMode(${threadId})">Edit</button>
+        <button class="text-gray-600 font-bold hover:text-red-500 duration-300 transition text-sm" onclick="deleteThread(${threadId})">Delete</button>
       `);
 
       isEditMode = false;
