@@ -1,0 +1,13 @@
+{% extends 'base.html' %} 
+
+{% block content %}
+<div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg">
+    <h1 class="text-6xl">Hello {{ user }}!</h1>
+    <ul>
+        {% for key, value in data.items %}
+        <li>{{ key }}: {{ value }}</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'authentication:logout' %}" class="text-blue-500">Logout</a>
+</div>
+{% endblock %}
