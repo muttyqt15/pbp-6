@@ -5,12 +5,37 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200..900;1,200..900&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Lora:ital,wght@0,400..700;1,400..700&display=swap"
+      rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              licorice: "#240F0E",
+              coyote: "#7D6E5F",
+              lion: "#C1A386",
+              dutch: "#E5D2B0",
+              raisin: "#262A37",
+            },
+            fontFamily: {
+              pro: ['Crimson Pro', 'sans-serif'],
+              crimson: ['Crimson Text', 'serif'],
+              lora: ['Lora', 'monospace'],
+            }
+          },
+        },
+      };
+    </script>
     {% block meta %} {% endblock meta %}
   </head>
 
   <body>
-    <main class="min-h-screen w-full">
+    <main class="min-h-screen w-full font-lora">
       {% block content %} {% endblock content %}
     </main>
   </body>
