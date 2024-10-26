@@ -3,12 +3,12 @@
   class="bg-gradient-to-b from-[#8D7762] to-[#E3D6C9] p-0.5 rounded-3xl w-full h-full grid place-items-center max-w-2xl">
   <div
     id="thread-{{ thread.id }}"
-    class="bg-[#f3ebdb]/20 p-6 rounded-3xl w-full h-full cursor-pointer z-50"
-    onclick="window.location.href = `/thread/{{ thread.id }}/`">
+    class="bg-[#f3ebdb]/20 p-6 rounded-3xl w-full h-full z-50">
     <div
       id="content-container-{{ thread.id }}"
+      onclick="window.location.href = `/thread/{{ thread.id }}/`"
       data-thread-id="{{ thread.id }}">
-      <p class="text-[#240F0E] text-base mb-4">{{ thread.content }}</p>
+      <p class="text-[#240F0E] text-base mb-4 cursor-pointer">{{ thread.content }}</p>
     </div>
 
     {% if thread.image %}

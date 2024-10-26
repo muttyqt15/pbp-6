@@ -8,19 +8,30 @@
     e.stopPropagation();
     const contentContainer = $(`#content-container-${threadId}`);
     const editButtons = $(`#edit-buttons-${threadId}`);
-
     if (!isEditMode) {
       // Save original content when entering edit mode
       originalContent = contentContainer.find("p").text();
 
       contentContainer.html(`
-          <textarea id="edit-content-${threadId}" class="w-full p-2 border border-gray-300 rounded mb-4">${originalContent}</textarea>
+          <textarea id="edit-content-${threadId}" class="w-full p-2 border border-gray-300 rounded mb-4 z-50">${originalContent}</textarea>
         `);
+      // Add click handler to prevent propagation on the textarea
+      $(`#edit-content-${threadId}`).on("click", function (e) {
+        e.stopPropagation();
+      });
 
       editButtons.html(`
-          <button class="text-coyote hover:text-lion duration-300 ease-in-out transition text-sm" onclick="submitEdit(${threadId})">Save</button>
-          <button class="text-gray-500 hover:text-raisin duration-300 ease-in-out transition text-sm" onclick="cancelEdit(${threadId})">Cancel</button>
+          <button class="text-coyote hover:text-lion duration-300 ease-in-out transition text-sm z-50" onclick="submitEdit(${threadId})" id="save-${threadId}">Save</button>
+          <button class="text-gray-500 hover:text-raisin duration-300 ease-in-out transition text-sm z-50" onclick="cancelEdit(${threadId})" id="cancel-${threadId}">Cancel</button>
         `);
+      $(`#save-${threadId}`).on("click", function (e) {
+        e.stopPropagation();
+        submitEdit(threadId, e);
+      });
+      $(`#cancel-${threadId}`).on("click", function (e) {
+        e.stopPropagation();
+        cancelEdit(threadId, e);
+      });
 
       $(`#edit-content-${threadId}`).focus();
     } else {
