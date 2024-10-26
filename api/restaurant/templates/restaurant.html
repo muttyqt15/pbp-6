@@ -1,5 +1,18 @@
-{% extends 'base.html' %} {% load static %}
+a{% extends 'base.html' %} {% load static %}
 <!DOCTYPE html>
+
+{% if debug %}
+<div style="background-color: #f0f0f0; padding: 10px; margin: 10px;">
+    <p>Debug Info:</p>
+    <p>Is Owner: {{ is_owner }}</p>
+    <p>User is resto owner: {{ user.is_resto_owner }}</p>
+    <p>Restaurant ID: {{ restaurant.id }}</p>
+    {% if user.is_resto_owner %}
+        <p>Owner's Restaurant ID: {{ user.restaurantowner.restaurant.id }}</p>
+    {% endif %}
+</div>
+{% endif %}
+
 <html lang="en">
 {% block content %}
 <head>
@@ -10,12 +23,12 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@^2.0/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body class="bg-[#240F0E] p-6" >
+<body class="bg-batik p-6" >
     <style>
         body {
             font-family: 'Lora', serif;
         }
-
+        
     </style>
     <div class="container mx-auto bg-[#7D6E5F] p-6 rounded-lg shadow-md">
         <!-- Restaurant Photo and Info -->
@@ -23,7 +36,7 @@
             <!-- Restaurant Photo -->
             <div class="photo-container relative w-1/2 pr-4">
                 <img src="{{ restaurant.photo_url|default:'https://placehold.co/600x400' }}" alt="Restaurant Photo" class="w-full h-64 object-cover rounded-md">
-                {% if user.is_resto_owner %}
+                {% if is_owner %}
                 <a class="edit-button absolute top-2 right-6 bg-gray-800 text-[#FFFBF2] p-2 rounded-full bg-opacity-25 transition duration-300 ease-in-out hover:bg-opacity-100">
                     <i class="fas fa-pencil-alt"></i>
                 </a>
@@ -36,7 +49,7 @@
                 <div class="restaurant-name flex items-center justify-between">
                     <input type="text" value="" class="border rounded-md p-2 w-full mr-4 hidden" placeholder="Restaurant Name" onblur="saveField(this, 'name', 'Restaurant Name')">
                     <h2 class="text-2xl text-[#FFFBF2] font-bold" style="font-family: 'Crimson Pro', serif;">{{ restaurant.name|default:"Restaurant Name" }}</h2>
-                    {% if user.is_resto_owner %}
+                    {% if is_owner %}
                     <a class="edit-button bg-gray-800 text-[#FFFBF2] p-2 rounded-full bg-opacity-25 transition duration-300 ease-in-out hover:bg-opacity-100" onclick="makeEditable(this)">
                         <i class="fas fa-pencil-alt"></i>
                     </a>
@@ -46,26 +59,27 @@
                 <!-- Food Categories -->
                 <div class="food-categories flex items-center gap-2">
                     {% if restaurant.categories.all|length == 0 %}
-                    {% if user.is_resto_owner %}
+                    {% if is_owner %}
                         <a class="edit-button bg-gray-800 text-[#FFFBF2] p-2 rounded-md">Tambah Kategori +</a> 
                         {% else %}
                         <p class="text-[#FFFBF2]">Belum ada kategori</p>
                         {% endif %}
                     {% else %}
                         {% for category in restaurant.categories.all %}
-                            <div class="category bg-blue-500 text-[#FFFBF2] px-4 py-1 rounded-full">{{ category.name }}</div>
+                            <div class="category bg-blue text-[#FFFBF2] px-4 py-1 rounded-full">{{ category.name }}</div>
                         {% endfor %}
-                        {% if user.is_resto_owner %}
+                        {% if is_owner %}
                         <a class="edit-button bg-gray-800 text-[#FFFBF2] p-2 rounded-full">+</a>
                         {% endif %}
                     {% endif %}
                 </div>
 
                 <!-- Restaurant Address -->
+                 <h3 class="text-xl text-[#FFFBF2] font-bold" style="font-family: 'Crimson Text', serif;">Alamat</h3>
                 <div class="restaurant-address text-[#FFFBF2] flex items-center justify-between">
                     <input type="text" value="" class="border rounded-md p-2 text-black w-full mr-4 hidden" placeholder="Enter Address Here" onblur="saveField(this, 'address', 'Enter Address Here')">
                     <p>{{ restaurant.address|default:"Enter Address Here" }}</p>
-                    {% if user.is_resto_owner %}
+                    {% if is_owner %}
                     <a class="edit-button bg-gray-800 p-2 rounded-full bg-opacity-25 transition duration-300 ease-in-out hover:bg-opacity-100" onclick="makeEditable(this)">
                         <i class="fas fa-pencil-alt"></i>
                     </a>
@@ -73,6 +87,7 @@
                 </div>
 
                 <!-- Operating Hours -->
+                 <h3 class="text-xl text-[#FFFBF2] font-bold" style="font-family: 'Crimson Text', serif;">Jam Operasional</h3>
                 <div class="operating-hours flex items-center justify-between">
                     <input type="text" value="" class="border rounded-md p-2 w-full mr-4 hidden" placeholder="00:00 - 00:00" onblur="saveField(this, 'operational_hours', '00:00 - 00:00')">
                     {% if restaurant.operational_hours %}
@@ -80,7 +95,7 @@
                     {% else %}
                         <p class="text-[#FFFBF2]">00.00 - 00.00</p>
                     {% endif %}
-                    {% if user.is_resto_owner %}
+                    {% if is_owner %}
                     <a class="edit-button bg-gray-800 text-[#FFFBF2] p-2 rounded-full bg-opacity-25 transition duration-300 ease-in-out hover:bg-opacity-100" onclick="makeEditable(this)">
                         <i class="fas fa-pencil-alt"></i>
                     </a>
@@ -90,19 +105,119 @@
         </div>
 
         <!-- Menu Section -->
+
 <hr class="my-6">
-<div class="menu-section space-y-4">
-    <h3 class="text-xl text-[#FFFBF2] font-bold" style="font-family: 'Crimson Text', serif;">MENU</h3>
-    {% if user.is_resto_owner %}
-    <button class="add-category bg-[#262A37] text-[#FFFBF2] px-4 py-2 rounded-md">Tambah Menu +</button>
-    {% endif %}
-    {% include 'menu_card.html' %}
-</div>
+
+<div class="flex flex-row space-x-4">
+    <div class="flex-1 p-4 rounded-md">
+        <div class="menu-section space-y-4">
+            <h3 class="text-xl text-[#FFFBF2] font-bold" style="font-family: 'Crimson Text', serif;">MENU</h3>
+            {% if is_owner %}
+            <button class="add-menu bg-[#262A37] text-[#FFFBF2] px-4 py-2 rounded-md" onclick="openAddMenuModal()">Tambah Menu +</button>
+            {% endif %}
+            <div class="menu-items mt-4">
+                {% for menu in restaurant.menu.all %}
+                    <div class="category bg-[#240F0E] text-[#FFFBF2] px-4 py-1 rounded-md mt-4 padding relative">
+                        <h4 class="text-lg font-bold">{{ menu.category }}</h4>
+                        
+                        {% if is_owner %}
+                        <button class="add-food bg-green-500 text-[#FFFBF2] px-4 py-2 rounded-md mt-2 mb-2" onclick="openAddFoodModal('{{ menu.id }}')">Tambah Makanan +</button>
+                        <button class="delete-menu absolute top-2 right-2 bg-opacity-0 text-[#FFFBF2] px-2 py-1 rounded-full" onclick="deleteMenu('{{ menu.id }}')">X</button>
+                        {% endif %}
+                        
+                    </div>
+                    <ul class="pl-4 list-disc mt-2">
+                        {% for food in menu.food.all %}
+                            <li class="py-1">{{ food.name }} - {{ food.price }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endfor %}
+       
+                    
+            </div>
         </div>
     </div>
+    <div class="flex-1 p-4 rounded-md">
+
+
+    </div>
+</div>
 
     <!-- JavaScript -->
     <script>
+        function openAddMenuModal() {
+            document.getElementById('addMenuModal').classList.remove('hidden');
+        }
+
+        function closeAddMenuModal() {
+            document.getElementById('addMenuModal').classList.add('hidden');
+        }
+
+        function saveMenu() {
+            const menuCategory = document.getElementById('newMenuCategory').value.trim();
+            if (menuCategory !== "") {
+                // Send an AJAX request to save the menu category
+                fetch('/restaurant/add_menu/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({ category: menuCategory })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Failed to add menu category');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
+            closeAddMenuModal();
+        }
+
+        function openAddFoodModal(menuId) {
+            document.getElementById('selectedMenuId').value = menuId;
+            document.getElementById('addFoodModal').classList.remove('hidden');
+        }
+
+        function closeAddFoodModal() {
+            document.getElementById('addFoodModal').classList.add('hidden');
+        }
+
+        function saveFood() {
+            const menuId = document.getElementById('selectedMenuId').value;
+            const foodName = document.getElementById('newFoodName').value.trim();
+            const foodPrice = document.getElementById('newFoodPrice').value.trim();
+            if (foodName !== "" && foodPrice !== "" && menuId !== "") {
+                // Send an AJAX request to save the food item
+                fetch('/restaurant/add_food/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({ name: foodName, price: foodPrice, menu_id: menuId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Failed to add food item');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
+            closeAddFoodModal();
+        }
+
         function makeEditable(button) {
             // Get the parent container
             const parent = button.parentElement;
@@ -122,6 +237,8 @@
             // Hide the input field and show the text element
             const parent = input.parentElement;
             const text = parent.querySelector('p') || parent.querySelector('h2');
+            // Grab the current page restaurant id
+            const restaurantId = {{ restaurant.id|safe }};
             if (text) {
                 // Only save the value if it's different from the default value
                 if (value !== "" && value !== defaultValue) {
@@ -130,10 +247,59 @@
                 input.classList.add('hidden');
                 text.classList.remove('hidden');
             }
-            // TODO: Add an AJAX call here to update the value on the server, only if value is not default
+            // Add an AJAX call here to update the value on the server, only if value is not default
+            if (value !== "" && value !== defaultValue) {
+                // Send an AJAX request to update the field value
+                fetch(`/restaurant/edit/${restaurantId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({ field: fieldName, value: value })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log(`Field '${fieldName}' updated to:`, value);
+                    } else {
+                        console.error(`Failed to update field '${fieldName}'`);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
             console.log(`Field '${fieldName}' updated to:`, value !== defaultValue ? value : "(not saved)");
         }
     </script>
+
+<!-- Add Menu Modal -->
+    <div id="addMenuModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-1/3">
+            <h3 class="text-lg font-bold mb-4">Tambah Menu Baru</h3>
+            <input type="text" id="newMenuCategory" class="border rounded-md p-2 w-full mb-4" placeholder="Nama Kategori">
+            <div class="flex justify-end space-x-4">
+                <button onclick="closeAddMenuModal()" class="bg-red-500 text-white px-4 py-2 rounded-md">Batal</button>
+                <button onclick="saveMenu()" class="bg-green-500 text-white px-4 py-2 rounded-md">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Food Modal -->
+    <div id="addFoodModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-1/3">
+            <h3 class="text-lg font-bold mb-4">Tambah Makanan Baru</h3>
+            <input type="hidden" id="selectedMenuId">
+            <input type="text" id="newFoodName" class="border rounded-md p-2 w-full mb-4" placeholder="Nama Makanan">
+            <input type="text" id="newFoodPrice" class="border rounded-md p-2 w-full mb-4" placeholder="Harga Makanan">
+            <div class="flex justify-end space-x-4">
+                <button onclick="closeAddFoodModal()" class="bg-red-500 text-white px-4 py-2 rounded-md">Batal</button>
+                <button onclick="saveFood()" class="bg-green-500 text-white px-4 py-2 rounded-md">Simpan</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
+
 {% endblock content %}
