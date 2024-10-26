@@ -1,6 +1,6 @@
 {% load date_extras %} {% load static %}
 <div
-  class="bg-gradient-to-b from-[#8D7762] to-[#E3D6C9] p-0.5 rounded-3xl w-full h-full grid place-items-center max-w-2xl">
+  class="bg-coyote/80 p-0.5 rounded-3xl w-full h-full grid place-items-center">
   <div
     id="thread-{{ thread.id }}"
     class="bg-[#f3ebdb]/20 p-6 rounded-3xl w-full h-full z-50">
@@ -8,7 +8,9 @@
       id="content-container-{{ thread.id }}"
       onclick="window.location.href = `/thread/{{ thread.id }}/`"
       data-thread-id="{{ thread.id }}">
-      <p class="text-[#240F0E] text-base mb-4 cursor-pointer">{{ thread.content }}</p>
+      <p class="text-white text-base mb-4 cursor-pointer">
+        {{ thread.content }}
+      </p>
     </div>
 
     {% if thread.image %}
@@ -23,20 +25,20 @@
         <button
           id="like-button-{{ thread.id }}"
           data-thread-id="{{ thread.id }}"
-          class="like-button text-[#0d0505] font-pro font-bold"
-          onclick="toggleLike({{ thread.id }}, event); event.stopPropagation();">
+          class="like-button text-[#0d0505] font-pro font-bold hover:text-raisin duration-300 transition text-white"
+          onclick="toggleLike({{ thread.id }}, event); event.stopPropagation(); console.log('masuk')">
           {{ thread.like_count }} Likes
         </button>
-        <p class="text-[#0d0505] font-pro font-bold">
+        <p class="text-[#0d0505] font-pro font-bold text-white">
           {{ thread.comment_count }} Comments
         </p>
       </div>
       <div class="flex gap-2 w-full items-center justify-end">
-        <p class="text-[#0d0505] font-pro font-semibold text-sm">
+        <p class=" text-white font-pro font-semibold text-sm">
           {{ thread.author }}
         </p>
         <span>&middot;</span>
-        <p class="text-[#0d0505] font-pro font-semibold text-sm">
+        <p class=" text-white font-pro font-semibold text-sm">
           {{ thread.created_at|time_ago }}
         </p>
       </div>

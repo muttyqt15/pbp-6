@@ -1,11 +1,18 @@
+
 (() => {
-  // Flag to track edit mode
+  function getCSRFToken() {
+    const csrfToken = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("csrftoken="))
+      ?.split("=")[1];
+    return csrfToken || "";
+  }
+// Flag to track edit mode
   let isEditMode = false;
   let originalContent = ""; // Store original content globally
   console.log("Thread.js loaded");
   // Toggle edit mode for a specific thread
   window.toggleEditMode = function (threadId, e) {
-    e.stopPropagation();
     const contentContainer = $(`#content-container-${threadId}`);
     const editButtons = $(`#edit-buttons-${threadId}`);
     if (!isEditMode) {
@@ -24,14 +31,6 @@
           <button class="text-coyote hover:text-lion duration-300 ease-in-out transition text-sm z-50" onclick="submitEdit(${threadId})" id="save-${threadId}">Save</button>
           <button class="text-gray-500 hover:text-raisin duration-300 ease-in-out transition text-sm z-50" onclick="cancelEdit(${threadId})" id="cancel-${threadId}">Cancel</button>
         `);
-      $(`#save-${threadId}`).on("click", function (e) {
-        e.stopPropagation();
-        submitEdit(threadId, e);
-      });
-      $(`#cancel-${threadId}`).on("click", function (e) {
-        e.stopPropagation();
-        cancelEdit(threadId, e);
-      });
 
       $(`#edit-content-${threadId}`).focus();
     } else {
@@ -43,14 +42,13 @@
 
   // Submit edited content for a specific thread
   window.submitEdit = function (threadId, e) {
-    e.stopPropagation();
     const updatedContent = $(`#edit-content-${threadId}`).val();
 
     $.ajax({
       url: `/thread/edit/${threadId}/`,
       method: "POST",
       headers: {
-        "X-CSRFToken": "{{ csrf_token }}",
+        "X-CSRFToken": getCSRFToken(),
         "Content-Type": "application/json",
       },
       data: JSON.stringify({ content: updatedContent }),
@@ -58,9 +56,9 @@
         if (data.success) {
           const contentContainer = $(`#content-container-${threadId}`);
           contentContainer.html(
-            `<p class="text-gray-800 mb-4">${
-              data.data.content || updatedContent
-            }</p>`
+            `<p class="text-gray-800 mb-4 cursor-pointer"
+                onclick="window.location.href = '/thread/${threadId}/';"
+            >${data.data.content || updatedContent}</p>`
           );
 
           const editButtons = $(`#edit-buttons-${threadId}`);
@@ -80,7 +78,6 @@
 
   // Cancel edit mode and restore original content
   window.cancelEdit = function (threadId, e) {
-    e.stopPropagation();
     const contentContainer = $(`#content-container-${threadId}`);
     const editButtons = $(`#edit-buttons-${threadId}`);
 
@@ -100,12 +97,11 @@
 
   // Delete a specific thread
   window.deleteThread = function (threadId, e) {
-    e.stopPropagation();
     $.ajax({
       url: `/thread/delete/${threadId}/`,
       method: "POST",
       headers: {
-        "X-CSRFToken": "{{ csrf_token }}",
+        "X-CSRFToken": getCSRFToken(),
       },
       success: function (data) {
         if (data.success) {
@@ -120,17 +116,17 @@
 
   // Toggle like for a specific thread
   window.toggleLike = function (threadId, e) {
-    e.stopPropagation();
     const likeButton = document.getElementById(`like-button-${threadId}`);
     const originalText = likeButton.textContent;
-
+    console.log("Liking thread:", threadId);
+    console.log("csrf", getCSRFToken());
     likeButton.textContent = "Liking...";
     likeButton.disabled = true;
 
     fetch(`/thread/like/${threadId}/`, {
       method: "POST",
       headers: {
-        "X-CSRFToken": "{{ csrf_token }}",
+        "X-CSRFToken": getCSRFToken(),
         "Content-Type": "application/json",
       },
     })
@@ -139,11 +135,11 @@
         likeButton.textContent = `${data.likes ?? 0} Likes`;
 
         if (data.liked) {
-          likeButton.classList.add("text-red-600");
+          likeButton.classList.add("text-[#910101]");
           likeButton.classList.remove("text-blue-500");
         } else {
           likeButton.classList.add("text-blue-500");
-          likeButton.classList.remove("text-red-600");
+          likeButton.classList.remove("text-[#910101]");
         }
       })
       .catch((error) => {
