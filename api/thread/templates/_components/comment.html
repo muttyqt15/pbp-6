@@ -1,23 +1,23 @@
 <div
   id="comment-{{ comment.id }}"
-  class="bg-white p-6 rounded-lg w-full shadow-md border border-gray-200">
-  <div id="content-container-{{ comment.id }}">
-    <p class="text-gray-800 mb-4">{{ comment.content }}</p>
+  class="bg-coyote/80 font-pro p-6 rounded-lg w-full shadow-md">
+  <div id="content-container-comment-{{ comment.id }}">
+    <p class="text-[#fff] mb-4">{{ comment.content }}</p>
   </div>
 
   <div class="flex justify-between mt-4">
     <div class="flex items-center gap-4">
       <button
-        id="like-button-{{ comment.id }}"
-        class="like-button"
-        onclick="toggleLike({{ comment.id }})">
+        id="like-button-comment-{{ comment.id }}"
+        class="like-button text-[#fff]"
+        onclick="toggleCommentLike({{ comment.id }})">
         {{ comment.like_count }} Likes
       </button>
     </div>
     {% if comment.author.id == user_id %}
     <div class="flex justify-end mt-4 gap-4" id="edit-buttons-{{ comment.id }}">
       <button
-        class="text-red-500 hover:text-red-600 transition"
+        class="text-[#fff] hover:text-[#910101] transition"
         onclick="deleteComment({{ comment.id }})">
         Delete
       </button>
@@ -25,58 +25,3 @@
     {% endif %}
   </div>
 </div>
-<script>
-  $(document).ready(() => {
-    window.deleteComment = function (commentId) {
-        $.ajax({
-          url: `/thread/delete/comment/${commentId}/`,
-          method: "POST",
-          headers: {
-            "X-CSRFToken": "{{ csrf_token }}",
-          },
-          success: function (data) {
-            if (data.success) {
-              $(`#comment-${commentId}`).remove();
-            }
-          },
-          error: function (xhr, status, error) {
-            console.error("Error:", error);
-          },
-        });
-      };
-    window.toggleLike = function (commentId) {
-      const likeButton = document.getElementById(`like-button-${commentId}`);
-      const originalText = likeButton.textContent;
-
-      likeButton.textContent = "Liking...";
-      likeButton.disabled = true;
-
-      fetch(`/thread/like/comment/${commentId}/`, {
-        method: "POST",
-        headers: {
-          "X-CSRFToken": "{{ csrf_token }}",
-          "Content-Type": "application/json",
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          likeButton.textContent = `${data.likes ?? 0} Likes`;
-
-          if (data.liked) {
-            likeButton.classList.add("text-red-600");
-            likeButton.classList.remove("text-blue-500");
-          } else {
-            likeButton.classList.add("text-blue-500");
-            likeButton.classList.remove("text-red-600");
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-          likeButton.textContent = originalText;
-        })
-        .finally(() => {
-          likeButton.disabled = false;
-        });
-    };
-  });
-</script>
