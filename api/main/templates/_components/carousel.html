@@ -1,42 +1,94 @@
-<div class="carousel relative w-full h-screen overflow-hidden" data-carousel>
-  <button
-    class="carousel-button prev absolute z-10 left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 text-white text-4xl rounded-full p-2 hover:bg-opacity-40"
-    data-carousel-button="prev">
-    &#8656;
-  </button>
-  <button
-    class="carousel-button next absolute z-10 right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 text-white text-4xl rounded-full p-2 hover:bg-opacity-40"
-    data-carousel-button="next">
-    &#8658;
-  </button>
+<div class="max-w-4xl w-full mx-auto relative">
+  <!-- Carousel container -->
+  <div class="relative overflow-hidden rounded-lg shadow-lg">
+    <!-- Slides container -->
+    <div
+      class="flex transition-transform duration-500 ease-in-out h-full"
+      id="slides">
+        {% include '_components/carousel-card.html' %}
+        {% include '_components/carousel-card.html' %}
+        {% include '_components/carousel-card.html' %}
+    </div>
 
-  <ul
-    class="flex list-none p-0 m-0 transition-transform duration-500 ease-in-out"
-    data-slides>
-    <li
-      class="slide flex items-center justify-center w-full h-full opacity-0 transition-opacity duration-200 ease-in-out"
-      data-active>
-      <div
-        class="card flex flex-col justify-center items-center w-3/4 h-3/4 bg-black text-white rounded-lg p-4">
-        <h3 class="text-lg font-bold">Card Title 1</h3>
-        <p class="text-gray-300">Description for Card 1.</p>
-      </div>
-    </li>
-    <li
-      class="slide flex items-center justify-center w-full h-full opacity-0 transition-opacity duration-200 ease-in-out">
-      <div
-        class="card flex flex-col justify-center items-center w-3/4 h-3/4 bg-black text-white rounded-lg p-4">
-        <h3 class="text-lg font-bold">Card Title 2</h3>
-        <p class="text-gray-300">Description for Card 2.</p>
-      </div>
-    </li>
-    <li
-      class="slide flex items-center justify-center w-full h-full opacity-0 transition-opacity duration-200 ease-in-out">
-      <div
-        class="card flex flex-col justify-center items-center w-3/4 h-3/4 bg-black text-white rounded-lg p-4">
-        <h3 class="text-lg font-bold">Card Title 3</h3>
-        <p class="text-gray-300">Description for Card 3.</p>
-      </div>
-    </li>
-  </ul>
+    <!-- Navigation buttons -->
+    <button
+      class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-dutch p-2 rounded-r-full shadow-md hover:scale-[1.02] focus:outline-none"
+      onclick="prevSlide()">
+      <svg
+        class="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M15 19l-7-7 7-7"></path>
+      </svg>
+    </button>
+    <button
+      class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-dutch p-2 rounded-l-full shadow-md hover:scale-[1.02] focus:outline-none"
+      onclick="nextSlide()">
+      <svg
+        class="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M9 5l7 7-7 7"></path>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Dots indicators -->
+  <div
+    class="absolute -bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2">
+    <button
+      class="w-3 h-3 rounded-full bg-white transition-colors duration-200"
+      onclick="goToSlide(0)"></button>
+    <button
+      class="w-3 h-3 rounded-full bg-white/50 transition-colors duration-200"
+      onclick="goToSlide(1)"></button>
+    <button
+      class="w-3 h-3 rounded-full bg-white/50 transition-colors duration-200"
+      onclick="goToSlide(2)"></button>
+  </div>
 </div>
+
+<script>
+  let currentSlide = 0;
+  const slides = document.getElementById("slides");
+  const totalSlides = 3;
+  const dots = document.querySelectorAll(".absolute.bottom-4 button");
+
+  function updateSlidePosition() {
+    slides.style.transform = `translateX(-${currentSlide * 100}%)`;
+    // Update dots
+    dots.forEach((dot, index) => {
+      dot.className = `w-3 h-3 rounded-full transition-colors duration-200 ${
+        index === currentSlide ? "bg-white" : "bg-white/50"
+      }`;
+    });
+  }
+
+  function nextSlide() {
+    currentSlide = (currentSlide + 1) % totalSlides;
+    updateSlidePosition();
+  }
+
+  function prevSlide() {
+    currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+    updateSlidePosition();
+  }
+
+  function goToSlide(slideIndex) {
+    currentSlide = slideIndex;
+    updateSlidePosition();
+  }
+
+  // Auto-advance slides every 5 seconds
+  setInterval(nextSlide, 5000);
+</script>

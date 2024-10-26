@@ -1,31 +1,31 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const slides = document.querySelectorAll("[data-slides] .slide");
-  const prevButton = document.querySelector('[data-carousel-button="prev"]');
-  const nextButton = document.querySelector('[data-carousel-button="next"]');
-
-  let currentIndex = 0;
-
-  const updateSlides = () => {
-    slides.forEach((slide, index) => {
-      slide.removeAttribute("data-active"); // Remove active class from all slides
-      slide.style.opacity = "0"; // Set opacity to 0
-      slide.style.transitionDelay = "200ms"; // Delay transition for inactive slides
+(() => {
+    const slidesContainer = document.getElementById("slides-container");
+    const slides = document.querySelectorAll(".slide");
+    const prevButton = document.getElementById("slide-arrow-prev");
+    const nextButton = document.getElementById("slide-arrow-next");
+  
+    // Check if elements are selected correctly
+    console.log(slidesContainer, slides, prevButton, nextButton);
+  
+    if (!slidesContainer || slides.length === 0 || !prevButton || !nextButton) {
+      console.error("One or more elements are not found!");
+      return; // Exit if elements are not found
+    }
+  
+    nextButton.addEventListener("click", () => {
+      console.log("Next button clicked"); // For debugging
+      if (slides.length > 0) {
+        const slideWidth = slides[0].clientWidth; // Use the width of the first slide
+        slidesContainer.scrollLeft += slideWidth; // Scroll right
+      }
     });
-
-    slides[currentIndex].setAttribute("data-active", ""); // Set current slide as active
-    slides[currentIndex].style.opacity = "1"; // Set current slide opacity to 1
-    slides[currentIndex].style.transitionDelay = "0ms"; // Remove delay for active slide
-  };
-
-  nextButton.addEventListener("click", () => {
-    currentIndex = (currentIndex + 1) % slides.length; // Loop back to start
-    updateSlides();
-  });
-
-  prevButton.addEventListener("click", () => {
-    currentIndex = (currentIndex - 1 + slides.length) % slides.length; // Loop back to end
-    updateSlides();
-  });
-
-  updateSlides(); // Initialize slides on load
-});
+  
+    prevButton.addEventListener("click", () => {
+      console.log("Previous button clicked"); // For debugging
+      if (slides.length > 0) {
+        const slideWidth = slides[0].clientWidth; // Use the width of the first slide
+        slidesContainer.scrollLeft -= slideWidth; // Scroll left
+      }
+    });
+  })();
+  
