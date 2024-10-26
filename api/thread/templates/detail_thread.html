@@ -1,0 +1,64 @@
+{% extends 'base.html' %} {% load static %} {% block meta %}
+<title>Threads</title>
+{% endblock meta %} {% block content %}
+<div
+  class="flex flex-col w-full min-h-screen items-center mt-24 bg-gray-50 p-8">
+  <!-- Thread -->
+  {% include '_components/thread.html' with thread=thread user_id=user.id %} 
+  {% include '_components/create_comment.html' %}
+  <!-- Display Comments -->
+  {% if comments %}
+  <div class="w-full max-w-2xl mt-8 space-y-4">
+    {% for comment in comments %} 
+      {% include '_components/comment.html' with comment=comment user_id=user.id %} 
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+
+<script>
+  $(document).ready(function () {
+    const $textarea = $("#content");
+    const $charCount = $("#char-count");
+    const $imageInput = $("#image");
+    const $imagePreview = $("#image-preview");
+
+    $textarea.on("input", function () {
+      const remaining = 456 - $textarea.val().length;
+      $charCount.text(`${remaining} characters remaining`);
+      if (remaining < 0) {
+        $charCount.text("You've exceeded the limit!");
+      }
+    });
+
+    $imageInput.on("change", function () {
+      const file = $imageInput[0].files[0]; // Get the uploaded file
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          $imagePreview.attr("src", e.target.result); // Set the preview source
+          $imagePreview.removeClass("hidden"); // Show the preview
+
+          // Limit the image preview size
+          $imagePreview.css({
+            maxWidth: "48px",
+            maxHeight: "48px",
+          });
+
+          // Reset the image preview size on error
+          $imagePreview.on("error", function () {
+            $imagePreview.css({
+              maxWidth: "none",
+              maxHeight: "none",
+            });
+            $imagePreview.attr("src", ""); // Clear the source
+          });
+        };
+        reader.readAsDataURL(file); // Read the file as a data URL
+      } else {
+        $imagePreview.addClass("hidden"); // Hide the preview if no file
+      }
+    });
+  });
+</script>
+{% endblock content %}

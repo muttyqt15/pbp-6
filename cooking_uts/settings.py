@@ -47,8 +47,9 @@ INSTALLED_APPS = [
     "api.restaurant",
     "api.authentication",
     "api.review",
-    "api.main",
+    "api.thread",
     "api.news",
+    "api.main"
 ]
 
 MIDDLEWARE = [
