@@ -15,6 +15,8 @@
       {% include '_components/thread.html' with thread=thread user_id=user.id %} 
     {% endfor %}
   </div>
+  {% else %}
+  <p class="text-white text-lg mt-8">Belum ada thread!</p>
   {% endif %}
 </div>
 
