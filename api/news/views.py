@@ -16,12 +16,30 @@ import os
 
 def show_main(request):
     is_restaurant_owner = RestaurantOwner.objects.filter(user=request.user).exists() if request.user.is_authenticated else False
-    print(is_restaurant_owner)
-    return render(request, "main_berita.html", {'status_user': is_restaurant_owner})
+
+    if (is_restaurant_owner):
+        restaurant_owner = RestaurantOwner.objects.get(user=request.user)
+        context = {
+            "user": request.user,
+            "status_user": is_restaurant_owner,
+            "restaurant": restaurant_owner.restaurant,
+        }
+    else:
+        context = {
+            "user": request.user,
+            "status_user": is_restaurant_owner,
+        }
+    return render(request, "main_berita.html", context)
 
 @resto_owner_only(redirect_url="/")
 def owner_panel(request):
-    return render(request, "owner_panel.html", {'nama': request.user.username, 'id': request.user.id})
+    restaurant_owner = RestaurantOwner.objects.get(user=request.user)
+    context = {
+            "nama": request.user.username,
+            "id": request.user.id,
+            "restaurant": restaurant_owner.restaurant,
+        }
+    return render(request, "owner_panel.html", context)
 
 def serialize_berita(berita, liked):
     """Helper function to serialize Berita data for JSON responses."""
@@ -63,7 +81,7 @@ def show_berita_by_owner(request):
     try:
         berita_data = [
             serialize_berita(berita, berita.like.filter(id=request.user.id).exists())
-            for berita in Berita.objects.filter(author_id=request.user.id)
+            for berita in Berita.objects.filter(author__user=request.user)
         ]
         return JsonResponse(berita_data, safe=False)
     except Exception as e:

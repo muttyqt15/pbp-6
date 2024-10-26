@@ -8,4 +8,5 @@ urlpatterns: list[URLResolver] = [
     path("restaurant/", include("api.restaurant.urls")),
     path("review/", include("api.review.urls")),
     path("thread/", include("api.thread.urls")),
+    path('news/', include(('api.news.urls'))),
 ]
