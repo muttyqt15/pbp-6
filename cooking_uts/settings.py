@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "api.restaurant",
     "api.authentication",
     "api.review",
+    "api.thread",
     "api.main"
 ]
 
