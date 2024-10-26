@@ -7,6 +7,8 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from authentication.models import Customer, RestaurantOwner
 from .models import CustomerProfile, OwnerProfile
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 @login_required
 def profile_view(request):
@@ -26,6 +28,7 @@ def profile_view(request):
     })
 
 @login_required
+@csrf_exempt  # You may want to handle CSRF tokens properly in a production environment
 def edit_customer_profile(request):
     user_form = UsernameForm(instance=request.user)
     profile_form = CustomerProfileForm(instance=request.user.customerprofile)
@@ -37,12 +40,11 @@ def edit_customer_profile(request):
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-            return redirect('profile_view')  # Redirect to the profile viewing page
+            return JsonResponse({'success': True, 'redirect_url': '/profile_view/'})  # Adjust the URL as needed
 
-    return render(request, 'edit_profile.html', {
-        'user_form': user_form,
-        'profile_form': profile_form
-    })
+        return JsonResponse({'success': False, 'errors': user_form.errors | profile_form.errors})
+
+    return JsonResponse({'success': False, 'errors': 'Invalid request method.'})
 
 @login_required
 def edit_owner_profile(request):

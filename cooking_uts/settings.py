@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 from dotenv import load_dotenv
 from os import environ
-
+import os
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -46,8 +46,6 @@ INSTALLED_APPS = [
     "api.restaurant",
     "api.authentication",
     "api.review",
-    "api.user_profile",
-
 ]
 
 MIDDLEWARE = [
@@ -91,6 +89,8 @@ DATABASES = {
     }
 }
 
+LOGIN_URL = "/auth/login"
+LOGIN_REDIRECT_URL = "main:main"
 AUTH_USER_MODEL = "authentication.User"
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -126,8 +126,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = "static/"
-
+STATIC_URL = "/static/"
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
