@@ -10,7 +10,6 @@
 // Flag to track edit mode
   let isEditMode = false;
   let originalContent = ""; // Store original content globally
-  console.log("Thread.js loaded");
   // Toggle edit mode for a specific thread
   window.toggleEditMode = function (threadId, e) {
     const contentContainer = $(`#content-container-${threadId}`);
@@ -118,8 +117,6 @@
   window.toggleLike = function (threadId, e) {
     const likeButton = document.getElementById(`like-button-${threadId}`);
     const originalText = likeButton.textContent;
-    console.log("Liking thread:", threadId);
-    console.log("csrf", getCSRFToken());
     likeButton.textContent = "Liking...";
     likeButton.disabled = true;
 
