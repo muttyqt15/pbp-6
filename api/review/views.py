@@ -1,39 +1,64 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
-from .models import Review
+from django.http import HttpResponse, JsonResponse
+from django.core import serializers
+from .forms import ReviewForm
+from .models import Review, ReviewImage
 
-# @login_required
+def all_review(request):
+    review = Review.objects.all().order_by('-tanggal')
+    context = {'review': review}
+    return render(request, 'all_review.html', context)
+
+def main_review(request):
+    reviews = Review.objects.all().order_by('-tanggal')
+    context = {'reviews': reviews}
+    return render(request, 'main_review.html', context)
+
 def create_review(request):
     if request.method == 'POST':
-        judul = request.POST.get('judul_ulasan')
-        teks = request.POST.get('teks_ulasan')
-        penilaian = request.POST.get('penilaian')
-        gambar = request.FILES.get('gambar')
+        form = ReviewForm(request.POST, request.FILES)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.save()
 
-        # Buat objek review baru
-        Review.objects.create(
-            customer=request.user,
-            judul_ulasan=judul,
-            teks_ulasan=teks,
-            penilaian=penilaian,
-            gambar=gambar
-        )
-        return redirect('all_reviews')
-    return render(request, 'review/create_review.html')
+            # Menyimpan gambar yang diupload jika ada
+            gambar = request.FILES.getlist('gambar')
+            for img in gambar:
+                ReviewImage.objects.create(review=review, image=img)
 
-def all_reviews(request):
-    reviews = Review.objects.all().order_by('-tanggal')
-    context = {
-        'reviews': reviews,
-    }
-    return render(request, 'review/all_reviews.html', context)
+            return redirect('review:main_review')
+    else:
+        form = ReviewForm()
 
-def detail(request, id):
+    context = {'form': form}
+    return render(request, 'create_review.html', context)
+
+def edit_review(request, id):
     review = get_object_or_404(Review, id=id)
-    is_customer = review.customer == request.user
-    context = {
-        'review': review,
-        'is_customer': is_customer,
-    }
-    return render(request, 'review/detail.html', context)
+
+    if request.method == 'POST':
+        form = ReviewForm(request.POST, request.FILES, instance=review)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'success': True})  # Mengirim respon sukses ke AJAX
+        else:
+            return JsonResponse({'success': False, 'errors': form.errors})
+    else:
+        form = ReviewForm(instance=review)
+
+    return render(request, 'edit_review.html', {'form': form, 'review': review})
+
+def delete_review(request, id):
+    review = get_object_or_404(Review, id=id)
+
+    if request.method == 'POST':
+        review.delete()
+        return redirect('review:main_review')
+
+def show_json(request):
+    data = Review.objects.all()
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+
+def show_json_by_id(request, id):
+    data = Review.objects.filter(pk=id)
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")

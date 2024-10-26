@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block meta %}
+<title>Edit Your Review</title>
+{% endblock meta %}
+
+{% block content %}
+
+<div class="container mx-auto max-w-lg p-6 bg-white rounded-lg shadow-md mt-6">
+    <h2 class="text-2xl font-bold text-center mb-4">Edit Your Review</h2>
+
+    <form id="edit-review-form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- Penilaian Bintang -->
+        <div class="rating-section mb-4">
+            <label for="penilaian" class="block text-sm font-medium text-gray-700 mb-2">How was your food?</label>
+            <div class="stars" id="stars">
+                {% for i in "12345" %}
+                    <span data-value="{{ i }}" class="{% if form.penilaian.value == i %}active{% endif %}">&#9733;</span>
+                {% endfor %}
+            </div>
+            <input type="hidden" id="penilaian" name="penilaian" value="{{ form.penilaian.value }}">
+        </div>
+
+        <!-- Ulasan -->
+        <div class="mb-4">
+            <label for="teks_ulasan" class="block text-sm font-medium text-gray-700 mb-2">What's on your mind?</label>
+            <textarea id="teks_ulasan" name="teks_ulasan" rows="4" class="shadow-sm focus:ring-yellow-500 focus:border-yellow-500 block w-full sm:text-sm border-gray-300 rounded-md">{{ form.teks_ulasan.value }}</textarea>
+        </div>
+
+        <!-- Upload Gambar -->
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700">Upload Images (Optional)</label>
+            <input type="file" name="gambar" id="gambar" class="mt-2 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer focus:outline-none" accept="image/*" multiple>
+            <div id="image-preview" class="mt-2 flex space-x-2">
+                <!-- Tampilkan gambar yang sudah di-upload -->
+                {% for image in review.images.all %}
+                <img src="{{ image.image.url }}" alt="Review image" class="w-20 h-20 m-2 rounded">
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Opsi Anonim atau Tidak -->
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Display Name</label>
+            <div class="flex items-center mb-2">
+                <input id="display_name" name="display_option" type="radio" value="name" class="h-4 w-4 text-yellow-500 focus:ring-yellow-500" {% if form.display_option.value == 'name' %}checked{% endif %}>
+                <label for="display_name" class="ml-3 block text-sm font-medium text-gray-700">Display With Your Name</label>
+            </div>
+            <div class="flex items-center">
+                <input id="display_anonymous" name="display_option" type="radio" value="anonymous" class="h-4 w-4 text-yellow-500 focus:ring-yellow-500" {% if form.display_option.value == 'anonymous' %}checked{% endif %}>
+                <label for="display_anonymous" class="ml-3 block text-sm font-medium text-gray-700">Display Anonymously</label>
+            </div>
+        </div>
+
+        <!-- Tombol Submit -->
+        <div class="flex justify-between">
+            <a href="{% url 'review:main_review' %}" class="text-blue-500 hover:text-blue-700">Back to Reviews</a>
+            <button type="submit" class="bg-yellow-500 text-white py-2 px-4 rounded hover:bg-yellow-600 transition duration-300">Edit Review</button>
+        </div>
+    </form>
+</div>
+
+<!-- Script untuk interaktif bintang dan submit -->
+<script>
+    const stars = document.querySelectorAll('#stars span');
+    const ratingInput = document.getElementById('penilaian');
+    const reviewForm = document.getElementById('edit-review-form');
+    
+    stars.forEach((star, index) => {
+        star.addEventListener('click', () => {
+            ratingInput.value = star.getAttribute('data-value');
+            stars.forEach((otherStar, otherIndex) => {
+                if (otherIndex <= index) {
+                    otherStar.classList.add('active');
+                } else {
+                    otherStar.classList.remove('active');
+                }
+            });
+        });
+        
+        star.addEventListener('mouseover', () => {
+            stars.forEach((otherStar, otherIndex) => {
+                if (otherIndex <= index) {
+                    otherStar.classList.add('hover');
+                } else {
+                    otherStar.classList.remove('hover');
+                }
+            });
+        });
+
+        star.addEventListener('mouseout', () => {
+            stars.forEach(otherStar => otherStar.classList.remove('hover'));
+        });
+    });
+
+    // Mengirim form dengan AJAX
+    reviewForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const formData = new FormData(reviewForm);
+        const url = "{% url 'review:edit_review' review.id %}";  // Pastikan review.id ter-generate dengan benar
+
+        fetch(url, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',  // Pastikan CSRF token dikirim
+            }
+        })
+        .then(response => response.json())  // Parsing hasil response dari server
+        .then(data => {
+            if (data.success) {
+                window.location.href = "{% url 'review:main_review' %}";  // Arahkan ke halaman utama jika sukses
+            } else {
+                alert('Error: Gagal mengedit review.');
+                console.error(data.errors);  // Tampilkan error jika ada masalah
+            }
+        })
+        .catch(error => console.error('Error:', error));  // Tampilkan error jika terjadi masalah
+    });
+</script>
+
+<!-- Tambahkan CSS untuk styling bintang -->
+<style>
+.stars {
+    display: flex;
+}
+
+.stars span {
+    font-size: 2em;
+    cursor: pointer;
+    color: lightgray;
+    transition: color 0.3s;
+}
+
+.stars span:hover,
+.stars span.active {
+    color: gold;
+}
+
+.stars span.selected ~ span {
+    color: lightgray !important;
+}
+</style>
+
+{% endblock content %}

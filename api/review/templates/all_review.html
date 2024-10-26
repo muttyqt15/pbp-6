@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>All Review</title>
+{% endblock meta %}
+
+{% block content %}
+<h1>Daftar Review Restoran</h1>
+
+<div>
+    {% for review in all_review %}
+    <div>
+        <h3>{{ review.judul_ulasan }}</h3>
+        <p>{{ review.teks_ulasan }}</p>
+        <p>Rating: {{ review.penilaian }}</p>
+        <p>Likes: {{ review.total_likes }}</p>
+        <button class="like-button" data-id="{{ review.id }}">Like</button>
+    </div>
+    {% empty %}
+    <p>Belum ada review untuk restoran ini.</p>
+    {% endfor %}
+</div>
+
+<a href="{% url 'review:main_review' %}">
+    Buat Review
+</a>
+
+{% endblock content %}
+

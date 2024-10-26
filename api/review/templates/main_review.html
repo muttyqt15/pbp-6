@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>Main Review</title>
+{% endblock meta %}
+
+{% block content %}
+
+<!-- Container besar yang membungkus seluruh konten dengan background batik -->
+<div class="relative min-h-screen">
+    <!-- Batik Background Layer -->
+    <div class="absolute inset-0 bg-batik"></div>
+
+    <!-- Tombol Buat Review -->
+    <div class="container mx-auto max-w-lg p-6 bg-white bg-opacity-100 rounded-lg shadow-md mt-6 relative z-10">
+        <h2 class="text-2xl font-bold text-center mb-4">Reviews</h2>
+        <p class="text-center mb-4">Share your experience with us by leaving a review!</p>
+        <div class="text-center mb-6">
+            <a href="{% url 'review:create_review' %}" class="bg-yellow-500 text-white py-2 px-4 rounded hover:bg-yellow-600 transition duration-300">Leave a Review</a>
+        </div>
+    </div>
+
+    <!-- Daftar Review Sebelumnya in a Grid Layout -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 mt-6 relative z-10">
+        {% for review in reviews %}
+        <div class="review-item p-[36px_42px] bg-opacity-20 bg-[#D7C3B0] border border-[#8D7762] rounded-[40px] shadow-lg">
+            <!-- Flex container for customer name and dropdown -->
+            <div class="flex justify-between items-start mb-2">
+                <h4 class="font-bold text-lg">{{ review.customer.name }}</h4>
+                <!-- Dropdown for Edit/Delete -->
+                <div class="relative">
+                    <button class="text-gray-500 hover:text-gray-800 focus:outline-none" onclick="toggleDropdown(this)">
+                        ⋮
+                    </button>
+                    <div class="dropdown-content absolute right-0 mt-2 w-32 bg-white shadow-lg rounded-lg hidden">
+                        <a href="{% url 'review:edit_review' review.id %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Edit</a>
+                        <form action="{% url 'review:delete_review' review.id %}" method="post" class="block w-full">
+                            {% csrf_token %}
+                            <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- Restaurant Name -->
+            <p class="text-sm text-gray-600 mb-2"><strong>Restaurant:</strong> {{ review.restaurant.name }}</p>
+            <!-- Review Title -->
+            <p class="font-semibold mb-1">{{ review.judul_ulasan }}</p>
+            <!-- Rating -->
+            <p class="text-sm text-gray-600 mb-2"><strong>Rating:</strong> {{ review.penilaian }} / 5</p>
+            <!-- Review Text -->
+            <p class="text-sm mb-2"><strong>Review:</strong> {{ review.teks_ulasan }}</p>
+            <!-- Date of Review -->
+            <p class="text-xs text-gray-500"><strong>Date:</strong> {{ review.tanggal }}</p>
+            <!-- Total Likes -->
+            <p class="text-xs text-gray-500"><strong>Total Likes:</strong> {{ review.total_likes }}</p>
+
+            <!-- Display images if available -->
+            {% for image in review.images.all %}
+            <img src="{{ image.image.url }}" alt="Review image" class="w-full h-32 object-cover rounded mb-4">
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- JavaScript for Dropdown -->
+<script>
+    function toggleDropdown(button) {
+        // Close any open dropdowns
+        const allDropdowns = document.querySelectorAll('.dropdown-content');
+        allDropdowns.forEach(dropdown => dropdown.classList.add('hidden'));
+
+        // Toggle the current dropdown
+        const dropdown = button.nextElementSibling;
+        dropdown.classList.toggle('hidden');
+    }
+
+    document.addEventListener('click', function(event) {
+        const target = event.target;
+        // Close dropdown if clicked outside of the button or dropdown
+        if (!target.closest('.relative')) {
+            const dropdowns = document.querySelectorAll('.dropdown-content');
+            dropdowns.forEach(dropdown => dropdown.classList.add('hidden'));
+        }
+    });
+</script>
+
+<!-- Tailwind CSS for Custom Card Styles -->
+<style>
+    .review-item {
+        width: 392px;
+        height: auto;
+        border-width: 3px;
+        border-radius: 40px; /* Rounded corners */
+        padding: 36px 42px; /* Padding */
+    }
+
+    .bg-batik {
+        background-image: url("{% static 'images/bgbatik.jpg' %}");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        opacity: 0.12; /* Set opacity */
+        z-index: -1;
+        position: fixed; /* Stay even during scroll */
+        width: 100%;
+        height: 100%;
+    }
+</style>
+
+{% endblock content %}

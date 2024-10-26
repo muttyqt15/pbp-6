@@ -3,15 +3,6 @@ from django.contrib.auth.models import AbstractUser
 from .constant import Role
 from api.restaurant.models import Restaurant
 
-# Create your models here.
-
-
-# Already has
-# - username
-# - email
-# - first_name
-# - last_name
-# - password
 class User(AbstractUser):
     username = models.CharField(max_length=150, unique=True)
     # profile = models.OneToOneField()
@@ -34,4 +25,4 @@ class Customer(models.Model):
     # bookmarks = models.ManyToManyField(Restaurant, blank=True)
 
     def __str__(self) -> str:
-        return f"{self.user.username} - {self.phone_number}"
+        return f"{self.user.username} "
