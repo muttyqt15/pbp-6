@@ -1,8 +1,16 @@
 {% extends 'base.html' %} 
+{% load static %}
+{% block meta %}
+<title>Mangan'' Solo</title>
+<link rel="stylesheet" href="{% static 'css/carousel.css' %}"/>
+
+{% endblock %}
 {% block content %}
 <div class="min-h-screen flex flex-col">
   {% include '_components/hero.html' %}
   {% include '_components/funfact.html' %}
   {% include '_components/popular-resto.html' %}
 </div>
+<script src="{% static 'js/carousel.js' %}"></script>
 {% endblock %}
+

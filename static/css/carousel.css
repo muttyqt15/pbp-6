@@ -1,0 +1,85 @@
+.carousel-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+}
+
+.carousel {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+
+.carousel-card {
+  min-width: calc(33.333% - 2rem);
+  margin: 1rem;
+  background: #f8f8f8;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.carousel-card img {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1rem;
+  background: #ddd;
+  border-radius: 50%;
+  padding: 1rem;
+}
+
+.carousel-card h3 {
+  margin: 0 0 1rem;
+  color: #333;
+}
+
+.carousel-card p {
+  color: #666;
+  line-height: 1.5;
+}
+
+.carousel-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #fff;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  cursor: pointer;
+  z-index: 10;
+}
+
+.carousel-button:hover {
+  background: #f0f0f0;
+}
+
+.carousel-button.prev {
+  left: 1rem;
+}
+
+.carousel-button.next {
+  right: 1rem;
+}
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+  gap: 0.5rem;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ddd;
+  cursor: pointer;
+}
+
+.dot.active {
+  background: #666;
+}

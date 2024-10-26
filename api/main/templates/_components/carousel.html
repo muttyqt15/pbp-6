@@ -1,0 +1,42 @@
+<div class="carousel relative w-full h-screen overflow-hidden" data-carousel>
+  <button
+    class="carousel-button prev absolute z-10 left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 text-white text-4xl rounded-full p-2 hover:bg-opacity-40"
+    data-carousel-button="prev">
+    &#8656;
+  </button>
+  <button
+    class="carousel-button next absolute z-10 right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 text-white text-4xl rounded-full p-2 hover:bg-opacity-40"
+    data-carousel-button="next">
+    &#8658;
+  </button>
+
+  <ul
+    class="flex list-none p-0 m-0 transition-transform duration-500 ease-in-out"
+    data-slides>
+    <li
+      class="slide flex items-center justify-center w-full h-full opacity-0 transition-opacity duration-200 ease-in-out"
+      data-active>
+      <div
+        class="card flex flex-col justify-center items-center w-3/4 h-3/4 bg-black text-white rounded-lg p-4">
+        <h3 class="text-lg font-bold">Card Title 1</h3>
+        <p class="text-gray-300">Description for Card 1.</p>
+      </div>
+    </li>
+    <li
+      class="slide flex items-center justify-center w-full h-full opacity-0 transition-opacity duration-200 ease-in-out">
+      <div
+        class="card flex flex-col justify-center items-center w-3/4 h-3/4 bg-black text-white rounded-lg p-4">
+        <h3 class="text-lg font-bold">Card Title 2</h3>
+        <p class="text-gray-300">Description for Card 2.</p>
+      </div>
+    </li>
+    <li
+      class="slide flex items-center justify-center w-full h-full opacity-0 transition-opacity duration-200 ease-in-out">
+      <div
+        class="card flex flex-col justify-center items-center w-3/4 h-3/4 bg-black text-white rounded-lg p-4">
+        <h3 class="text-lg font-bold">Card Title 3</h3>
+        <p class="text-gray-300">Description for Card 3.</p>
+      </div>
+    </li>
+  </ul>
+</div>
