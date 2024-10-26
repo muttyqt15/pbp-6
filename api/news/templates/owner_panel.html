@@ -9,23 +9,25 @@
 
 {% block content %}
 {% include 'navbar.html' %}
-<div class="bg-[#f3ebdb]">
-    <div class="container mx-auto px-4 py-8 mt-20 ">
-        <h1 class="text-4xl font-bold text-center mb-4 text-[#c1a386]">
+<div class="bg-batik min-h-screen">
+    <div class="container mx-auto px-4 py-8 pt-28 ">
+        <h1 class="text-4xl font-bold text-center mb-4 text-[#fffbf2]">
             Daftar Berita
         </h1>
 
         <div class="flex justify-end mb-6">
+            <select id="sort-options" onchange="refreshBeritaList(this.value)" class="bg-[#c1a386] text-[#fffbf2] font-bold py-2 px-4 rounded-lg transition duration-300 shadow-md focus:outline-none hover:bg-[#a48b72] h-10 mr-4">
+                <option value="like">Sort by Likes</option>
+                <option value="tanggal">Sort by Date</option>
+            </select>
+
             <button
                 class="bg-[#c1a386] hover:bg-[#a48b72] text-[#fffbf2] font-bold py-2 px-4 rounded-lg transition duration-300 shadow-md flex gap-2 items-center"
                 onclick="showAddModal()"
             >   
-                <!-- Ikon tampil di semua ukuran layar -->
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: msFilter;">
                     <path fill="currentColor" d="M20 5h-9.586L8.707 3.293A.997.997 0 0 0 8 3H4c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V7c0-1.103-.897-2-2-2zm-4 9h-3v3h-2v-3H8v-2h3V9h2v3h3v2z"></path>
                 </svg>
-                
-                <!-- Teks hanya muncul pada md ke atas -->
                 <span class="hidden md:block">Buat Berita</span>
             </button>
         </div>
@@ -156,21 +158,32 @@
         return fetch("{% url 'news:show_berita_by_owner' %}").then((res) => res.json())
     }
 
-    async function refreshBeritaList() {
+    async function refreshBeritaList(sortBy = "like") {
         const beritaEntryList = document.getElementById("berita_entry_list");
         beritaEntryList.innerHTML = "";
         beritaEntryList.className = "";
         
         const beritaEntries = await getBerita();
         
+        beritaEntries.sort((a, b) => {
+            if (sortBy === "like") {
+                // Urutkan berdasarkan jumlah like secara descending
+                return b.fields.like - a.fields.like;
+            } else if (sortBy === "tanggal") {
+                // Urutkan berdasarkan tanggal secara descending
+                return new Date(b.fields.tanggal_pembaruan) - new Date(a.fields.tanggal_pembaruan);
+            }
+            return 0;
+        });
+
         let htmlString = "";
         let classNameString = "";
         
         if (beritaEntries.length === 0) {
             classNameString = "flex flex-col items-center justify-center min-h-[12rem] p-6";
             htmlString = `
-                <div class="flex flex-col items-center justify-center min-h-[12rem] p-6 text-[#c1a386]">
-                    <p class="text-center mt-4">Belum ada berita yang terdaftar</p>
+                <div class="flex flex-col items-center justify-center bg-[rgba(125,110,95,0.9)] text-[#fffbf2] rounded-lg shadow-lg transition-transform transform hover:scale-105 p-6 text-[#fffbf2]">
+                    <p class="text-center">Belum ada berita yang terdaftar</p>
                 </div>
             `;
         } else {
@@ -357,20 +370,28 @@
                 document.getElementById('editBeritaForm').reset();
                 document.getElementById('edit_judul').value = data[0].fields.judul;
                 document.getElementById('edit_konten').value = data[0].fields.konten;
-                const editImagePreview = document.getElementById('edit_image_preview');
 
-                console.log(editImagePreview);
+                const editImagePreview = document.getElementById('edit_image_preview');
+                const wrapImageEdit = document.getElementById('wrapImageEdit');
                 const gambar = data[0].fields.gambar;
-    
-                // Pratinjau gambar lama jika ada
+
                 if (gambar) {
-                    editImagePreview.src = `/news/media/${gambar}`; 
-                    editImagePreview.alt = "Current Image";
-                    document.getElementById('wrapImageEdit').classList.remove('hidden'); // Tampilkan pratinjau gambar
+                    if (editImagePreview === null) {
+                        wrapImageEdit.innerHTML = ''; 
+                        const newImagePreview = document.createElement('img');
+                        newImagePreview.id = 'edit_image_preview';
+                        newImagePreview.src = `/news/media/${gambar}`;
+                        newImagePreview.alt = "Current Image";
+                        newImagePreview.className = "w-full h-auto rounded-md";    
+                        wrapImageEdit.appendChild(newImagePreview);
+                    } else {
+                        editImagePreview.src = `/news/media/${gambar}`; 
+                        editImagePreview.alt = "Current Image";
+                        document.getElementById('wrapImageEdit').classList.remove('hidden'); 
+                    } 
+                    wrapImageEdit.classList.remove('hidden'); // Tampilkan wrapImageEdit
                 } else {
-                    editImagePreview.src = ""; // Kosongkan jika tidak ada gambar
-                    editImagePreview.alt = "No image available";
-                    document.getElementById('wrapImageEdit').classList.add('hidden'); // Sembunyikan pratinjau jika tidak ada gambar
+                    wrapImageEdit.classList.add('hidden'); // Sembunyikan wrapImageEdit jika tidak ada gambar
                 }
                 
                 form.dataset.oldImage = gambar;
