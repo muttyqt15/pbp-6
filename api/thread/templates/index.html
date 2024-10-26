@@ -1,0 +1,72 @@
+{% extends 'base.html' %} 
+{% load static %}
+{% block meta %}
+<link href="{% static 'css/thread.css' %}" rel="stylesheet">
+<title>Threads</title>
+{% endblock meta %}
+
+{% block content %}
+<div class="flex flex-col w-full min-h-screen items-center justify-center p-8 bg-batik">
+    <!-- Thread Creation Form -->
+     <img src="{% static 'images/batik.png' %}" alt="batik" class="w-24 h-24 mb-4" />
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-lg">
+      <h2 class="text-2xl font-bold mb-6 text-licorice">What's happening?</h2>
+      {% include '_components/create_thread.html' %}
+    </div>
+    {% include "_components/card.html" %}
+    <!-- Display Threads -->
+    {% if threads %}
+    <div class="w-full max-w-2xl mt-8 space-y-4">
+      {% for thread in threads %}
+        {% include '_components/thread.html' with thread=thread user_id=user.id %}
+      {% endfor %}
+    </div>
+    {% endif %}
+</div>
+
+<script>
+  $(document).ready(function () {
+    const $textarea = $("#content");
+    const $charCount = $("#char-count");
+    const $imageInput = $("#image");
+    const $imagePreview = $("#image-preview");
+
+    $textarea.on("input", function () {
+      const remaining = 456 - $textarea.val().length;
+      $charCount.text(`${remaining} characters remaining`);
+      if (remaining < 0) {
+        $charCount.text("You've exceeded the limit!");
+      }
+    });
+
+    $imageInput.on("change", function () {
+      const file = $imageInput[0].files[0]; // Get the uploaded file
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          $imagePreview.attr("src", e.target.result); // Set the preview source
+          $imagePreview.removeClass("hidden"); // Show the preview
+
+          // Limit the image preview size
+          $imagePreview.css({
+            maxWidth: "48px",
+            maxHeight: "48px"
+          });
+
+          // Reset the image preview size on error
+          $imagePreview.on("error", function () {
+            $imagePreview.css({
+              maxWidth: "none",
+              maxHeight: "none"
+            });
+            $imagePreview.attr("src", ""); // Clear the source
+          });
+        };
+        reader.readAsDataURL(file); // Read the file as a data URL
+      } else {
+        $imagePreview.addClass("hidden"); // Hide the preview if no file
+      }
+    });
+  });
+</script>
+{% endblock content %}
