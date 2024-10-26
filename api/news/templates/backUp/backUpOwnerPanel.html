@@ -173,7 +173,7 @@
                 const judul = DOMPurify.sanitize(item.fields.judul);
                 const gambar = item.fields.gambar;
                 let konten = DOMPurify.sanitize(item.fields.konten);
-                const jumlah_like = item.fields.jumlah_like;
+                const like = item.fields.like;
                 const tanggal = new Date(item.fields.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
                 const tanggal_pembaruan = new Date(item.fields.tanggal_pembaruan).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
@@ -195,7 +195,7 @@
                             <small>Diperbarui pada: ${tanggal_pembaruan}</small>
                         </p>
                         <p class="text-sm mb-4">
-                            <small>Jumlah Like: ${jumlah_like}</small>
+                            <small>Jumlah Like: ${like}</small>
                         </p>
                         <div class="flex mx-10 justify-between items-center">
                             <button type="submit" class="bg-[#c1a386] hover:bg-[#a48b72] text-[#fffbf2] font-bold py-2 px-4 rounded-lg transition duration-300 shadow-md" onclick="showEditModal('${id}')">

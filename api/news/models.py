@@ -9,11 +9,11 @@ class Berita(models.Model):
     judul = models.CharField(max_length=255)
     gambar = models.ImageField(upload_to='images/', blank=True, null=True)  
     konten = models.TextField()
-    jumlah_like = models.ManyToManyField(User)
+    like = models.ManyToManyField(User, blank=True)
     tanggal = models.DateTimeField(auto_now_add=True)
     tanggal_pembaruan = models.DateTimeField(auto_now=True)
 
     @property
     def like_count(self):
-        return self.jumlah_like.count()
+        return self.like.count()
 
