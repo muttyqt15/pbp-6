@@ -1,194 +1,66 @@
-{% load date_extras %}
+{% load date_extras %} {% load static %}
 <div
-  id="thread-{{ thread.id }}"
-  class="bg-[#f3ebdb] p-6 rounded-3xl w-full h-full cursor-pointer z-50"
-  onclick="window.location.href = `/thread/{{ thread.id }}/`">
-  <div id="content-container-{{ thread.id }}">
-    <p class="text-[#240F0E] text-base mb-4">{{ thread.content }}</p>
-  </div>
-
-  {% if thread.image %}
-  <img
-    src="{{ thread.image.url }}"
-    alt="Thread Image"
-    class="max-h-[96px] rounded-md object-cover opacity-70 blur-sm hover:filter-none hover:opacity-100 transition-all duration-300 ease-in-out" />
-  {% endif %}
-
-  <div class="flex flex-col justify-end items-end w-full gap-1">
-    <div class="flex w-full gap-2 items-center justify-end">
-      <button
-        id="like-button-{{ thread.id }}"
-        class="like-button text-[#0d0505] font-pro font-bold"
-        onclick="toggleLike({{ thread.id }}); event.stopPropagation();">
-        {{ thread.like_count }} Likes
-      </button>
-      <p class="text-[#0d0505] font-pro font-bold">
-        {{ thread.comment_count }} Comments
-      </p>
-    </div>
-    <div class="flex gap-2 w-full items-center justify-end">
-      <p class="text-[#0d0505] font-pro font-semibold text-sm">
-        {{ thread.author }}
-      </p>
-      <span>&middot;</span>
-      <p class="text-[#0d0505] font-pro font-semibold text-sm">
-        {{ thread.created_at|time_ago }}
-      </p>
-    </div>
-  </div>
-
-  {% if thread.author.id == user_id %}
+  class="bg-gradient-to-b from-[#8D7762] to-[#E3D6C9] p-0.5 rounded-3xl w-full h-full grid place-items-center max-w-2xl">
   <div
-    class="flex w-full justify-start gap-4 h-8 px-6"
-    id="edit-buttons-{{ thread.id }}">
-    <button
-      class="text-gray-600 font-bold hover:text-coyote duration-300 transition text-sm"
-      onclick="toggleEditMode({{ thread.id }}); event.stopPropagation();">
-      Edit
-    </button>
-    <button
-      class="text-gray-600 hover:text-red-600 duration-300 transition text-sm font-bold"
-      onclick="deleteThread({{ thread.id }}); event.stopPropagation();">
-      Delete
-    </button>
+    id="thread-{{ thread.id }}"
+    class="bg-[#f3ebdb]/20 p-6 rounded-3xl w-full h-full cursor-pointer z-50"
+    onclick="window.location.href = `/thread/{{ thread.id }}/`">
+    <div
+      id="content-container-{{ thread.id }}"
+      data-thread-id="{{ thread.id }}">
+      <p class="text-[#240F0E] text-base mb-4">{{ thread.content }}</p>
+    </div>
+
+    {% if thread.image %}
+    <img
+      src="{{ thread.image.url }}"
+      alt="Thread Image"
+      class="max-h-[96px] rounded-md object-cover opacity-70 blur-sm hover:filter-none hover:opacity-100 transition-all duration-300 ease-in-out" />
+    {% endif %}
+
+    <div class="flex flex-col justify-end items-end w-full gap-1">
+      <div class="flex w-full gap-2 items-center justify-end">
+        <button
+          id="like-button-{{ thread.id }}"
+          data-thread-id="{{ thread.id }}"
+          class="like-button text-[#0d0505] font-pro font-bold"
+          onclick="toggleLike({{ thread.id }}, event); event.stopPropagation();">
+          {{ thread.like_count }} Likes
+        </button>
+        <p class="text-[#0d0505] font-pro font-bold">
+          {{ thread.comment_count }} Comments
+        </p>
+      </div>
+      <div class="flex gap-2 w-full items-center justify-end">
+        <p class="text-[#0d0505] font-pro font-semibold text-sm">
+          {{ thread.author }}
+        </p>
+        <span>&middot;</span>
+        <p class="text-[#0d0505] font-pro font-semibold text-sm">
+          {{ thread.created_at|time_ago }}
+        </p>
+      </div>
+    </div>
+
+    {% if thread.author.id == user_id %}
+    <div
+      class="flex w-full justify-start gap-4 h-8 px-6"
+      id="edit-buttons-{{ thread.id }}"
+      data-thread-id="{{ thread.id }}">
+      <button
+        data-thread-id="{{ thread.id }}"
+        class="text-gray-600 font-bold hover:text-coyote duration-300 transition text-sm"
+        onclick="toggleEditMode({{ thread.id }}, event); event.stopPropagation();">
+        Edit
+      </button>
+      <button
+        data-thread-id="{{ thread.id }}"
+        class="text-gray-600 hover:text-red-600 duration-300 transition text-sm font-bold"
+        onclick="deleteThread({{ thread.id }}, event); event.stopPropagation();">
+        Delete
+      </button>
+    </div>
+    {% endif %}
   </div>
-  {% endif %}
 </div>
-
-<script>
-  (function () {
-    let isEditMode = false;
-    let originalContent = ""; // Store original content at module level
-
-    window.toggleEditMode = function (threadId) {
-      const contentContainer = $(`#content-container-${threadId}`);
-      const editButtons = $(`#edit-buttons-${threadId}`);
-
-      if (!isEditMode) {
-        // Save original content when entering edit mode
-        originalContent = contentContainer.find("p").text();
-
-        contentContainer.html(`
-          <textarea id="edit-content-${threadId}" class="w-full p-2 border border-gray-300 rounded mb-4">${originalContent}</textarea>
-        `);
-
-        editButtons.html(`
-          <button class="text-coyote hover:text-lion duration-300 ease-in-out transition text-sm" onclick="submitEdit(${threadId})">Save</button>
-          <button class="text-gray-500 hover:text-raisin duration-300 ease-in-out transition text-sm" onclick="cancelEdit(${threadId})">Cancel</button>
-        `);
-
-        $(`#edit-content-${threadId}`).focus();
-      } else {
-        cancelEdit(threadId);
-      }
-
-      isEditMode = !isEditMode;
-    };
-
-    window.submitEdit = function (threadId) {
-      const updatedContent = $(`#edit-content-${threadId}`).val();
-
-      $.ajax({
-        url: `/thread/edit/${threadId}/`,
-        method: "POST",
-        headers: {
-          "X-CSRFToken": "{{ csrf_token }}",
-          "Content-Type": "application/json",
-        },
-        data: JSON.stringify({ content: updatedContent }),
-        success: function (data) {
-          if (data.success) {
-            const contentContainer = $(`#content-container-${threadId}`);
-            contentContainer.html(
-              `<p class="text-gray-800 mb-4">${
-                data.data.content || updatedContent
-              }</p>`
-            );
-
-            const editButtons = $(`#edit-buttons-${threadId}`);
-            editButtons.html(`
-              <button class="text-gray-600 font-bold hover:text-coyote duration-300 transition text-sm" onclick="toggleEditMode(${threadId})">Edit</button>
-              <button class="text-gray-600 font-bold hover:text-red-500 duration-300 transition text-sm" onclick="deleteThread(${threadId})">Delete</button>
-            `);
-
-            isEditMode = false;
-          }
-        },
-        error: function (xhr, status, error) {
-          console.error("Error:", error);
-        },
-      });
-    };
-
-    window.cancelEdit = function (threadId) {
-      const contentContainer = $(`#content-container-${threadId}`);
-      const editButtons = $(`#edit-buttons-${threadId}`);
-
-      // Restore the original content without saving
-      contentContainer.html(
-        `<p class="text-gray-800 mb-4">${originalContent}</p>`
-      );
-
-      // Reset buttons
-      editButtons.html(`
-        <button class="text-gray-600 font-bold hover:text-coyote duration-300 transition text-sm" onclick="toggleEditMode(${threadId})">Edit</button>
-        <button class="text-gray-600 font-bold hover:text-red-500 duration-300 transition text-sm" onclick="deleteThread(${threadId})">Delete</button>
-      `);
-
-      isEditMode = false;
-    };
-
-    window.deleteThread = function (threadId) {
-      $.ajax({
-        url: `/thread/delete/${threadId}/`,
-        method: "POST",
-        headers: {
-          "X-CSRFToken": "{{ csrf_token }}",
-        },
-        success: function (data) {
-          if (data.success) {
-            $(`#thread-${threadId}`).remove();
-          }
-        },
-        error: function (xhr, status, error) {
-          console.error("Error:", error);
-        },
-      });
-    };
-
-    window.toggleLike = function (threadId) {
-      const likeButton = document.getElementById(`like-button-${threadId}`);
-      const originalText = likeButton.textContent;
-
-      likeButton.textContent = "Liking...";
-      likeButton.disabled = true;
-
-      fetch(`/thread/like/${threadId}/`, {
-        method: "POST",
-        headers: {
-          "X-CSRFToken": "{{ csrf_token }}",
-          "Content-Type": "application/json",
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          likeButton.textContent = `${data.likes ?? 0} Likes`;
-
-          if (data.liked) {
-            likeButton.classList.add("text-red-600");
-            likeButton.classList.remove("text-blue-500");
-          } else {
-            likeButton.classList.add("text-blue-500");
-            likeButton.classList.remove("text-red-600");
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-          likeButton.textContent = originalText;
-        })
-        .finally(() => {
-          likeButton.disabled = false;
-        });
-    };
-  })();
-</script>
+<script src="{% static 'js/thread.js' %}"></script>

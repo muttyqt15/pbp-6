@@ -1,46 +1,49 @@
-<form method="POST" enctype="multipart/form-data" class="space-y-6">
-  {% csrf_token %}
+<div class="bg-white p-8 rounded-lg shadow-md w-full max-w-lg">
+  <h2 class="text-2xl font-bold mb-6 text-licorice">What's happening?</h2>
+  <form method="POST" enctype="multipart/form-data" class="space-y-6">
+    {% csrf_token %}
 
-  <!-- Textarea for thread content -->
-  <textarea
-    id="content"
-    name="content"
-    rows="4"
-    placeholder="Share your thoughts..."
-    required
-    class="w-full border border-gray-300 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none transition"></textarea>
+    <!-- Textarea for thread content -->
+    <textarea
+      id="content"
+      name="content"
+      rows="4"
+      placeholder="Share your thoughts..."
+      required
+      class="w-full border border-gray-300 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none transition"></textarea>
 
-  <!-- Image upload with preview -->
-  <div class="flex items-center space-x-4">
-    <label
-      for="image"
-      class="bg-gray-100 py-2 px-4 text-sm rounded-md cursor-pointer hover:bg-gray-200 transition">
-      Upload Image
-    </label>
-    <input
-      type="file"
-      id="image"
-      name="image"
-      accept="image/*"
-      class="hidden" />
+    <!-- Image upload with preview -->
+    <div class="flex items-center space-x-4">
+      <label
+        for="image"
+        class="bg-gray-100 py-2 px-4 text-sm rounded-md cursor-pointer hover:bg-gray-200 transition">
+        Upload Image
+      </label>
+      <input
+        type="file"
+        id="image"
+        name="image"
+        accept="image/*"
+        class="hidden" />
 
-    <!-- Image preview -->
-    <img
-      id="image-preview"
-      src=""
-      alt="Image Preview"
-      class="hidden w-12 h-12 rounded-md object-cover border border-gray-200" />
-  </div>
+      <!-- Image preview -->
+      <img
+        id="image-preview"
+        src=""
+        alt="Image Preview"
+        class="hidden w-12 h-12 rounded-md object-cover border border-gray-200" />
+    </div>
 
-  <!-- Character counter and submit button -->
-  <div class="flex justify-between items-center">
-    <span id="char-count" class="text-gray-500 text-sm"
-      >456 characters remaining</span
-    >
-    <button
-      type="submit"
-      class="bg-blue-500 text-white py-2 px-6 rounded-md hover:bg-blue-600 transition">
-      Tweet
-    </button>
-  </div>
-</form>
+    <!-- Character counter and submit button -->
+    <div class="flex justify-between items-center">
+      <span id="char-count" class="text-gray-500 text-sm"
+        >456 characters remaining</span
+      >
+      <button
+        type="submit"
+        class="bg-blue-500 text-white py-2 px-6 rounded-md hover:bg-blue-600 transition">
+        Tweet
+      </button>
+    </div>
+  </form>
+</div>
