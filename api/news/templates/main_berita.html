@@ -5,7 +5,6 @@
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
 <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
 <meta name="csrf-token" content="{{ csrf_token }}">
-
 {% endblock meta %}
 
 {% block content %}
@@ -63,7 +62,6 @@
         </div>
 
         <!-- Modal body -->
-
         <div class="px-8 py-6 rounded-b-lg max-h-[70vh] overflow-y-auto">
             <img id="modalGambarBerita" src="" alt="Gambar Berita" class="w-full h-80 object-cover rounded-lg mb-8" loading="lazy">
             <p id="modalTanggalBerita" class="text-[#fffbf2] text-lg"></p>
@@ -105,117 +103,17 @@
         </div>
     </div>
 </div>
-</div>
-
 
 <script>  
     async function getBerita(){
         return fetch("{% url 'news:show_berita_json' %}").then((res) => res.json())
     }
 
-    // async function refreshBeritaList() {
-    //     document.getElementById("berita_entry_list").innerHTML = "";
-    //     document.getElementById("berita_entry_list").className = "";
-    //     const beritaEntries = await getBerita();
-        
-    //     let htmlString = "";
-    //     let classNameString = "";
-    //     if (beritaEntries.length === 0) {
-    //         classNameString = "flex flex-col items-center justify-center min-h-[12rem] p-6";
-    //         htmlString = `
-    //             <div class="flex flex-col items-center justify-center min-h-[12rem] p-6 text-[#c1a386]">
-    //                 <p class="text-center mt-4">Belum ada berita yang terdaftar</p>
-    //             </div>
-    //         `;
-    //     }
-    //     else {
-    //         classNameString = "flex flex-col space-y-6 items-center justify-center";
-    //         beritaEntries.forEach((item) => {
-                
-    //             const author = item.fields.author;
-    //             const id = item.pk;
-    //             const judul = DOMPurify.sanitize(item.fields.judul);
-    //             const gambar = `/news${item.fields.gambar}`;
-    //             let konten = DOMPurify.sanitize(item.fields.konten);
-    //             const like = item.fields.like;
-    //             const liked = item.fields.liked;
-    //             const tanggal = new Date(item.fields.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-    //             const tanggal_pembaruan = new Date(item.fields.tanggal_pembaruan).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-    //             const restaurantData = item.fields.data_restaurant;
-                
-
-    //             const data = {
-    //                 "id": id,
-    //                 "judul": judul,
-    //                 "gambar": gambar,
-    //                 "konten": konten,
-    //                 "author": author,
-    //                 "like": like,
-    //                 "liked": liked,
-    //                 "tanggal": tanggal,
-    //                 "tanggal_pembaruan": tanggal_pembaruan,
-    //                 "data_restaurant": restaurantData
-    //             };
-                
-    //             // Batasi panjang teks konten
-    //             const maxKontenLength = 200;
-    //             if (konten.length > maxKontenLength) {
-    //                 konten = konten.substring(0, maxKontenLength) + '...';
-    //             }
-
-    //             // Tambahkan card berita
-    //             htmlString += `
-    //                 <div class="card w-11/12 lg:w-2/3 mb-3 bg-[rgba(125,110,95,0.9)] text-[#fffbf2] rounded-lg shadow-lg transition-transform transform hover:scale-105 flex flex-col lg:flex-row h-auto">
-    //                     <img src="${gambar}" alt="${judul}" class="rounded-t-lg lg:rounded-l-lg w-full lg:w-1/2 h-56 object-cover lg:h-auto">
-    //                     <div class="p-4 flex flex-col justify-between min-h-[250px] w-full">
-    //                         <h5 class="text-2xl font-semibold mb-2">${judul}</h5>
-    //                         <small>${tanggal}</small>
-                            
-    //                         <p class="text-base mb-2 flex-grow text-justify">${konten}</p>
-    //                         <div class="">
-    //                             <div class="text-sm mb-1 flex items-center justify-between">
-    //                                 <p class="flex items-center">
-    //                                 <svg class="h-8 w-8 text-[#fffbf2] p-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path fill="currentColor" d="M7.5 6.5C7.5 8.981 9.519 11 12 11s4.5-2.019 4.5-4.5S14.481 2 12 2 7.5 4.019 7.5 6.5zM20 21h1v-1c0-3.859-3.141-7-7-7h-4c-3.86 0-7 3.141-7 7v1h17z"></path></svg>
-    //                                 ${author ? author : 'Unknown'}
-    //                                 </p>
-    //                                 <small>Last Update:  ${tanggal_pembaruan}</small>
-    //                             </div>
-    //                             <p class="text-sm mb-1 flex text-[#fffbf2] items-center justify-end ">
-    //                                 <button 
-    //                                 id="like-button-${id}"
-    //                                 class="like-button" 
-    //                                 onclick='toggleLike("${id}", this)'>
-    //                                 <svg id="like-icon-${id}" class="w-11 h-11 ${liked ? 'text-[#fffbf2] hover:text-[#b9b1a9]' : 'text-[#b9b1a9] hover:text-[#fffbf2]'} transition-colors duration-300 hover:text-[#fffbf2] p-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path fill="currentColor" d="M4 21h1V8H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2zM20 8h-7l1.122-3.368A2 2 0 0 0 12.225 2H12L7 7.438V21h11l3.912-8.596L22 12v-2a2 2 0 0 0-2-2z"></path></svg>
-    //                                 </button>
-    //                                 <small id="jumlah-like-${id}">${like}</small>
-    //                             </p>
-    //                         </div>
-    //                         <div id="data-${id}" style="display: none;">
-    //                             ${JSON.stringify(data)}
-    //                         </div>
-    //                         <button class="bg-[#B8A08E] hover:bg-[#c1a386] text-[#fffbf2] font-bold py-2 px-4 rounded" onclick='showModal("${id}")'>Details</button>
-    //                     </div>
-    //                 </div>
-
-    //             `;
-
-
-
-    //         });
-
-    //     }
-    //     document.getElementById("berita_entry_list").className = classNameString;
-    //     document.getElementById("berita_entry_list").innerHTML = htmlString;
-    // }
-    // refreshBeritaList();
-
     async function refreshBeritaList(sortBy = "like") {
         document.getElementById("berita_entry_list").innerHTML = "";
         document.getElementById("berita_entry_list").className = "";
         
-        // Dapatkan data berita
         const beritaEntries = await getBerita();
-
         // Urutkan array berdasarkan parameter `sortBy`
         beritaEntries.sort((a, b) => {
             if (sortBy === "like") {
@@ -234,8 +132,8 @@
         if (beritaEntries.length === 0) {
             classNameString = "flex flex-col items-center justify-center min-h-[12rem] p-6";
             htmlString = `
-                <div class="flex flex-col items-center justify-center min-h-[12rem] p-6 text-[#c1a386]">
-                    <p class="text-center mt-4">Belum ada berita yang terdaftar</p>
+                <div class="flex flex-col items-center justify-center bg-[rgba(125,110,95,0.9)] text-[#fffbf2] rounded-lg shadow-lg transition-transform transform hover:scale-105 p-6 text-[#fffbf2]">
+                    <p class="text-center">Belum ada berita yang terdaftar</p>
                 </div>
             `;
         } else {
@@ -309,7 +207,6 @@
         document.getElementById("berita_entry_list").innerHTML = htmlString;
     }
 
-    // Panggil pertama kali dengan pengurutan berdasarkan jumlah like
     refreshBeritaList("like");
 </script>
 
@@ -337,7 +234,6 @@
             document.getElementById("modalJamOperasional").textContent = dataRestoran.operational_hours || 'Jam operasional tidak tersedia';
             document.getElementById("modalLinkRestoran").href = `/restaurant/${dataRestoran.id}`
 
-            // Update gambar restoran jika ada
             const modalGambar = document.getElementById("modalGambarRestoran");
             modalGambar.src = dataRestoran.photo_url || "{% static 'image/logo.png' %}";
             modalGambar.alt = dataRestoran.name || 'Restoran Image';
@@ -384,15 +280,11 @@
 </script>
 
 <script>
-    
     function toggleLike(beritaId) {
         const likeButton = document.getElementById('like-button');
-        const likeIcon = document.getElementById('like-icon'); // Ambil elemen SVG
+        const likeIcon = document.getElementById('like-icon'); 
         const originalText = likeButton.textContent;
 
-        console.log(beritaId)
-
-        // Set the loading state
         likeButton.disabled = true;
 
         fetch(`/news/like_berita/${beritaId}/`, {
@@ -424,14 +316,12 @@
                 }
             })
         .catch(error => {
-            likeButton.textContent = originalText;  // Reset to original text in case of error
+            likeButton.textContent = originalText;  
         })
         .finally(() => {
-            // Remove loading state
             refreshBeritaList();
             likeButton.disabled = false;
         });
     }
-
 </script>
 {% endblock content %}

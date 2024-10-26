@@ -7,7 +7,7 @@ class Berita(models.Model):
     author = models.ForeignKey(RestaurantOwner, on_delete=models.CASCADE, null=True)
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     judul = models.CharField(max_length=255)
-    gambar = models.ImageField(upload_to='images/', blank=True, null=True)  
+    gambar = models.ImageField(upload_to='news/', blank=True, null=True)  
     konten = models.TextField()
     like = models.ManyToManyField(User, blank=True)
     tanggal = models.DateTimeField(auto_now_add=True)

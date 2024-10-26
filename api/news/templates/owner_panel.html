@@ -276,7 +276,6 @@
         .catch(error => console.error('Error:', error));
 
         document.getElementById("addBeritaForm").reset(); 
-        // document.querySelector("[data-modal-toggle='addModal']").click();
         return false;
     }
 
@@ -310,11 +309,9 @@
     document.getElementById("cancelAddButton").addEventListener("click", hideAddModal);
     document.getElementById("closeAddModalBtn").addEventListener("click", hideAddModal);
     document.getElementById("submitBeritaEntry").onclick = addBerita;
-
 </script>
 
 <script>
-    // Simpan beritaId saat ini di elemen form
     function handleSubmit(event) {
         event.preventDefault();
         const form = document.getElementById('editBeritaForm');
@@ -345,10 +342,7 @@
         const modalContent = document.getElementById('editModalContent');
         const form = document.getElementById('editBeritaForm');
 
-        // Set beritaId di form agar bisa diakses oleh handleSubmit
         form.dataset.currentBeritaId = beritaId;
-
-        // Buka modal
         modal.classList.remove('hidden');
         setTimeout(() => {
             modalContent.classList.remove('opacity-0', 'scale-95');
@@ -359,10 +353,9 @@
         document.getElementById("cancelEditButton").addEventListener("click", hideEditModal);
         document.getElementById("closeEditModalBtn").addEventListener("click", hideEditModal);
         const submitButton = document.getElementById('submitEditBeritaEntry');
-        submitButton.removeEventListener('click', handleSubmit);  // Hapus jika ada sebelumnya
-        submitButton.addEventListener('click', handleSubmit);     // Tambahkan hanya sekali
+        submitButton.removeEventListener('click', handleSubmit);  
+        submitButton.addEventListener('click', handleSubmit);  
 
-        // Fetch data berita dari server dan isi modal
         fetch(`/news/edit_berita/${beritaId}`)
             .then(response => response.json())
             .then(data => {
@@ -389,9 +382,9 @@
                         editImagePreview.alt = "Current Image";
                         document.getElementById('wrapImageEdit').classList.remove('hidden'); 
                     } 
-                    wrapImageEdit.classList.remove('hidden'); // Tampilkan wrapImageEdit
+                    wrapImageEdit.classList.remove('hidden'); 
                 } else {
-                    wrapImageEdit.classList.add('hidden'); // Sembunyikan wrapImageEdit jika tidak ada gambar
+                    wrapImageEdit.classList.add('hidden');
                 }
                 
                 form.dataset.oldImage = gambar;
@@ -403,8 +396,6 @@
         const modal = document.getElementById('editModal');
         const modalContent = document.getElementById('editModalContent');
         const form = document.getElementById('editBeritaForm');
-
-        // Tutup modal dan reset form
         modalContent.classList.remove('opacity-100', 'scale-100');
         modalContent.classList.add('opacity-0', 'scale-95');
         // form.reset();
@@ -414,7 +405,6 @@
         }, 150);
     }
 </script>
-
 
 <script>
     function showDeleteModal(beritaId) {
@@ -432,14 +422,13 @@
 
         document.getElementById('confirmDeleteButton').onclick = function() {
             if (beritaId !== null) {
-                // Gunakan beritaId di URL dengan cara yang benar
-                const deleteUrl = `/news/delete_berita/${beritaId}/`;  // URL di sini disesuaikan dengan endpoint delete berita
+                const deleteUrl = `/news/delete_berita/${beritaId}/`;  
 
                 fetch(deleteUrl)
                 .then(response => {
                     if (response.ok) {
-                        hideDeleteModal(); // Tutup modal setelah berhasil delete
-                        refreshBeritaList(); // Perbarui daftar berita
+                        hideDeleteModal(); 
+                        refreshBeritaList(); 
                     } else {
                         console.error('Error deleting berita:', response.statusText);
                     }
