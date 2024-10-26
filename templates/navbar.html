@@ -1,0 +1,153 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200..900;1,200..900&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Lora:ital,wght@0,400..700;1,400..700&display=swap');
+
+      /* Font Styles */
+      h1, h2, .heading {
+        font-family: 'Crimson Pro', serif;
+      }
+
+      h3, h4, h5, .sub-heading {
+        font-family: 'Crimson Text', serif;
+      }
+
+      body, p, .body, .navbar-text {
+        font-family: 'Lora', serif;
+      }
+
+      .navbar-background {
+        background-color: rgba(125, 110, 95, 0.9); 
+        transition: background-color 0.3s ease;
+      }
+    
+    </style>
+  </head>
+  <body>
+    <nav class="navbar-background shadow-lg fixed top-0 left-0 z-[100000] w-screen">
+      <div class="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 py-2">
+        <div class="relative flex items-center justify-between h-full">
+
+          <!-- Logo Section -->
+          <div class="flex items-center space-x-4 mx-auto lg:mx-0">
+            <a
+            href="/"
+            class="text-2xl font-bold text-center text-[#fffbf2] transition-transform duration-300 hover:scale-105 flex items-center navbar-text"
+            >
+            <img src="{% static 'images/manganSolo-logo.svg' %}" alt="logo" class="h-20 mr-2">
+              MANGAN" SOLO
+            </a>
+          </div>
+
+          <!-- Navigation Links (Hidden on Mobile, Centered on Screen) -->
+          <div class="sm:relative lg:absolute lg:inset-x-0 flex justify-center navbar-text">
+            <div class="hidden lg:flex items-center gap-8 text-[#fffbf2] text-lg">
+              <a href="/restorant" class="hover:text-[#decdbe] transition-colors duration-200">Restorant</a>
+              <a href="/news" class="hover:text-[#decdbe] transition-colors duration-200">Berita</a>
+              <a href="/review" class="hover:text-[#decdbe] transition-colors duration-200">Review</a>
+              <a href="/thread" class="hover:text-[#decdbe] transition-colors duration-200">Thread</a>
+              <a href="/bookmark" class="hover:text-[#decdbe] transition-colors duration-200">Bookmark</a>
+            </div>
+          </div>
+
+          <!-- User Authentication Links (Hidden on Mobile) -->
+          <div class="hidden lg:flex items-center text-lg space-x-4 navbar-text">
+            {% if user.is_authenticated %}
+            <a
+              href="/profile/"
+              class="text-[#fffbf2] hover:text-[#decdbe] py-2 px-4 transition-transform duration-300 hover:scale-105"
+            >
+              {{ user.username }}
+            </a>
+            <a
+              href="/auth/logout/"
+              class="bg-[#B8A08E] hover:bg-[#c1a386] text-[#fffbf2] font-bold py-2 px-8 rounded-full border border-[#fffb2] transition-transform duration-300 hover:scale-105"
+            >
+              Logout
+            </a>
+            {% else %}
+            <a
+              href="/auth/login/"
+              class=" hover:bg-[#c1a386] text-[#fffbf2] font-bold py-2 px-8 rounded-full border border-[#fffb2] transition-transform duration-300 hover:scale-105"
+            >
+              Login
+            </a>
+            <a
+              href="/auth/signup"
+              class="bg-[#B8A08E] hover:bg-[#c1a386] text-[#fffbf2] font-bold py-2 px-8 rounded-full  transition-transform duration-300 hover:scale-105"
+            >
+              Register
+            </a>
+            {% endif %}
+          </div>
+
+          <!-- Mobile Menu Button -->
+          <div class="lg:hidden flex items-center">
+            <button class="mobile-menu-button">
+              <svg
+                class="w-6 h-6 text-[#fffbf2]"
+                fill="none"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path d="M4 6h16M4 12h16M4 18h16"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Menu (Visible on Toggle) -->
+      <div class="mobile-menu shadow-lg hidden lg:hidden w-full py-4 px-8 shadow-lg transition-transform duration-300 ease-in-out transform navbar">
+        <div class="flex flex-col gap-4 text-lg text-[#fffbf2]">
+          <a href="/restorant" class="text-center hover:text-[#decdbe] transition-colors duration-200">Restorant</a>
+          <a href="/news" class="text-center hover:text-[#decdbe] transition-colors duration-200">Berita</a>
+          <a href="/review" class="text-center hover:text-[#decdbe] transition-colors duration-200">Review</a>
+          <a href="/thread" class="text-center hover:text-[#decdbe] transition-colors duration-200">Thread</a>
+          <a href="/bookmark" class="text-center hover:text-[#decdbe] transition-colors duration-200">Bookmark</a>
+
+          {% if user.is_authenticated %}
+          <a href="/profile/" class="text-lg text-center hover:text-[#decdbe] transition-colors duration-200">{{ user.username }}</a>
+          <a
+            href="/auth/logout/"
+            class="text-center bg-[#c1a386] hover:bg-[#a48b72] text-[#fffbf2] font-bold py-2 px-4 rounded-lg shadow-md transition-transform duration-300 hover:scale-105 mx-4"
+          >
+            Logout
+          </a>
+          {% else %}
+          <a
+            href="/auth/login" 
+            class="text-center bg-[#c1a386] hover:bg-[#a48b72] text-[#fffbf2] font-bold py-2 px-4 rounded-lg shadow-md transition-transform duration-300 hover:scale-105 mx-4"
+          >
+            Login
+          </a>
+          <a
+            href="/auth/signup"
+            class="text-center bg-[#c1a386] hover:bg-[#a48b72] text-[#fffbf2] font-bold py-2 px-4 rounded-lg shadow-md transition-transform duration-300 hover:scale-105 mx-4"
+          >
+            Register
+          </a>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Script for Mobile Menu Toggle -->
+      <script>
+        const btn = document.querySelector("button.mobile-menu-button");
+        const menu = document.querySelector(".mobile-menu");
+
+        btn.addEventListener("click", () => {
+          menu.classList.toggle("hidden");
+          menu.classList.toggle("transform");
+        });
+      </script>
+    </nav>
+  </body>
+</html>
+
