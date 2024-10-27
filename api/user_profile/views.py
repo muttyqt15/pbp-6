@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponseForbidden
-from .forms import UsernameForm, CustomerProfileForm, OwnerProfileForm
+from .forms import UsernameForm, CustomerProfileForm, OwnerProfileForm, UserProfileForm
 from .models import CustomerProfile, OwnerProfile
 from authentication.models import User, RestaurantOwner, Customer
 from review.models import Review
@@ -25,7 +25,7 @@ def profile_view(request):
     user = request.user
     customer_profile = None
     owner_profile = None
-    
+
     if user.is_customer:
         customer_profile = CustomerProfile.objects.get(user=user)
     elif user.is_resto_owner:
