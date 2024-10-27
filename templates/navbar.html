@@ -57,20 +57,20 @@
           <div class="hidden lg:flex items-center text-lg space-x-4 navbar-text">
             {% if user.is_authenticated %}
             <a
-              href="/profile/"
+              href="/profile"
               class="text-[#fffbf2] hover:text-[#decdbe] py-2 px-4 transition-transform duration-300 hover:scale-105"
             >
               {{ user.username }}
             </a>
             <a
-              href="/auth/logout/"
+              href="/auth/logout"
               class="bg-[#B8A08E] hover:bg-[#c1a386] text-[#fffbf2] font-bold py-2 px-8 rounded-full border border-[#fffb2] transition-transform duration-300 hover:scale-105"
             >
               Logout
             </a>
             {% else %}
             <a
-              href="/auth/login/"
+              href="/auth/login"
               class=" hover:bg-[#c1a386] text-[#fffbf2] font-bold py-2 px-8 rounded-full border border-[#fffb2] transition-transform duration-300 hover:scale-105"
             >
               Login
@@ -113,9 +113,9 @@
           <a href="/bookmark" class="text-center hover:text-[#decdbe] transition-colors duration-200">Bookmark</a>
 
           {% if user.is_authenticated %}
-          <a href="/profile/" class="text-lg text-center hover:text-[#decdbe] transition-colors duration-200">{{ user.username }}</a>
+          <a href="/profile" class="text-lg text-center hover:text-[#decdbe] transition-colors duration-200">{{ user.username }}</a>
           <a
-            href="/auth/logout/"
+            href="/auth/logout"
             class="text-center bg-[#c1a386] hover:bg-[#a48b72] text-[#fffbf2] font-bold py-2 px-4 rounded-lg shadow-md transition-transform duration-300 hover:scale-105 mx-4"
           >
             Logout
