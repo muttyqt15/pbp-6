@@ -8,7 +8,7 @@ from .forms import ReviewForm
 from .models import Review, ReviewImage
 from django.db.models import Count
 from django.utils import timezone
-from api.authentication.d
+from api.authentication.decorators import customer_only
 
 @login_required
 @require_POST
@@ -45,14 +45,14 @@ def all_review(request):
 
 # Main review view for the logged-in user's reviews
 @login_required
-@customer_required
+@customer_only
 def main_review(request):
     reviews = Review.objects.filter(customer=request.user.customer).order_by('-tanggal')
     context = {'reviews': reviews}
     return render(request, 'main_review.html', context)
 
 @login_required
-@customer_required
+@customer_only
 def create_review(request):
     if request.method == "POST":
         form = ReviewForm(request.POST, request.FILES)
@@ -72,7 +72,7 @@ def create_review(request):
     return render(request, 'create_review.html', {'form': form})
 
 @login_required
-@customer_required
+@customer_only
 @csrf_exempt
 def edit_review_ajax(request, id):
     review = get_object_or_404(Review, id=id, customer=request.user.customer)
@@ -101,7 +101,7 @@ def edit_review_ajax(request, id):
 # AJAX-only view to delete a review
 @login_required
 @require_POST
-@customer_required
+@customer_only
 @csrf_protect
 def delete_review_ajax(request, id):
     review = get_object_or_404(Review, pk=id, customer=request.user.customer)
