@@ -7,13 +7,13 @@ class CustomerProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     # reviews = models.ManyToManyField(Review, on_delete=models.CASCADE, blank=True)
     # bookmarks = models.ManyToManyField(Restaurant, blank=True)
-    bio = models.TextField("Biography", blank=True, null=True)
+    bio = models.TextField("Biography", blank=True, null=True, default="no bio")
     profile_pic = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
     
 class OwnerProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     restaurant = models.OneToOneField(Restaurant, on_delete=models.CASCADE, blank=True, null=True)
-    bio = models.TextField("Biography", blank=True, null=True)
+    bio = models.TextField("Biography", blank=True, null=True, default="no bio")
     profile_pic = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
     
 

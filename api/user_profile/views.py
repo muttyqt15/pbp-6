@@ -96,7 +96,7 @@ def delete_account(request):
         user.delete()
         
         messages.success(request, "Your account has been successfully deleted.")
-        return redirect('login') 
+        return redirect('main:login') 
     
     return HttpResponseForbidden("Invalid request method.")
 

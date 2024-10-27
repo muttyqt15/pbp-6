@@ -50,10 +50,20 @@
     <h1>Your Profile</h1>
     <div>
         <h2 id="usernameDisplay">{{ user.username }}</h2>
-        <p id="bioDisplay">{{ profile.bio }}</p>
+        
         <button id="editProfileBtn">Edit Profile</button>
         <button id="logoutBtn">Logout</button>
         <button id="deleteAccountBtn">Delete Account</button>
+
+        {% if user.is_customer %}
+            <p id="bioDisplay">{{ customer_profile.bio }}</p>
+            <button id="bookmarksBtn" onclick="window.location.href='/bookmarks/'">Bookmarks</button>
+            <button id="reviewHistoryBtn">Review History</button>
+        {% elif user.is_resto_owner %}
+            <p id="bioDisplay">{{ owner_profile.bio }}</p>
+            <button id="myRestoBtn">My Resto</button>
+        {% endif %}
+
     </div>
 
     <!-- Modal -->
@@ -70,7 +80,7 @@
                 </div>
                 <div>
                     <label for="bio">Biography:</label>
-                    <textarea name="bio" id="bio">{{ profile.bio }}</textarea>
+                    <textarea name="bio" id="bio">{{ user.bio }}</textarea>
                     <span class="error" id="bioError"></span>
                 </div>
                 <button type="submit">Save Changes</button>
@@ -108,47 +118,7 @@
                     },
                     success: function(response) {
                         if (response.success) {
-                            window.location.href = '/';  // Redirect to home page after deletion
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Delete Account Error:', error);
-                    }
-                });
-            }
-        });
-
-        // Handle logout button click
-        $('#logoutBtn').on('click', function() {
-            $.ajax({
-                type: 'POST',
-                url: '{% url "authentication:logout" %}',  // Use Django's URL template tag
-                data: {
-                    'csrfmiddlewaretoken': '{{ csrf_token }}'  // Include CSRF token
-                },
-                success: function(response) {
-                    window.location.href = '/login/';  // Redirect to login page
-                },
-                error: function(xhr, status, error) {
-                    console.error('Logout Error:', error);
-                }
-            });
-        });
-
-        // Handle delete account button click
-        $('#deleteAccountBtn').on('click', function() {
-            if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
-                $.ajax({
-                    type: 'POST',
-                    url: '{% url "delete_account" %}',  // Use Django's URL template tag
-                    data: {
-                        'csrfmiddlewaretoken': '{{ csrf_token }}'  // Include CSRF token
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            window.location.href = '/';  // Redirect to home page after deletion
-                        } else {
-                            alert("There was an error deleting your account.");
+                            window.location.href = '/auth/login/';  // Redirect to home page after deletion
                         }
                     },
                     error: function(xhr, status, error) {
