@@ -62,7 +62,7 @@ def main_review(request):
 
 @login_required
 @customer_required
-def create_review(request):
+def create_review(request, id):
     if request.method == "POST":
         form = ReviewForm(request.POST, request.FILES)
         if form.is_valid():

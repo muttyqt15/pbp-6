@@ -133,4 +133,3 @@ class ReviewViewTests(TestCase):
         data = json.loads(response.content)
         self.assertEqual(len(data), 1)
         self.assertEqual(data[0]['fields']['judul_ulasan'], 'Great place')
-
