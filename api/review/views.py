@@ -8,7 +8,16 @@ from .forms import ReviewForm
 from .models import Review, ReviewImage
 from django.db.models import Count
 from django.utils import timezone
-from api.authentication.decorators import customer_only
+
+
+# Custom decorator to check if the user has a customer profile
+def customer_required(view_func):
+    def _wrapped_view(request, *args, **kwargs):
+        if hasattr(request.user, 'customer'):
+            return view_func(request, *args, **kwargs)
+        else:
+            return HttpResponseForbidden("Only customers can access this page.")
+    return _wrapped_view
 
 @login_required
 @require_POST
@@ -45,14 +54,14 @@ def all_review(request):
 
 # Main review view for the logged-in user's reviews
 @login_required
-@customer_only
+@customer_required
 def main_review(request):
     reviews = Review.objects.filter(customer=request.user.customer).order_by('-tanggal')
     context = {'reviews': reviews}
     return render(request, 'main_review.html', context)
 
 @login_required
-@customer_only
+@customer_required
 def create_review(request):
     if request.method == "POST":
         form = ReviewForm(request.POST, request.FILES)
@@ -72,36 +81,35 @@ def create_review(request):
     return render(request, 'create_review.html', {'form': form})
 
 @login_required
-@customer_only
+@customer_required
 @csrf_exempt
 def edit_review_ajax(request, id):
-    review = get_object_or_404(Review, id=id, customer=request.user.customer)
-    
-    # Retrieve data from POST request
-    judul_ulasan = request.POST.get("judul_ulasan")
-    teks_ulasan = request.POST.get("teks_ulasan")
-    penilaian = request.POST.get("penilaian")
+    review = get_object_or_404(Review, pk=id, customer=request.user.customer)
 
-    # Update review fields
-    if judul_ulasan:
-        review.judul_ulasan = judul_ulasan
-    if teks_ulasan:
-        review.teks_ulasan = teks_ulasan
-    if penilaian:
-        review.penilaian = int(penilaian)
+    # Update review fields from POST data
+    review.display_name = request.POST.get("display_name", review.display_name)
+    review.judul_ulasan = request.POST.get("judul_ulasan", review.judul_ulasan)
+    review.teks_ulasan = request.POST.get("teks_ulasan", review.teks_ulasan)
+    review.penilaian = request.POST.get("penilaian", review.penilaian)
 
     # Save the updated review
-    review.waktu_edit_terakhir = timezone.now()
     review.save()
 
-    # Return a JSON response
-    return JsonResponse({"status": "updated"}, status=200)
+    # Return the updated fields as JSON, including all needed context
+    return JsonResponse({
+        "display_name": review.display_name,
+        "judul_ulasan": review.judul_ulasan,
+        "teks_ulasan": review.teks_ulasan,
+        "penilaian": review.penilaian,
+        "tanggal": review.tanggal.strftime('%Y-%m-%d'),
+        # Add any additional context fields here if needed
+    })
 
 
 # AJAX-only view to delete a review
 @login_required
 @require_POST
-@customer_only
+@customer_required
 @csrf_protect
 def delete_review_ajax(request, id):
     review = get_object_or_404(Review, pk=id, customer=request.user.customer)
