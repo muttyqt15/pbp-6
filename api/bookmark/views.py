@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import Bookmark
-from restaurant.models import Restaurant
+from api.restaurant.models import Restaurant
 
 @login_required
 def bookmark_list(request):
@@ -11,7 +11,7 @@ def bookmark_list(request):
     context = {
         'bookmarks': bookmarks
     }
-    return render(request, 'bookmark/bookmark_list.html', context)
+    return render(request, 'bookmark_list.html', context)
 
 @login_required
 @csrf_exempt

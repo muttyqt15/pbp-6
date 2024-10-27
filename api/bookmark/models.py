@@ -1,7 +1,7 @@
 
 from django.db import models
-from django.contrib.auth.models import User
-from restaurant.models import Restaurant
+from api.restaurant.models import Restaurant
+from api.authentication.models import User
 
 class Bookmark(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
