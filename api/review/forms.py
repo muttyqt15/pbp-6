@@ -1,10 +1,20 @@
 from django import forms
 from .models import Review
+from api.restaurant.models import Restaurant
 
 class ReviewForm(forms.ModelForm):
+    restaurant = forms.ModelChoiceField(
+        queryset=Restaurant.objects.all(),
+        widget=forms.Select(attrs={
+            "class": "form-select searchable-select",  # Added searchable-select class
+            "placeholder": "Select a restaurant"
+        }),
+        empty_label="Select a restaurant"
+    )
+
     class Meta:
         model = Review
-        fields = ["judul_ulasan", "teks_ulasan", "penilaian", "display_name"]
+        fields = ["restaurant", "judul_ulasan", "teks_ulasan", "penilaian", "display_name"]
         widgets = {
             "judul_ulasan": forms.TextInput(attrs={
                 "placeholder": "Enter review title",

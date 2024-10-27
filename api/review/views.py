@@ -8,7 +8,8 @@ from .forms import ReviewForm
 from .models import Review, ReviewImage
 from django.db.models import Count
 from django.utils import timezone
-
+from django.http import HttpResponseForbidden
+from api.restaurant.models import Restaurant
 
 # Custom decorator to check if the user has a customer profile
 def customer_required(view_func):
@@ -63,11 +64,14 @@ def main_review(request):
 @login_required
 @customer_required
 def create_review(request):
+    restaurants = Restaurant.objects.all()
     if request.method == "POST":
         form = ReviewForm(request.POST, request.FILES)
+        
         if form.is_valid():
             review = form.save(commit=False)
-            review.customer = request.user.customer  # Link to the customer
+            review.customer = request.user.customer  
+            review.restoran = form.cleaned_data.get('restaurant')
             review.display_name = form.cleaned_data.get('display_name')
             review.save()
 
@@ -76,9 +80,11 @@ def create_review(request):
                 ReviewImage.objects.create(review=review, image=img)
             
             return redirect('review:main_review')
+        else:
+            print(form.errors)  # Print form errors for debugging
     else:
         form = ReviewForm()
-    return render(request, 'create_review.html', {'form': form})
+    return render(request, 'create_review.html', {'form': form, 'restaurants': restaurants})
 
 @login_required
 @customer_required
