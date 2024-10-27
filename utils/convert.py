@@ -15,7 +15,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "cooking_uts.settings")
 # Initialize Django
 django.setup()
 
-from api.restaurant.models import Restaurant, Food
+from api.restaurant.models import Restaurant, Food, Menu
 
 
 def sanitize_value(cell):
@@ -68,14 +68,21 @@ for index, row in df.iterrows():
         else " - ".join(sorted(price_string, reverse=True))
     )
 
+    for i in range (len(food_type)):
+        # if the menu category already exists, get it, otherwise create it
+        Menu.objects.get_or_create(
+            restaurant=restaurant,
+            category=food_type[i].strip(),
+        )
     for i in range(len(food_names)):
         # Create food item
         Food.objects.get_or_create(
             restaurant=restaurant,
+            menu=Menu.objects.get(restaurant=restaurant, category=food_type[i].strip()),
             name=food_names[i].strip(),
-            category=food_type,
             price=prices,
         )
+        
     print(f'Row {index} done!')
 
 print("Data successfully imported!")
