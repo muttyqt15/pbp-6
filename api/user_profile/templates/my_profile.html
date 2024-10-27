@@ -89,7 +89,7 @@
                     'csrfmiddlewaretoken': '{{ csrf_token }}'  // Include CSRF token
                 },
                 success: function(response) {
-                    window.location.href = '/login/';  // Redirect to login page
+                    window.location.href = '/auth/login/';  // Redirect to login page
                 },
                 error: function(xhr, status, error) {
                     console.error('Logout Error:', error);

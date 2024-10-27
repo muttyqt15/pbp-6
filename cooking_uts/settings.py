@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     "api.news",
     "api.main",
     "api.bookmark",
-    "api.user_profile",
+    # "api.user_profile",
+    "api.user_profile.apps.UserProfileConfig",
 ]
 
 MIDDLEWARE = [

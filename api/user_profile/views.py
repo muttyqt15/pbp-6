@@ -9,7 +9,6 @@ from api.authentication.models import User, RestaurantOwner, Customer
 from api.review.models import Review
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.views.decorators.csrf import csrf_exempt
 
 
 @receiver(post_save, sender=User )
@@ -28,9 +27,9 @@ def profile_view(request):
     owner_profile = None
 
     if user.is_customer:
-        customer_profile = CustomerProfile.objects.get(user=user)
+        customer_profile = CustomerProfile.objects.filter(user=user)
     elif user.is_resto_owner:
-        owner_profile = OwnerProfile.objects.get(user=user)
+        owner_profile = OwnerProfile.objects.filter(user=user)
 
     return render(request, 'my_profile.html', {
         'customer_profile': customer_profile,
