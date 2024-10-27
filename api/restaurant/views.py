@@ -6,15 +6,16 @@ from django.http import HttpResponse, JsonResponse
 from django.core import serializers
 from django.views.decorators.http import require_http_methods, require_POST
 from django.contrib.auth.decorators import login_required
+import json
+
 # Create your views here.
 
+
 def index(request):
-    render(request, 'login.html')
+    render(request, "login.html")
 
 
-
-
-@login_required # TODO add link to login page
+@login_required  # TODO add link to login page
 @require_http_methods(["GET", "POST"])
 def add_restaurant(request):
     """Adds a new restaurant to the database"""
@@ -36,7 +37,8 @@ def add_restaurant(request):
         form = RestaurantForm()
     return render(request, "add_restaurant.html", {"form": form})  # placeholder
 
-@login_required # TODO add link to login page
+
+@login_required  # TODO add link to login page
 @require_http_methods(["GET", "POST"])
 def edit_restaurant(request, id):
     """Edits an existing restaurant in the database"""
@@ -58,7 +60,7 @@ def edit_restaurant(request, id):
     else:
         form = RestaurantForm(instance=restaurant)
     return render(request, "edit_restaurant.html", {"form": form})  # placeholder
-        
+
 
 def my_restaurant(request):
     """Main restaurant page"""
@@ -80,7 +82,10 @@ def get_restaurant_menu(request, id):
     """Returns a single restaurant's menu by ID"""
     restaurant = get_object_or_404(Restaurant, id=id)
     food = Food.objects.filter(restaurant=restaurant)
-    return render(request, "restaurant_menu.html", {"restaurant": restaurant, "food": food})
+    return render(
+        request, "restaurant_menu.html", {"restaurant": restaurant, "food": food}
+    )
+
 
 def get_restaurant_xml(request):
     """Returns a list of all restaurants in XML format"""
@@ -109,3 +114,10 @@ def get_restaurants_json_by_id(request, id):
     data = serializers.serialize("json", restaurants)
     return JsonResponse(data, safe=False)
 
+
+def get_popular_restaurants_json(request):
+    """Returns a list of popular restaurants in JSON format"""
+    data = json.loads(request.body)
+    amount = data.get("amount", 3)
+    restaurants = Restaurant.objects.order_by("-rating")[:amount]
+    return JsonResponse(restaurants, safe=False)

@@ -1,0 +1,23 @@
+{% extends 'base.html' %} 
+{% load static %}
+{% block meta %}
+<title>Threads</title>
+{% endblock meta %} 
+{% block content %}
+<div
+  class="flex flex-col w-full min-h-screen items-center mt-24 p-8">
+  <!-- Thread -->
+  {% include '_components/thread.html' with thread=thread user_id=user.id %} 
+  {% include '_components/create_comment.html' %}
+  <!-- Display Comments -->
+  {% if comments %}
+  <div class="w-full max-w-2xl mt-8 space-y-4">
+    {% for comment in comments %} 
+      {% include '_components/comment.html' with comment=comment user_id=user.id %} 
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+<script src={% static 'js/thread-create.js' %}></script>
+<script src={% static 'js/thread-comment.js' %}></script>
+{% endblock content %}
