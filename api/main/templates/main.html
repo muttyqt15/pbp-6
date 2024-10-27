@@ -9,7 +9,7 @@
 <div class="min-h-screen flex flex-col">
   {% include '_components/hero.html' %}
   {% include '_components/funfact.html' %}
-  {% include '_components/popular-resto.html' %}
+  {% include '_components/popular-resto.html' with trending=trending %}
   {% include '_components/pilihan-teratas.html' %}
 </div>
 <script src="{% static 'js/carousel.js' %}"></script>

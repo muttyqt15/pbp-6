@@ -2,11 +2,24 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from api.authentication.models import User, RestaurantOwner, Customer
 from api.authentication.decorators import resto_owner_only, customer_only
+from api.restaurant.models import Restaurant
+from api.review.models import Review
 
 
 def index(request):
     user = request.user
-    ctx = {"user": user}
+    trending = Restaurant.get_trending_restaurants()
+    
+    # Check if there are trending restaurants before querying reviews
+    reviews = Review.objects.filter(restoran=trending[0]) if trending else None
+
+    # Context for template rendering
+    ctx = {
+        "user": user,
+        "trending": trending,
+        "reviews": reviews,
+    }
+    
     return render(request, "main.html", ctx)
 
 
