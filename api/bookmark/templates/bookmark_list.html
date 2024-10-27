@@ -1,4 +1,4 @@
-% extends 'base.html' %
+{% extends 'base.html' %}
 
 {% block content %}
 <div class="container mx-auto px-4 py-8">
@@ -40,11 +40,11 @@
 </div>
 {% endblock %}
 
-# Add to your restaurant detail template (restaurant/templates/restaurant/detail.html)
+<!-- Add this code to the restaurant detail template (restaurant/templates/restaurant/detail.html) -->
 <button 
     class="bookmark-button {% if is_bookmarked %}text-yellow-500{% else %}text-gray-500{% endif %}"
     data-restaurant-id="{{ restaurant.id }}"
-    onclick="toggleBookmark({{ restaurant.id }})"
+    onclick="toggleBookmark('{{ restaurant.id }}')"
 >
     <i class="fas fa-bookmark"></i>
     <span class="bookmark-text">
@@ -58,7 +58,7 @@
 
 <script>
 function toggleBookmark(restaurantId) {
-    fetch(/bookmark/toggle/${restaurantId}/, {
+    fetch(`/bookmark/toggle/${restaurantId}/`, {
         method: 'POST',
         headers: {
             'X-CSRFToken': getCookie('csrftoken'),
@@ -66,7 +66,7 @@ function toggleBookmark(restaurantId) {
     })
     .then(response => response.json())
     .then(data => {
-        const button = document.querySelector([data-restaurant-id="${restaurantId}"]);
+        const button = document.querySelector(`[data-restaurant-id="${restaurantId}"]`);
         if (data.status === 'added') {
             button.classList.replace('text-gray-500', 'text-yellow-500');
             button.querySelector('.bookmark-text').textContent = 'Bookmarked';
