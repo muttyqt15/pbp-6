@@ -9,6 +9,8 @@ from api.authentication.models import User, RestaurantOwner, Customer
 from api.review.models import Review
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.views.decorators.csrf import csrf_exempt
+
 
 
 @receiver(post_save, sender=User )
@@ -45,7 +47,7 @@ def edit_profile(request):
             return JsonResponse({
                 'success': True,
                 'updated_username': request.user.username,
-                'updated_bio': request.user.profile.bio,  # Assuming you have a profile model
+                'updated_bio': request.user.bio, 
             })
         else:
             return JsonResponse({'success': False, 'errors': form.errors})
@@ -54,24 +56,24 @@ def edit_profile(request):
     return render(request, 'edit_profile.html', {'form': form})
 
 
-@login_required
-@csrf_exempt  
-def edit_owner_profile(request):
-    user_form = UsernameForm(instance=request.user)
-    profile_form = OwnerProfileForm(instance=request.user.ownerprofile)
+# @login_required
+# @csrf_exempt  
+# def edit_owner_profile(request):
+#     user_form = UsernameForm(instance=request.user)
+#     profile_form = OwnerProfileForm(instance=request.user.ownerprofile)
     
-    if request.method == 'POST':
-        user_form = UsernameForm(request.POST, instance=request.user)
-        profile_form = OwnerProfileForm(request.POST, request.FILES, instance=request.user.ownerprofile)  
+#     if request.method == 'POST':
+#         user_form = UsernameForm(request.POST, instance=request.user)
+#         profile_form = OwnerProfileForm(request.POST, request.FILES, instance=request.user.ownerprofile)  
         
-        if user_form.is_valid() and profile_form.is_valid():
-            user_form.save()
-            profile_form.save()
-            return JsonResponse({'success': True, 'redirect_url': '/my-profile/'})  
+#         if user_form.is_valid() and profile_form.is_valid():
+#             user_form.save()
+#             profile_form.save()
+#             return JsonResponse({'success': True, 'redirect_url': '/my-profile/'})  
 
-        return JsonResponse({'success': False, 'errors': user_form.errors | profile_form.errors})
+#         return JsonResponse({'success': False, 'errors': user_form.errors | profile_form.errors})
 
-    return JsonResponse({'success': False, 'errors': 'Invalid request method.'})
+#     return JsonResponse({'success': False, 'errors': 'Invalid request method.'})
 
 def logout_user(request):
     logout(request)
