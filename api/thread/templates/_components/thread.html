@@ -46,22 +46,22 @@
 
     {% if thread.author.id == user_id %}
     <div
-      class="flex w-full justify-start gap-4 h-8 px-6"
-      id="edit-buttons-{{ thread.id }}"
-      data-thread-id="{{ thread.id }}">
-      <button
-        data-thread-id="{{ thread.id }}"
-        class="text-gray-600 font-bold hover:text-coyote duration-300 transition text-sm"
-        onclick="toggleEditMode({{ thread.id }}, event); event.stopPropagation();">
-        Edit
-      </button>
-      <button
-        data-thread-id="{{ thread.id }}"
-        class="text-gray-600 hover:text-red-600 duration-300 transition text-sm font-bold"
-        onclick="deleteThread({{ thread.id }}, event); event.stopPropagation();">
-        Delete
-      </button>
-    </div>
+    class="flex w-full justify-start gap-4 h-8 px-6"
+    id="edit-buttons-{{ thread.id }}"
+    data-thread-id="{{ thread.id }}">
+    <button
+      data-thread-id="{{ thread.id }}"
+      class="text-licorice font-bold hover:text-white duration-300 transition text-sm"
+      onclick="toggleEditMode({{ thread.id }}, event); event.stopPropagation();">
+      Edit
+    </button>
+    <button
+      data-thread-id="{{ thread.id }}"
+      class="text-licorice hover:text-white duration-300 transition text-sm font-bold"
+      onclick="deleteThread({{ thread.id }}, event); event.stopPropagation();">
+      Delete
+    </button>
+  </div>
     {% endif %}
   </div>
 </div>
