@@ -15,11 +15,12 @@ from django.conf import settings
 import os, json
 from api.authentication.models import User, RestaurantOwner, Customer
 import logging
-
+from django.db.models import Q
+from api.bookmark.models import Bookmark
 logger = logging.getLogger(__name__)
 
 
-@resto_owner_only(redirect_url="/login/")
+@resto_owner_only(redirect_url="/auth/login/")
 @require_http_methods(["GET", "POST"])
 def add_restaurant(request):
     """View to add a new restaurant to the database, with security measures."""
@@ -92,7 +93,7 @@ def add_restaurant(request):
 
 
 @login_required
-@resto_owner_only(redirect_url="/login/")
+@resto_owner_only(redirect_url="/auth/login/")
 @require_http_methods(["POST"])
 def edit_restaurant(request, id):
     """
@@ -118,6 +119,11 @@ def edit_restaurant(request, id):
     except Exception as e:
         logger.error(f"Error updating restaurant: {e}")
         return JsonResponse({'success': False, 'message': 'Failed to update restaurant due to an unexpected error.'})
+
+def restaurant_list(request):
+    """View to list all restaurants."""
+    restaurants = Restaurant.objects.all()
+    return render(request, "all_restaurants.html", {"restaurants": restaurants})
 
 
 def restaurant(request, id):
@@ -157,6 +163,7 @@ def restaurant(request, id):
             menus = Menu.objects.filter(restaurant=restaurant)
 
             categories = set([f.category for f in menus])
+            is_favorited = Bookmark.objects.filter(user=request.user).exists()
             return render(
                 request,
                 "restaurant.html",
@@ -166,6 +173,7 @@ def restaurant(request, id):
                     "foods": food,
                     "categories": categories,
                     "is_owner": is_owner,
+                    "is_favorited": is_favorited
                 },
             )
 
@@ -436,6 +444,48 @@ def delete_food(request):
     except Exception as e:
         return JsonResponse({'success': False, 'message': f'Failed to delete food item due to an unexpected error: {str(e)}'})
     
+require_POST
+def filter_restaurants(request):
+    """Handles AJAX requests to filter and sort restaurants."""
+    import json
+
+    # Get data from request
+    try:
+        data = json.loads(request.body)
+        search_query = data.get('search', '').lower()
+        sort_by = data.get('sort_by', '')
+
+        # Filter restaurants by search query
+        restaurants = Restaurant.objects.all()
+        if search_query:
+            restaurants = restaurants.filter(
+                Q(name__icontains=search_query) | Q(district__icontains=search_query)
+            )
+
+        # Sort restaurants based on the selected criteria
+        if sort_by:
+            restaurants = restaurants.order_by(sort_by)
+
+        # Serialize restaurants to JSON format
+        restaurant_list = []
+        for restaurant in restaurants:
+            restaurant_list.append({
+                'id': restaurant.id,
+                'name': restaurant.name,
+                'district': restaurant.district,
+                'address': restaurant.address,
+                'operational_hours': restaurant.operational_hours,
+                'photo_url': restaurant.photo_url,
+            })
+
+        return JsonResponse({'restaurants': restaurant_list}, safe=False)
+
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'message': 'Invalid JSON data.'}, status=400)
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)}, status=500)
+    
+
 def menu_view(request, restaurant_id):
     restaurant = Restaurant.objects.get(id=restaurant_id)
     menus = restaurant.menu.all()  # Get all menus for the restaurant
