@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from api.news.forms import BeritaEntryForm
 from api.news.models import Berita
@@ -10,7 +10,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.utils.html import strip_tags
 from api.authentication.decorators import resto_owner_only
-from django.contrib.auth.decorators import login_required
 import uuid
 import os
 
@@ -31,7 +30,7 @@ def show_main(request):
         }
     return render(request, "main_berita.html", context)
 
-@resto_owner_only(redirect_url="/")
+@resto_owner_only(redirect_url="/news/")
 def owner_panel(request):
     restaurant_owner = RestaurantOwner.objects.get(user=request.user)
     context = {
@@ -76,7 +75,7 @@ def show_berita_json(request):
     except Exception as e:
         return JsonResponse({"error": f"Error: {str(e)}"}, status=500)
 
-@resto_owner_only(redirect_url="/")
+@resto_owner_only(redirect_url="/news/")
 def show_berita_by_owner(request):
     try:
         berita_data = [
@@ -87,7 +86,7 @@ def show_berita_by_owner(request):
     except Exception as e:
         return HttpResponse(f"Error: {str(e)}", status=500)
 
-@resto_owner_only(redirect_url="/")
+@resto_owner_only(redirect_url="/news/")
 def edit_berita(request, berita_id):
     try:
         berita = get_object_or_404(Berita, pk=berita_id)
@@ -102,13 +101,13 @@ def edit_berita(request, berita_id):
                     berita.gambar.name = unique_name
                 berita.tanggal_pembaruan = timezone.now()
                 form.save()
-                return JsonResponse({'status': 'success'})
+                return JsonResponse({'status': 'success'}, status=200)
             return JsonResponse({'status': 'error', 'message': 'Form is not valid'}, status=400)
         return HttpResponse(serializers.serialize('json', [berita]), content_type="application/json")
     except Exception as e:
-        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=404)
 
-@resto_owner_only(redirect_url="/")
+@resto_owner_only(redirect_url="/news/")
 def delete_berita(request, berita_id):
     try:
         berita = get_object_or_404(Berita, pk=berita_id)
@@ -119,6 +118,7 @@ def delete_berita(request, berita_id):
     except Exception as e:
         return HttpResponse(f"Error: {str(e)}", status=500)
 
+@resto_owner_only(redirect_url="/news/")
 @csrf_exempt
 @require_POST
 def add_berita_ajax(request):

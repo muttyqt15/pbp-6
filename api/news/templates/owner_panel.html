@@ -22,18 +22,18 @@
             </select>
                 
             <button
-    class="bg-[#c1a386] text-[#fffbf2] font-bold py-2 px-4 rounded-lg transition duration-300 shadow-md flex gap-2 items-center {% if restaurant is null %}cursor-not-allowed opacity-50{% else %}hover:bg-[#a48b72]{% endif %}"
-    {% if restaurant is null %}
-        onclick="event.preventDefault(); alert('Pemilik restoran harus memiliki restoran terlebih dahulu')"
-    {% else %}
-        onclick="showAddModal()"
-    {% endif %}
->
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: msFilter;">
-        <path fill="currentColor" d="M20 5h-9.586L8.707 3.293A.997.997 0 0 0 8 3H4c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V7c0-1.103-.897-2-2-2zm-4 9h-3v3h-2v-3H8v-2h3V9h2v3h3v2z"></path>
-    </svg>
-    <span class="hidden md:block">Buat Berita</span>
-</button>
+                class="bg-[#c1a386] text-[#fffbf2] font-bold py-2 px-4 rounded-lg transition duration-300 shadow-md flex gap-2 items-center {% if restaurant is null %}cursor-not-allowed opacity-70{% else %}hover:bg-[#a48b72]{% endif %}"
+                {% if restaurant is null %}
+                    onclick="event.preventDefault(); alert('Pemilik restoran harus memiliki restoran terlebih dahulu')"
+                {% else %}
+                    onclick="showAddModal()"
+                {% endif %}
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: msFilter;">
+                    <path fill="currentColor" d="M20 5h-9.586L8.707 3.293A.997.997 0 0 0 8 3H4c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V7c0-1.103-.897-2-2-2zm-4 9h-3v3h-2v-3H8v-2h3V9h2v3h3v2z"></path>
+                </svg>
+                <span class="hidden md:block">Buat Berita</span>
+            </button>
         </div>
 
         <div id="berita_entry_list" >
@@ -162,7 +162,7 @@
         return fetch("{% url 'news:show_berita_by_owner' %}").then((res) => res.json())
     }
 
-    async function refreshBeritaList(sortBy = "like") {
+    async function refreshBeritaList(sortBy = document.getElementById("sort-options").value) {
         const beritaEntryList = document.getElementById("berita_entry_list");
         beritaEntryList.innerHTML = "";
         beritaEntryList.className = "";
@@ -331,7 +331,6 @@
             },
         })
         .then(response => {
-            console.log(response);
             if (response.ok) {
                 hideEditModal();
                 refreshBeritaList();
@@ -363,7 +362,6 @@
         fetch(`/news/edit_berita/${beritaId}`)
             .then(response => response.json())
             .then(data => {
-                console.log(data[0])
                 document.getElementById('editBeritaForm').reset();
                 document.getElementById('edit_judul').value = data[0].fields.judul;
                 document.getElementById('edit_konten').value = data[0].fields.konten;
