@@ -40,7 +40,7 @@ def like_review_ajax(request, id):
     })
 
 def all_review(request):
-    # Retrieve all reviews, ordered by likes and last edited time
+    # Retrieve all reviews, ordered by likes and last edited time.
     reviews = (
         Review.objects.all()
         .annotate(num_likes=Count('likes'))
