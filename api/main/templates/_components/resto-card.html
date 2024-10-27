@@ -22,7 +22,7 @@
         <p class="text-[#fff] font-reguler font-lora text-left text-xs lg:text-sm w-full">
           Alamat: <span>{{ resto.address }}</span>
         </p>
-        <button class="w-full py-2 bg-[#A18971] font-reguler text-[#fff] rounded-full hover:translate-y-[2px] duration-300 transition">Rincian</button>
+        <button class="w-full py-2 bg-[#A18971] font-reguler text-[#fff] rounded-full hover:translate-y-[2px] duration-300 transition" onclick="window.location.href = /restaurant/{{ resto.id }}">Rincian</button>
       </div>
       <!-- Semi-transparent overlay -->
       <div class="absolute inset-0 bg-black/30 rounded-3xl"></div>

@@ -10,7 +10,7 @@
   {% include '_components/hero.html' %}
   {% include '_components/funfact.html' %}
   {% include '_components/popular-resto.html' with trending=trending %}
-  {% include '_components/pilihan-teratas.html' %}
+  {% include '_components/pilihan-teratas.html' with reviews=reviews %}
 </div>
 <script src="{% static 'js/carousel.js' %}"></script>
 {% endblock %}
