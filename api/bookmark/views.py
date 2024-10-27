@@ -17,6 +17,7 @@ def bookmark_list(request):
 @csrf_exempt
 def toggle_bookmark(request, restaurant_id):
     if request.method == 'POST':
+        print(restaurant_id)
         restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
         bookmark, created = Bookmark.objects.get_or_create(
             user=request.user,
@@ -25,9 +26,9 @@ def toggle_bookmark(request, restaurant_id):
         
         if not created:
             bookmark.delete()
-            return JsonResponse({'status': 'removed'})
+            return JsonResponse({'status': 'removed', "is_favorited": False, "message": "Berhasil!"})
         
-        return JsonResponse({'status': 'added'})
+        return JsonResponse({'status': 'added', "is_favorited": True, "message": "Berhasil!"})
     
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
