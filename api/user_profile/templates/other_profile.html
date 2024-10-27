@@ -1,34 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ user.username }}'s Profile</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-100">
-    <div class="container mx-auto p-6">
-        <h1 class="text-3xl font-bold mb-6">{{ user.username }}'s Profile</h1>
-
-        <div class="bg-white shadow-md rounded-lg p-6 mb-6">
-            <div class="flex items-center">
-                <!-- Profile Picture -->
-                <img src="{{ customer_profile.profile_pic.url if customer_profile else owner_profile.profile_pic.url }}" 
-                     alt="Profile Picture" 
-                     class="rounded-full w-24 h-24 mr-4">
-                <div>
-                    <!-- Username -->
-                    <h2 class="text-xl font-semibold">{{ user.username }}</h2>
-                    <!-- Bio -->
-                    <p class="text-gray-600">{{ customer_profile.bio if customer_profile else owner_profile.bio }}</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white shadow-md rounded-lg p-6 mb-6">
-            <h2 class="text-xl font-semibold mb-4">Bio</h2>
-            <p>{{ customer_profile.bio if customer_profile else owner_profile.bio }}</p>
-        </div>
-    </div>
-</body>
-</html>
+{% extends 'base.html' %} {% block meta %}
+<title>{{ user.username }}'s Profile</title>
+{% endblock meta %} {% block content %}
+<div class="min-h-screen w-full flex flex-col justify-center items-center">
+  <!-- Profile Header -->
+  {% include 'profile.html' with user=user customer_profile=customer_profile owner_profile=owner_profile %}
+</div>
+{% endblock content %}

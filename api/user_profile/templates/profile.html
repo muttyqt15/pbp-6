@@ -1,0 +1,33 @@
+<div
+  class="bg-lion max-w-5xl w-full rounded-2xl border-licorice p-6 flex flex-col items-center">
+  <div class="text-center">
+    <h1 class="text-3xl font-bold">{{ user.username }}'s Profile</h1>
+    <p class="text-gray-600">Joined on {{ user.date_joined|date:"F j, Y" }}</p>
+  </div>
+
+  <!-- Profile Details Based on User Type -->
+  <div class="mt-6">
+    {% if customer_profile %}
+    <h2 class="text-2xl font-semibold mb-4">Customer Profile</h2>
+    <p><strong>Full Name:</strong> {{ customer_profile.full_name }}</p>
+    <p><strong>Location:</strong> {{ customer_profile.location }}</p>
+    <p>
+      <strong>Favorite Cuisine:</strong> {{ customer_profile.favorite_cuisine }}
+    </p>
+    <p><strong>Bio:</strong> {{ customer_profile.bio }}</p>
+
+    <!-- Add other customer-specific fields here as needed -->
+
+    {% elif owner_profile %}
+    <h2 class="text-2xl font-semibold mb-4">Restaurant Owner Profile</h2>
+    <p><strong>Restaurant Name:</strong> {{ owner_profile.restaurant.name }}</p>
+    <p><strong>Location:</strong> {{ owner_profile.restaurant.district }}</p>
+    <p><strong>Specialty Cuisine:</strong> {{ owner_profile.alamat }}</p>
+    <p><strong>Bio:</strong> {{ owner_profile.bio }}</p>
+
+    <!-- Add other owner-specific fields here as needed -->
+    {% else %}
+    <p class="text-gray-500">No additional profile information available.</p>
+    {% endif %}
+  </div>
+</div>

@@ -10,6 +10,7 @@ from api.review.models import Review
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 
 
 @receiver(post_save, sender=User )
@@ -138,6 +139,7 @@ def my_restaurant_view(request):
 
 @login_required
 def other_profile_view(request, username):
+    print('masuk')
     user = get_object_or_404(User, username=username)
 
     customer_profile = None
@@ -153,3 +155,54 @@ def other_profile_view(request, username):
         'customer_profile': customer_profile,
         'owner_profile': owner_profile,
     })
+    
+
+@login_required
+def update_profile_view(request, username):
+    user = get_object_or_404(User, username=username)
+
+    # Ensure only the profile owner can update their profile
+    if request.user != user:
+        messages.error(request, "You do not have permission to update this profile.")
+        return redirect('other_profile', username=user.username)
+
+    # Determine the type of profile and load the appropriate form
+    if user.is_customer:
+        profile = get_object_or_404(CustomerProfile, user=user)
+        form = CustomerProfileForm(instance=profile)
+    elif user.is_resto_owner:
+        profile = get_object_or_404(OwnerProfile, user=user)
+        form = OwnerProfileForm(instance=profile)
+    else:
+        messages.error(request, "No profile found.")
+        return redirect('other_profile', username=user.username)
+
+    # Handle form submission
+    if request.method == 'POST':
+        form = form.__class__(request.POST, instance=profile)  # Dynamically create form
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Profile updated successfully!")
+            return redirect('other_profile', username=user.username)
+        else:
+            messages.error(request, "There was an error updating your profile.")
+
+    return render(request, 'update_profile.html', {'form': form, 'user': user})
+
+
+@login_required
+@require_POST
+def delete_account_view(request, username):
+    user = get_object_or_404(User, username=username)
+
+    # Ensure only the account owner can delete their account
+    if request.user != user:
+        messages.error(request, "You do not have permission to delete this account.")
+        return redirect('other_profile', username=user.username)
+
+    if request.method == 'POST':
+        # Delete user and logout
+        user.delete()
+        logout(request)
+        messages.success(request, "Your account has been deleted successfully.")
+        return redirect('main:index')  # Redirect to homepage or any other page
