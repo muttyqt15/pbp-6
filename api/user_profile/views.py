@@ -5,6 +5,20 @@ from django.contrib import messages
 from django.http import JsonResponse, HttpResponseForbidden
 from .forms import UsernameForm, CustomerProfileForm, OwnerProfileForm
 from .models import CustomerProfile, OwnerProfile
+from authentication.models import User, RestaurantOwner, Customer
+from review.models import Review
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+
+@receiver(post_save, sender=User )
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        if instance.is_resto_owner:
+            RestaurantOwner.objects.create(user=instance)
+        else:
+            Customer.objects.create(user=instance)
+
 
 @login_required
 def profile_view(request):
@@ -18,13 +32,13 @@ def profile_view(request):
     elif user.is_resto_owner:
         owner_profile = OwnerProfile.objects.get(user=user)
 
-    return render(request, 'profile.html', {
+    return render(request, 'my_profile.html', {
         'customer_profile': customer_profile,
         'owner_profile': owner_profile,
     })
 
 @login_required
-@csrf_exempt  # You may want to handle CSRF tokens properly in a production environment
+@csrf_exempt  
 def edit_customer_profile(request):
     user_form = UsernameForm(instance=request.user)
     profile_form = CustomerProfileForm(instance=request.user.customerprofile)
@@ -36,30 +50,31 @@ def edit_customer_profile(request):
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-            return JsonResponse({'success': True, 'redirect_url': '/profile_view/'})  # Adjust the URL as needed
+            return JsonResponse({'success': True, 'redirect_url': '/my-profile/'})  
 
         return JsonResponse({'success': False, 'errors': user_form.errors | profile_form.errors})
 
     return JsonResponse({'success': False, 'errors': 'Invalid request method.'})
 
+
 @login_required
+@csrf_exempt  
 def edit_owner_profile(request):
     user_form = UsernameForm(instance=request.user)
     profile_form = OwnerProfileForm(instance=request.user.ownerprofile)
     
     if request.method == 'POST':
         user_form = UsernameForm(request.POST, instance=request.user)
-        profile_form = OwnerProfileForm(request.POST, instance=request.user.ownerprofile)
+        profile_form = OwnerProfileForm(request.POST, request.FILES, instance=request.user.ownerprofile)  
         
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-            return redirect('profile_view')  # Redirect to the profile viewing page
+            return JsonResponse({'success': True, 'redirect_url': '/my-profile/'})  
 
-    return render(request, 'edit_profile.html', {
-        'user_form': user_form,
-        'profile_form': profile_form
-    })
+        return JsonResponse({'success': False, 'errors': user_form.errors | profile_form.errors})
+
+    return JsonResponse({'success': False, 'errors': 'Invalid request method.'})
 
 def logout_user(request):
     logout(request)
@@ -69,7 +84,6 @@ def delete_account(request):
     if request.method == 'POST':
         user = request.user
         
-        # Check if the user has a CustomerProfile or OwnerProfile
         try:
             customer_profile = CustomerProfile.objects.get(user=user)
             customer_profile.delete()
@@ -82,10 +96,59 @@ def delete_account(request):
         except OwnerProfile.DoesNotExist:
             pass
         
-        # Delete the user account
         user.delete()
         
         messages.success(request, "Your account has been successfully deleted.")
-        return redirect('home')  # Redirect to a home page or another appropriate page
+        return redirect('login') 
     
     return HttpResponseForbidden("Invalid request method.")
+
+# @login_required
+# def bookmarks_view(request):
+#     user = request.user
+#     customer_profile = CustomerProfile.objects.get(user=user)
+#     bookmarks = customer_profile.bookmarks.all()  # Assuming bookmarks is a ManyToManyField
+
+#     return render(request, 'bookmarks.html', {
+#         'bookmarks': bookmarks,
+#     })
+
+@login_required
+def review_history_view(request):
+    user = request.user
+    reviews = Review.objects.filter(user=user) 
+
+    return render(request, 'all_review.html', {
+        'reviews': reviews,
+    })
+
+@login_required
+def my_restaurant_view(request):
+    user = request.user
+    # Get the restaurant owner profile
+    owner_profile = get_object_or_404(OwnerProfile, user=user)
+    
+    # Get the associated restaurant
+    restaurant = owner_profile.restaurant
+    
+    return render(request, 'restaurant.html', {
+        'restaurant': restaurant,
+    })
+
+@login_required
+def other_profile_view(request, username):
+    user = get_object_or_404(User, username=username)
+
+    customer_profile = None
+    owner_profile = None
+
+    if user.is_customer:
+        customer_profile = get_object_or_404(CustomerProfile, user=user)
+    elif user.is_resto_owner:
+        owner_profile = get_object_or_404(OwnerProfile, user=user)
+
+    return render(request, 'other_profile.html', {
+        'user': user,
+        'customer_profile': customer_profile,
+        'owner_profile': owner_profile,
+    })

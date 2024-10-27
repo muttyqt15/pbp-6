@@ -1,7 +1,17 @@
 {% extends 'base.html' %} 
+{% load static %}
+{% block meta %}
+<title>Mangan'' Solo</title>
+<link rel="stylesheet" href="{% static 'css/carousel.css' %}"/>
 
-{% block content %}
-<div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg">
-  <h1 class="text-6xl">Hello world!</h1>
-</div>
 {% endblock %}
+{% block content %}
+<div class="min-h-screen flex flex-col">
+  {% include '_components/hero.html' %}
+  {% include '_components/funfact.html' %}
+  {% include '_components/popular-resto.html' %}
+  {% include '_components/pilihan-teratas.html' %}
+</div>
+<script src="{% static 'js/carousel.js' %}"></script>
+{% endblock %}
+

@@ -1,46 +1,64 @@
-<form method="POST" enctype="multipart/form-data" class="space-y-6">
-  {% csrf_token %}
+<div class="flex items-center justify-center w-full max-w-5xl mt-36">
+  <div class="relative rounded-3xl w-full">
+    <!-- Gradient border -->
+    <div
+      class="absolute inset-0 rounded-3xl bg-gradient-to-b from-[#8D7762] to-[#E3D6C9]"></div>
 
-  <!-- Textarea for thread content -->
-  <textarea
-    id="content"
-    name="content"
-    rows="4"
-    placeholder="Share your thoughts..."
-    required
-    class="w-full border border-gray-300 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none transition"></textarea>
+    <!-- Transparent content -->
+    <div
+      class="rounded-3xl bg-transparent backdrop-blur-sm p-8 relative m-[2px]">
+      <div class="relative z-10">
+        <!-- Content wrapper to ensure text stays above background -->
+        <h2 class="text-3xl font-bold text-white mb-4">Membuat Thread</h2>
+        <form method="POST" enctype="multipart/form-data" class="space-y-6">
+          {% csrf_token %}
 
-  <!-- Image upload with preview -->
-  <div class="flex items-center space-x-4">
-    <label
-      for="image"
-      class="bg-gray-100 py-2 px-4 text-sm rounded-md cursor-pointer hover:bg-gray-200 transition">
-      Upload Image
-    </label>
-    <input
-      type="file"
-      id="image"
-      name="image"
-      accept="image/*"
-      class="hidden" />
+          <!-- Textarea for thread content -->
+          <textarea
+            id="content"
+            name="content"
+            rows="4"
+            placeholder="Share your thoughts..."
+            required
+            class="w-full text-black placeholder:text-raisin/70 bg-white/50 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-lion font-pro resize-none transition"></textarea>
 
-    <!-- Image preview -->
-    <img
-      id="image-preview"
-      src=""
-      alt="Image Preview"
-      class="hidden w-12 h-12 rounded-md object-cover border border-gray-200" />
+          <!-- Image upload with preview -->
+          <div class="flex items-center space-x-4">
+            <label
+              for="image"
+              class="font-bold font-pro py-2 px-4 text-sm rounded-md cursor-pointer bg-lion hover:scale-[1.02] duration-300 transition">
+              Upload Image
+            </label>
+            <button
+              type="submit"
+              class="bg-lion text-sm font-bold font-pro hover:scale-[1.02] duration-300 transition py-2 px-4 rounded-md w-fit">
+              Publikasikan Thread
+            </button>
+            <input
+              type="file"
+              id="image"
+              name="image"
+              accept="image/*"
+              class="hidden" />
+          </div>
+
+          <!-- Character counter and submit button -->
+          <div class="flex gap-3 items-center">
+            <span id="char-count" class="text-raisin text-sm font-bold font-crimson ml-4"
+              >456 characters remaining</span
+            >
+            <!-- Image preview -->
+            <img
+              id="image-preview"
+              src=""
+              alt="Image Preview"
+              class="hidden w-12 h-12 rounded-md object-cover border border-gray-200" />
+          </div>
+        </form>
+      </div>
+
+      <!-- Semi-transparent overlay -->
+      <div class="absolute inset-0 bg-black/30 rounded-3xl"></div>
+    </div>
   </div>
-
-  <!-- Character counter and submit button -->
-  <div class="flex justify-between items-center">
-    <span id="char-count" class="text-gray-500 text-sm"
-      >456 characters remaining</span
-    >
-    <button
-      type="submit"
-      class="bg-blue-500 text-white py-2 px-6 rounded-md hover:bg-blue-600 transition">
-      Tweet
-    </button>
-  </div>
-</form>
+</div>

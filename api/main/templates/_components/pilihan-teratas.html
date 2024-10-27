@@ -1,0 +1,31 @@
+{% load static %}
+<div
+  class="p-8 gap-4 text-center text-[#fff] font-lora h-full w-full flex flex-col items-center justify-center">
+  <h1
+    class="text-3xl lg:text-5xl font-bold bg-clip-text bg-gradient-to-r from-[#fff] to-dutch text-transparent text-center">
+    Pilihan Teratas
+  </h1>
+  <div
+    class="flex flex-col bg-coyote/70 rounded-3xl w-full sm:w-5/6 lg:w-3/4 h-fit p-6 pb-16">
+    <h2 class="text-4xl m-4 font-pro">Warung Selat "Mbak Lies"</h2>
+    <div
+      class="w-full h-fit flex flex-col justify-center items-center gap-4 font-pro">
+      <img
+        src="{% static 'images/hero.jpg' %}"
+        alt="food"
+        class="h-44 sm:h-48 lg:h-72 object-contain border rounded-3xl" />
+      <button
+        class="w-fit px-6 sm:px-12 lg:px-24 py-2 bg-lion/80 font-bold text-[#fff] rounded-full hover:bg-dutch hover:text-raisin duration-300 transition">
+        Melihat Rincian
+      </button>
+    </div>
+    <h3 class="text-2xl sm:text-4xl font-bold mt-16 mb-4">
+      Apa kata mereka tentang
+      <span
+        class="font-extrabold bg-clip-text bg-gradient-to-r from-[#fff] to-dutch text-transparent text-center">
+        Restoran Name</span
+      >?
+    </h3>
+    {% include '_components/carousel.html' %}
+  </div>
+</div>
