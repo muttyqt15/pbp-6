@@ -9,6 +9,7 @@ from api.authentication.models import User, RestaurantOwner, Customer
 from api.review.models import Review
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.views.decorators.csrf import csrf_exempt
 
 
 @receiver(post_save, sender=User )
