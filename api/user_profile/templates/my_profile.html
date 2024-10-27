@@ -84,7 +84,7 @@
         $('#logoutBtn').on('click', function() {
             $.ajax({
                 type: 'POST',
-                url: '{% url "logout" %}',  // Use Django's URL template tag
+                url: '{% url "authentication:logout" %}',  // Use Django's URL template tag
                 data: {
                     'csrfmiddlewaretoken': '{{ csrf_token }}'  // Include CSRF token
                 },
@@ -122,7 +122,7 @@
         $('#logoutBtn').on('click', function() {
             $.ajax({
                 type: 'POST',
-                url: '{% url "logout_user" %}',  // Use Django's URL template tag
+                url: '{% url "authentication:logout" %}',  // Use Django's URL template tag
                 data: {
                     'csrfmiddlewaretoken': '{{ csrf_token }}'  // Include CSRF token
                 },

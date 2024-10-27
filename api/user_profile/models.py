@@ -12,7 +12,7 @@ class CustomerProfile(models.Model):
     
 class OwnerProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    restaurant = models.OneToOneField(Restaurant, on_delete=models.CASCADE)
+    restaurant = models.OneToOneField(Restaurant, on_delete=models.CASCADE, blank=True, null=True)
     bio = models.TextField("Biography", blank=True, null=True)
     profile_pic = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
     
