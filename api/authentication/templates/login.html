@@ -1,17 +1,31 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block content %}
-    <h2>Login</h2>
-    <form method="post">
+<div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg">
+    <h2 class="text-2xl font-bold mb-6 text-center">Log In</h2>
+    <form method="POST" class="space-y-4" id="signupForm">
         {% csrf_token %}
-        <div>
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
-        </div>
-        <div>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
-        </div>
-        <button type="submit">Login</button>
+        {% include 'components/input.html' with label=form.username.label placeholder=form.username.field.widget.attrs.placeholder name=form.username.name %}
+        {% if form.username.errors %}
+            <div class="text-red-500 text-sm">
+                {{ form.password2.errors|join:', ' }}
+            </div>
+        {% endif %}
+        {% include 'components/input.html' with type="password" label=form.password.label placeholder=form.password.field.widget.attrs.placeholder name=form.password.name %}
+        {% if form.password.errors %}
+            <div class="text-red-500 text-sm">
+                {{ form.password.errors|join:', ' }}
+            </div>
+        {% endif %}
+        <br />
+        {% if form.non_field_errors %}
+            <div class="text-red-500 text-sm">
+                {{ form.non_field_errors|join:', ' }}
+            </div>
+        {% endif %}
+        <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-700">
+            Login
+        </button>
     </form>
+</div>
 {% endblock %}
