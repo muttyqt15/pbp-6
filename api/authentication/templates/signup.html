@@ -1,64 +1,74 @@
-{% extends 'base.html' %}
-
-{% block content %}
-<div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg">
-    <h2 class="text-2xl font-bold mb-6 text-center">Sign Up</h2>
-    <form method="POST" class="space-y-4" id="signupForm">
-        {% csrf_token %}
-        {% include 'components/input.html' with label=form.username.label placeholder=form.username.field.widget.attrs.placeholder name=form.username.name %}
-        {% if form.username.errors %}
-            <div class="text-red-500 text-sm">
-                {{ form.username.errors|join:', ' }}
-            </div>
-        {% endif %}
-        {% include 'components/input.html' with label=form.email.label placeholder=form.email.field.widget.attrs.placeholder name=form.email.name %}
-        {% if form.email.errors %}
-            <div class="text-red-500 text-sm">
-                {{ form.email.errors|join:', ' }}
-            </div>
-        {% endif %}
-        {% include 'components/input.html' with type="password" label=form.password1.label placeholder=form.password1.field.widget.attrs.placeholder name=form.password1.name %}
-        {% if form.password1.errors %}
-            <div class="text-red-500 text-sm">
-                {{ form.password1.errors|join:', ' }}
-            </div>
-        {% endif %}
-        {% include 'components/input.html' with type="password" label=form.password2.label placeholder=form.password2.field.widget.attrs.placeholder name=form.password2.name %}
-        {% if form.password2.errors %}
-            <div class="text-red-500 text-sm">
-                {{ form.password2.errors|join:', ' }}
-            </div>
-        {% endif %}
-        <label for="role" class="block text-gray-700 text-sm font-bold mb-2">Role</label>
-        <select name="role" id="role" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-            <option disabled selected>Pilih Role</option>
-            <option value="RESTO_OWNER">Pemilik Toko</option>
-            <option value="CUSTOMER">User</option>
-        </select>
-        {% if form.role.errors %}
-            <div class="text-red-500 text-sm">
-                {{ form.role.errors|join:', ' }}
-            </div>
-        {% endif %}
-        <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-700">
-            Sign Up
-        </button>
+{% extends 'base.html' %} {% block content %}
+<div class="min-h-screen flex flex-col items-center justify-center">
+  <div
+    class="max-w-md w-full mx-auto bg-dutch/90 p-8 rounded-lg shadow-lg border-licorice border-4 mt-20">
+    <h2 class="text-2xl text-licorice font-pro font-bold mb-6 text-center">Register</h2>
+      <form method="POST" class="space-y-4" id="signupForm">
+      {% csrf_token %} {% include 'components/input.html' with label=form.username.label placeholder=form.username.field.widget.attrs.placeholder name=form.username.name %} 
+      {% if form.username.errors %}
+      <div class="text-red-500 text-sm">
+        {{ form.username.errors|join:', ' }}
+      </div>
+      {% endif %} 
+      {% include 'components/input.html' with label=form.email.label placeholder=form.email.field.widget.attrs.placeholder name=form.email.name %} 
+      {% if form.email.errors %}
+      <div class="text-red-500 text-sm">{{ form.email.errors|join:', ' }}</div>
+      {% endif %} 
+      {% include 'components/input.html' with type="password" label=form.password1.label placeholder=form.password1.field.widget.attrs.placeholder name=form.password1.name %} 
+      {% if form.password1.errors %}
+      <div class="text-red-500 text-sm">
+        {{ form.password1.errors|join:', ' }}
+      </div>
+      {% endif %} 
+      {% include 'components/input.html' with type="password" label=form.password2.label placeholder=form.password2.field.widget.attrs.placeholder name=form.password2.name %} 
+      {% if form.password2.errors %}
+      <div class="text-red-500 text-sm">
+        {{ form.password2.errors|join:', ' }}
+      </div>
+      {% endif %}
+      <label for="role" class="block text-licorice font-pro text-sm font-bold mb-2"
+        >Role</label>
+      <select
+        name="role"
+        id="role"
+        class="shadow appearance-none border rounded-2xl w-full py-2 px-3 text-licorice font-pro leading-tight focus:outline-none focus:shadow-outline">
+        <option disabled selected>Pilih Role</option>
+        <option value="RESTO_OWNER">Pemilik Toko</option>
+        <option value="CUSTOMER">User</option>
+      </select>
+      {% if form.role.errors %}
+      <div class="text-red-500 text-sm">{{ form.role.errors|join:', ' }}</div>
+      {% endif %}
+      <button
+        type="submit"
+        class="w-full py-2 bg-licorice/80 font-bold text-dutch rounded-full hover:translate-y-[2px] duration-300 transition">
+        Sign Up
+      </button>
+      <a href="/auth/login" class="w-full group flex justify-center">
+        <p class="text-center font-bold font-pro relative">
+          Sudah memiliki akun?
+          <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-current transition-all duration-300 group-hover:w-full"></span>
+        </p>
+      </a>
     </form>
-    <script>
-        document.getElementById('signupForm').addEventListener('click', function(e) {
-            e.stopPropagation();
-            console.log('hi')
-            const form = document.getElementById('signupForm');
-            const formData = new FormData(form);  // Get the form data
+  </div>
+  <script>
+    document
+      .getElementById("signupForm")
+      .addEventListener("click", function (e) {
+        e.stopPropagation();
+        console.log("hi");
+        const form = document.getElementById("signupForm");
+        const formData = new FormData(form); // Get the form data
 
-            // Create an object to hold the data
-            const data = {};
-            formData.forEach((value, key) => {
-                data[key] = value;  // Populate the object with key-value pairs
-            });
-
-            console.log(data);  // Log the data object to the console
+        // Create an object to hold the data
+        const data = {};
+        formData.forEach((value, key) => {
+          data[key] = value; // Populate the object with key-value pairs
         });
-    </script>
+
+        console.log(data); // Log the data object to the console
+      });
+  </script>
 </div>
 {% endblock %}
