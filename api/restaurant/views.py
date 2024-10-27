@@ -16,11 +16,11 @@ import os, json
 from api.authentication.models import User, RestaurantOwner, Customer
 import logging
 from django.db.models import Q
-
+from api.bookmark.models import Bookmark
 logger = logging.getLogger(__name__)
 
 
-@resto_owner_only(redirect_url="/login/")
+@resto_owner_only(redirect_url="/auth/login/")
 @require_http_methods(["GET", "POST"])
 def add_restaurant(request):
     """View to add a new restaurant to the database, with security measures."""
@@ -93,7 +93,7 @@ def add_restaurant(request):
 
 
 @login_required
-@resto_owner_only(redirect_url="/login/")
+@resto_owner_only(redirect_url="/auth/login/")
 @require_http_methods(["POST"])
 def edit_restaurant(request, id):
     """
@@ -163,6 +163,7 @@ def restaurant(request, id):
             menus = Menu.objects.filter(restaurant=restaurant)
 
             categories = set([f.category for f in menus])
+            is_favorited = Bookmark.objects.filter(user=request.user).exists()
             return render(
                 request,
                 "restaurant.html",
@@ -172,6 +173,7 @@ def restaurant(request, id):
                     "foods": food,
                     "categories": categories,
                     "is_owner": is_owner,
+                    "is_favorited": is_favorited
                 },
             )
 
