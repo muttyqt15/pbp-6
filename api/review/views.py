@@ -8,16 +8,7 @@ from .forms import ReviewForm
 from .models import Review, ReviewImage
 from django.db.models import Count
 from django.utils import timezone
-
-
-# Custom decorator to check if the user has a customer profile
-def customer_required(view_func):
-    def _wrapped_view(request, *args, **kwargs):
-        if hasattr(request.user, 'customer'):
-            return view_func(request, *args, **kwargs)
-        else:
-            return HttpResponseForbidden("Only customers can access this page.")
-    return _wrapped_view
+from api.authentication.d
 
 @login_required
 @require_POST
@@ -83,7 +74,6 @@ def create_review(request):
 @login_required
 @customer_required
 @csrf_exempt
-
 def edit_review_ajax(request, id):
     review = get_object_or_404(Review, id=id, customer=request.user.customer)
     

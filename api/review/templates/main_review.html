@@ -7,13 +7,6 @@
 
 {% block content %}
 <div class="relative min-h-screen bg-batik bg-cover bg-center">
-     <!-- Back to All Reviews Button -->
-     <div class="container mx-auto max-w-lg p-6 bg-white bg-opacity-40 rounded-lg shadow-md mt-6 relative z-10 text-center">
-        <a href="{% url 'review:all_review' %}" class="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600 transition duration-300">
-            Back to All Reviews
-        </a>
-    </div>
-
     <!-- Header and Leave a Review Button -->
     <div class="container mx-auto max-w-lg p-6 bg-white bg-opacity-40 rounded-lg shadow-md mt-6 relative z-10 text-center">
         <h2 class="text-2xl font-bold mb-4">Reviews</h2>
@@ -71,19 +64,16 @@
 
 <script>
     function openEditModal(reviewId) {
-        currentReviewId = reviewId;
-        fetch(`/review/edit/ajax/${reviewId}/`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    document.getElementById("judul_ulasan").value = data.review.judul_ulasan;
-                    document.getElementById("teks_ulasan").value = data.review.teks_ulasan;
-                    document.getElementById("penilaian").value = data.review.penilaian;
-                    document.getElementById("editModal").classList.remove("hidden");
-                }
-            });
-    }
+        const url = `/review/edit/ajax/${reviewId}/`;
 
+        fetch(url)
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('editFormContainer').innerHTML = html;
+                document.getElementById('editModal').classList.remove('hidden');
+            })
+            .catch(error => console.error("Error loading edit form:", error));
+    }
 
     function closeModal() {
         document.getElementById('editModal').classList.add('hidden');
