@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     "api.review",
     "api.thread",
     "api.news",
-    "api.main"
+    "api.main",
+    "api.bookmark"
 ]
 
 MIDDLEWARE = [
