@@ -1,0 +1,98 @@
+{% extends 'base.html' %} {% block content %}
+<div
+  class="container mx-auto px-4 py-8 flex flex-col w-full min-h-screen gap-6 justify-center items-center">
+  <h1 class="text-3xl font-bold mb-6 text-dutch">Daftar Toko Favorit Saya</h1>
+  <div class="bg-lion/70 rounded-3xl p-8">
+    {% if bookmarks %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% for bookmark in bookmarks %}
+      <div class="bg-lion rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-pro text-licorice font-extrabold mb-2">
+          {{ bookmark.restaurant.name }}
+        </h2>
+        <p class="text-xs mb-2 text-coyote">{{ bookmark.restaurant.address }}</p>
+        <p class="text-xs text-coyote mb-4 text-coyote">
+          Bookmarked on: {{ bookmark.created_at|date:"F j, Y" }}
+        </p>
+
+        {% if bookmark.notes %}
+        <p class="text-licorice text-sm mb-4">{{ bookmark.notes }}</p>
+        {% endif %}
+
+        <div class="flex justify-between items-center">
+          <a
+            {% comment %} href="{% url 'restaurant:detail' bookmark.restaurant.id %}" {% endcomment %}
+             href="/"
+            class="text-licorice/80 hover:text-licorice font-bold font-pro">
+            View
+          </a>
+          <form
+            action="{% url 'bookmark:delete_bookmark' bookmark.id %}"
+            method="post"
+            class="inline">
+            {% csrf_token %}
+            <button type="submit" class="text-red-600 hover:text-red-800">
+              Remove Bookmark
+            </button>
+          </form>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% else %}
+    <p class="text-[#fff] font-pro font-bold">Ayok, kepoin lebih dalam kuliner Solo!</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+<button
+  class="bookmark-button {% if is_bookmarked %}text-yellow-500{% else %}text-gray-500{% endif %}"
+  data-restaurant-id="{{ restaurant.id }}"
+  onclick="toggleBookmark('{{ restaurant.id }}')">
+  <i class="fas fa-bookmark"></i>
+  <span class="bookmark-text">
+    {% if is_bookmarked %} Bookmarked {% else %} Bookmark {% endif %}
+  </span>
+</button>
+
+<script>
+  function toggleBookmark(restaurantId) {
+    fetch(`/bookmark/toggle/${restaurantId}/`, {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": getCookie("csrftoken"),
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const button = document.querySelector(
+          `[data-restaurant-id="${restaurantId}"]`
+        );
+        if (data.status === "added") {
+          button.classList.replace("text-gray-500", "text-yellow-500");
+          button.querySelector(".bookmark-text").textContent = "Bookmarked";
+        } else {
+          button.classList.replace("text-yellow-500", "text-gray-500");
+          button.querySelector(".bookmark-text").textContent = "Bookmark";
+        }
+      })
+      .catch((error) => console.error("Error:", error));
+  }
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      const cookies = document.cookie.split(";");
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === name + "=") {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+</script>
