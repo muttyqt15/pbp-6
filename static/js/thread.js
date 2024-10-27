@@ -1,4 +1,3 @@
-
 (() => {
   function getCSRFToken() {
     const csrfToken = document.cookie
@@ -7,7 +6,7 @@
       ?.split("=")[1];
     return csrfToken || "";
   }
-// Flag to track edit mode
+  // Flag to track edit mode
   let isEditMode = false;
   let originalContent = ""; // Store original content globally
   // Toggle edit mode for a specific thread
@@ -19,7 +18,7 @@
       originalContent = contentContainer.find("p").text();
 
       contentContainer.html(`
-          <textarea id="edit-content-${threadId}" class="w-full p-2 border border-gray-300 rounded mb-4 z-50">${originalContent}</textarea>
+          <textarea id="edit-content-${threadId}" rows="8" class="mt-1 block w-full resize-none border border-fffbf2 bg-[#aba197] text-[#fffbf2] rounded-md p-2 mb-4 z-50">${originalContent}</textarea>
         `);
       // Add click handler to prevent propagation on the textarea
       $(`#edit-content-${threadId}`).on("click", function (e) {
@@ -27,8 +26,8 @@
       });
 
       editButtons.html(`
-          <button class="text-coyote hover:text-lion duration-300 ease-in-out transition text-sm z-50" onclick="submitEdit(${threadId})" id="save-${threadId}">Save</button>
-          <button class="text-gray-500 hover:text-raisin duration-300 ease-in-out transition text-sm z-50" onclick="cancelEdit(${threadId})" id="cancel-${threadId}">Cancel</button>
+          <button class="bg-[#c1a386] hover:bg-[#a48b72] text-white font-bold pt-1 pb-2 px-4 rounded-lg duration-300 ease-in-out transition z-50" onclick="submitEdit(${threadId})" id="save-${threadId}">Save</button>
+          <button class="bg-[#c5beb7] hover:bg-[#b9b1a9] text-white font-bold pt-1 pb-2 px-4 rounded-lg duration-300 ease-in-out transition z-50" onclick="cancelEdit(${threadId})" id="cancel-${threadId}">Cancel</button>
         `);
 
       $(`#edit-content-${threadId}`).focus();
@@ -55,15 +54,15 @@
         if (data.success) {
           const contentContainer = $(`#content-container-${threadId}`);
           contentContainer.html(
-            `<p class="text-gray-800 mb-4 cursor-pointer"
+            `<p class="text-[#fffbf2] mb-4 cursor-pointer"
                 onclick="window.location.href = '/thread/${threadId}/';"
             >${data.data.content || updatedContent}</p>`
           );
 
           const editButtons = $(`#edit-buttons-${threadId}`);
           editButtons.html(`
-              <button class="text-gray-600 font-bold hover:text-coyote duration-300 transition text-sm" onclick="toggleEditMode(${threadId})">Edit</button>
-              <button class="text-gray-600 font-bold hover:text-red-500 duration-300 transition text-sm" onclick="deleteThread(${threadId})">Delete</button>
+              <button class="bg-[#c1a386] hover:bg-[#a48b72] text-white font-bold pt-1 pb-2 px-4 rounded-lg duration-300 transition font-bold" onclick="toggleEditMode(${threadId})">Edit</button>
+              <button class="bg-[#c5beb7] hover:bg-[#b9b1a9] text-white font-bold pt-1 pb-2 px-4 rounded-lg duration-300 transition font-bold" onclick="deleteThread(${threadId})">Delete</button>
             `);
 
           isEditMode = false;
@@ -82,13 +81,13 @@
 
     // Restore the original content without saving
     contentContainer.html(
-      `<p class="text-gray-800 mb-4">${originalContent}</p>`
+      `<p class="text-[#fffbf2] mb-4">${originalContent}</p>`
     );
 
     // Reset buttons
     editButtons.html(`
-        <button class="text-gray-600 font-bold hover:text-coyote duration-300 transition text-sm" onclick="toggleEditMode(${threadId})">Edit</button>
-        <button class="text-gray-600 font-bold hover:text-red-500 duration-300 transition text-sm" onclick="deleteThread(${threadId})">Delete</button>
+        <button class="bg-[#c1a386] hover:bg-[#a48b72] text-white font-bold pt-1 pb-2 px-4 rounded-lg duration-300 transition font-bold" onclick="toggleEditMode(${threadId})">Edit</button>
+        <button class="bg-[#c5beb7] hover:bg-[#b9b1a9] text-white font-bold pt-1 pb-2 px-4 rounded-lg duration-300 transition font-bold" onclick="deleteThread(${threadId})">Delete</button>
       `);
 
     isEditMode = false;
@@ -132,11 +131,15 @@
         likeButton.textContent = `${data.likes ?? 0} Likes`;
 
         if (data.liked) {
-          likeButton.classList.add("text-[#910101]");
-          likeButton.classList.remove("text-blue-500");
+          likeButton.classList.add("text-[#b9b1a9]");
+          likeButton.classList.add("hover:text-[#fffbf2]");
+          likeButton.classList.remove("text-[#fffbf2]");
+          likeButton.classList.remove("hover:text-[#b9b1a9]");
         } else {
-          likeButton.classList.add("text-blue-500");
-          likeButton.classList.remove("text-[#910101]");
+          likeButton.classList.add("text-[#fffbf2]");
+          likeButton.classList.add("hover:text-[#b9b1a9]");
+          likeButton.classList.remove("text-[#b9b1a9]");
+          likeButton.classList.remove("hover:text-[#fffbf2]");
         }
       })
       .catch((error) => {
