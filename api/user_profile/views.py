@@ -25,8 +25,7 @@ def profile_view(request):
     user = request.user
     customer_profile = None
     owner_profile = None
-
-    # Check if the user is a customer or owner
+    
     if user.is_customer:
         customer_profile = CustomerProfile.objects.get(user=user)
     elif user.is_resto_owner:
@@ -38,23 +37,21 @@ def profile_view(request):
     })
 
 @login_required
-@csrf_exempt  
-def edit_customer_profile(request):
-    user_form = UsernameForm(instance=request.user)
-    profile_form = CustomerProfileForm(instance=request.user.customerprofile)
-    
+def edit_profile(request):
     if request.method == 'POST':
-        user_form = UsernameForm(request.POST, instance=request.user)
-        profile_form = CustomerProfileForm(request.POST, instance=request.user.customerprofile)
-        
-        if user_form.is_valid() and profile_form.is_valid():
-            user_form.save()
-            profile_form.save()
-            return JsonResponse({'success': True, 'redirect_url': '/my-profile/'})  
-
-        return JsonResponse({'success': False, 'errors': user_form.errors | profile_form.errors})
-
-    return JsonResponse({'success': False, 'errors': 'Invalid request method.'})
+        form = UserProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({
+                'success': True,
+                'updated_username': request.user.username,
+                'updated_bio': request.user.profile.bio,  # Assuming you have a profile model
+            })
+        else:
+            return JsonResponse({'success': False, 'errors': form.errors})
+    else:
+        form = UserProfileForm(instance=request.user)
+    return render(request, 'edit_profile.html', {'form': form})
 
 
 @login_required
@@ -115,6 +112,7 @@ def delete_account(request):
 
 @login_required
 def review_history_view(request):
+    return redirect('/review/""')
     user = request.user
     reviews = Review.objects.filter(user=user) 
 
@@ -122,8 +120,10 @@ def review_history_view(request):
         'reviews': reviews,
     })
 
+
 @login_required
 def my_restaurant_view(request):
+    return redirect('/restaurant/""')
     user = request.user
     # Get the restaurant owner profile
     owner_profile = get_object_or_404(OwnerProfile, user=user)

@@ -3,44 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <title>Profile Page</title>
+    <title>Edit Profile</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Basic styles for the modal */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgb(0,0,0); 
+            background-color: rgba(0,0,0,0.4); 
+            padding-top: 60px; 
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto; 
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; 
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .error {
+            color: red;
+            font-size: 0.9em;
+        }
+    </style>
 </head>
-<body class="bg-gray-100">
+<body>
+    <h1>Your Profile</h1>
+    <div>
+        <h2 id="usernameDisplay">{{ user.username }}</h2>
+        <p id="bioDisplay">{{ profile.bio }}</p>
+        <button id="editProfileBtn">Edit Profile</button>
+        <button id="logoutBtn">Logout</button>
+        <button id="deleteAccountBtn">Delete Account</button>
+    </div>
 
-    <div class="max-w-md mx-auto bg-white shadow-lg rounded-lg overflow-hidden mt-10">
-        <div class="flex items-center justify-center mt-6">
-            {% if customer_profile %}
-                <img class="w-24 h-24 rounded-full border-4 border-gray-300" src="{{ customer_profile.profile_pic.url }}" alt="Profile Picture">
-                <h2 class="text-2xl font-semibold text-gray-800">{{ customer_profile.user.username }}</h2>
-                <p class="text-gray-600 mt-2">{{ customer_profile.bio }}</p>
-            {% elif owner_profile %}
-                <img class="w-24 h-24 rounded-full border-4 border-gray-300" src="{{ owner_profile.profile_pic.url }}" alt="Profile Picture">
-                <h2 class="text-2xl font-semibold text-gray-800">{{ owner_profile.user.username }}</h2>
-                <p class="text-gray-600 mt-2">{{ owner_profile.bio }}</p>
-            {% else %}
-                <p class="text-gray-600 mt-2">Profile not found.</p>
-            {% endif %}
-        </div>
-        
-        <div class="flex justify-around mt-6 mb-4">
-            {% if customer_profile %}
-                <a href="{% url 'edit_customer_profile' %}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Edit</a>
-                <form action="{% url 'delete_account' %}" method="post" class="inline">
-                    {% csrf_token %}
-                    <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Delete Account</button>
-                </form>
-                <a href="{% url 'logout_user' %}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Logout</a>
-                <div class="flex justify-around mt-4 mb-6">
-                    <a href="{% url 'review_history' %}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Review History</a>
-                    <a href="{% url 'bookmarks' %}" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">Bookmarks</a>
+    <!-- Modal -->
+    <div id="editProfileModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Edit Profile</h2>
+            <form id="editProfileForm" method="POST">
+                {% csrf_token %}
+                <div>
+                    <label for="username">Username:</label>
+                    {{ user_form.username }}
+                    <span class="error" id="usernameError"></span>
                 </div>
-            {% elif owner_profile %}
-                <a href="{% url 'restaurant_view' owner_profile.restaurant.id %}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Restaurant</a>
-                <a href="{% url 'edit_owner_profile' %}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Edit Profile</a>
-            {% endif %}
+                <div>
+                    <label for="bio">Biography:</label>
+                    <textarea name="bio" id="bio">{{ profile.bio }}</textarea>
+                    <span class="error" id="bioError"></span>
+                </div>
+                <button type="submit">Save Changes</button>
+            </form>
         </div>
     </div>
 
+    <script>
+        $(document).ready(function() {
+        // Handle logout button click
+        $('#logoutBtn').on('click', function() {
+            $.ajax({
+                type: 'POST',
+                url: '{% url "logout" %}',  // Use Django's URL template tag
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'  // Include CSRF token
+                },
+                success: function(response) {
+                    window.location.href = '/login/';  // Redirect to login page
+                },
+                error: function(xhr, status, error) {
+                    console.error('Logout Error:', error);
+                }
+            });
+        });
+
+        // Handle delete account button click
+        $('#deleteAccountBtn').on('click', function() {
+            if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "delete_account" %}',  // Use Django's URL template tag
+                    data: {
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'  // Include CSRF token
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            window.location.href = '/';  // Redirect to home page after deletion
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Delete Account Error:', error);
+                    }
+                });
+            }
+        });
+
+        // Handle logout button click
+        $('#logoutBtn').on('click', function() {
+            $.ajax({
+                type: 'POST',
+                url: '{% url "logout_user" %}',  // Use Django's URL template tag
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'  // Include CSRF token
+                },
+                success: function(response) {
+                    window.location.href = '/login/';  // Redirect to login page
+                },
+                error: function(xhr, status, error) {
+                    console.error('Logout Error:', error);
+                }
+            });
+        });
+
+        // Handle delete account button click
+        $('#deleteAccountBtn').on('click', function() {
+            if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "delete_account" %}',  // Use Django's URL template tag
+                    data: {
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'  // Include CSRF token
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            window.location.href = '/';  // Redirect to home page after deletion
+                        } else {
+                            alert("There was an error deleting your account.");
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Delete Account Error:', error);
+                    }
+                });
+            }
+        });
+        $(document).ready(function() {
+            // Show the modal when the edit button is clicked
+            $('#editProfileBtn').on('click', function() {
+                $('#editProfileModal').show();
+            });
+
+            // Close the modal when the close button is clicked
+            $('.close').on('click', function() {
+                $('#editProfileModal').hide();
+            });
+
+            // Close the modal when clicking outside of the modal
+            $(window).on('click', function(event) {
+                if ($(event.target).is('#editProfileModal')) {
+                    $('#editProfileModal').hide();
+                }
+            });
+
+            // Handle form submission via AJAX
+            $('#editProfileForm').on('submit', function(event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/edit-profile/', // URL for the combined edit profile view
+                    data: $(this).serialize(), // Serialize the form data
+                    success: function(response) {
+                        if (response.success) {
+                            // Update the displayed username and bio without reloading the page
+                            $('#usernameDisplay').text(response.updated_username);
+                            $('#bioDisplay').text(response.updated_bio);
+                            $('#editProfileModal').hide(); // Close the modal
+                        } else {
+                            // Clear previous error messages
+                            $('.error').text('');
+
+                            // Display errors
+                            if (response.errors.username) {
+                                $('#usernameError').text(response.errors.username[0]);
+                            }
+                            if (response.errors.bio) {
+                                $('#bioError').text(response.errors.bio[0]);
+                            }
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('AJAX Error:', error);
+                    }
+                });
+            });
+        });
+    })
+    </script>
 </body>
-</html>
