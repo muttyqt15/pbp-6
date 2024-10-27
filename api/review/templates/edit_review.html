@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>Edit Your Review</title>
+{% endblock meta %}
+
+{% block content %}
+<div class="container mx-auto max-w-lg p-6  rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold text-center mb-4">Edit Your Review</h2>
+    <form id="edit-review-form" method="POST" action="/review/edit/ajax/{{ review.id }}">
+        {% csrf_token %}
+        
+        <!-- Display Name Field -->
+        <div class="mb-4">
+            <label for="judul_ulasan" class="block text-sm font-medium text-[#FFFBF2]">Title</label>
+            <input type="text" name="display_name" id="display_name" class="mt-1 block w-full border border-gray-300 rounded-md p-2" value="{{ review.display_name }}" placeholder="Display Name">
+        </div>
+
+    
+        <!-- Title Field -->
+        <div class="mb-4">
+            <label for="judul_ulasan" class="block text-sm font-medium text-[#FFFBF2]">Title</label>
+            <input type="text" name="judul_ulasan" id="judul_ulasan" class="mt-1 block w-full border border-gray-300 rounded-md p-2" value="{{ review.judul_ulasan }}" placeholder="Review Title">
+        </div>
+
+        <!-- Rating Field -->
+        <div class="mb-4">
+            <label for="penilaian" class="block text-sm font-medium text-[#FFFBF2]">Rating</label>
+            <select name="penilaian" id="penilaian" class="mt-1 block w-full border border-gray-300 rounded-md p-2">
+                {% for i in "12345" %}
+                    <option value="{{ i }}" {% if review.penilaian|stringformat:"i" == i %}selected{% endif %}>{{ i }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    
+        <!-- Review Text Field -->
+        <div class="mb-4">
+            <label for="teks_ulasan" class="block text-sm font-medium text-[#FFFBF2]">Review</label>
+            <textarea name="teks_ulasan" id="teks_ulasan" class="mt-1 block w-full border border-gray-300 rounded-md p-2" placeholder="Write your review here">{{ review.teks_ulasan }}</textarea>
+        </div>
+    
+        <!-- Submit Button -->
+        <button type="submit" id="submit-button" class="bg-yellow-500 text-white py-2 px-4 rounded hover:bg-yellow-600 transition duration-300">Save Changes</button>
+    </form>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("submit-button").addEventListener("click", function() {
+            console.log('hello')
+            const reviewId = "{{ review.id }}";
+            const form = document.getElementById("edit-review-form");
+            const formData = new FormData(form);
+
+            fetch(`/review/edit/ajax/${reviewId}/`, {
+                method: "POST",
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data, 'hi')
+                if (data.success) {
+                    alert("Review updated successfully!");
+                    window.location.href = "{% url 'review:main_review' %}";
+                } else {
+                    alert("Failed to update review.");
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        });
+    });
+</script>
+{% endblock content %}

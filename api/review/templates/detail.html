@@ -9,21 +9,21 @@
 {% block content %}
 {% include 'navbar.html' %}
 
-<div class="review-detail">
-    <h1>{{ review.judul_ulasan }}</h1>
-    <p><strong>Penulis:</strong> {{ review.customer.username }}</p>
-    <p><strong>Tanggal:</strong> {{ review.formatted_date }}</p>
-    <p><strong>Penilaian:</strong> {{ review.penilaian }} / 5</p>
+<div class="review-detail text-[#FFFBF2]">
+    <h1 class="text-[#FFFBF2]">{{ review.judul_ulasan }}</h1>
+    <p class="text-[#FFFBF2]">Penulis: {{ review.customer.username }}</p>
+    <p class="text-[#FFFBF2]">Tanggal: {{ review.formatted_date }}</p>
+    <p class="text-[#FFFBF2]">Penilaian: {{ review.penilaian }} / 5</p>
 
     <!-- Gambar ulasan (opsional) -->
     {% if review.gambar %}
     <img src="{{ review.gambar.url }}" alt="Gambar ulasan" style="max-width: 100%;">
     {% endif %}
 
-    <p><strong>Ulasan:</strong></p>
-    <p>{{ review.teks_ulasan }}</p>
+    <p class="text-[#FFFBF2]">Ulasan:</p>
+    <p class="text-[#FFFBF2]">{{ review.teks_ulasan }}</p>
 
-    <p><strong>Total Likes:</strong> {{ review.total_likes }}</p>
+    <p class="text-[#FFFBF2]">Total Likes: {{ review.total_likes }}</p>
 </div>
 
 <!-- Tombol Like -->

@@ -1,0 +1,280 @@
+{% extends 'base.html' %} {% load static %} {% block meta %}
+<title>Main Review</title>
+{% endblock meta %} {% block content %}
+<div class="relative min-h-screen bg-batik bg-cover bg-center">
+  <div class="container mx-auto p-6">
+    <div class="mt-32">
+      <!-- Back to All Reviews Button -->
+      <div
+        class="container mx-auto max-w-lg p-6 bg-white bg-opacity-40 rounded-lg shadow-md relative z-10 text-center">
+        <a
+          href="{% url 'review:all_review' %}"
+          class="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600 transition duration-300">
+          Back to All Reviews
+        </a>
+      </div>
+
+      <!-- Header and Leave a Review Button -->
+      <div
+        class="container mx-auto max-w-lg p-6 bg-white bg-opacity-40 rounded-lg shadow-md mt-6 relative z-10 text-center">
+        <h2 class="text-2xl text-[#FFFBF2] font-bold mb-4">Reviews</h2>
+        <p class="mb-4 text-[#FFFBF2]">
+          Share your experience with us by leaving a review!
+        </p>
+        <a
+          href="{% url 'review:create_review' %}"
+          class="bg-yellow-500 text-[#FFFBF2] py-2 px-4 rounded hover:bg-yellow-600 transition duration-300">
+          Leave a Review
+        </a>
+      </div>
+
+      <!-- Review List -->
+      <div
+        id="reviewList"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 mt-6 relative  z-10">
+        {% for review in reviews %}
+        <div
+          id="review-{{ review.id }}"
+          class="p-6 bg-[#7D6E5F] bg-opacity-90 border border-[#8D7762] rounded-2xl shadow-lg w-full mx-auto relative">
+          <!-- Ellipsis Button for Edit/Delete Dropdown -->
+          <div class="absolute top-4 right-4">
+            <button
+              onclick="toggleDropdown(event, 'dropdown-{{ review.id }}')"
+              class="text-[#FFFBF2] hover:text-white focus:outline-none">
+              ⋮
+            </button>
+            <div
+              id="dropdown-{{ review.id }}"
+              class="dropdown-content hidden absolute right-0 mt-2 w-32 bg-white shadow-lg rounded-lg z-20">
+              <a
+                href="javascript:void(0);"
+                onclick="editedModal('{{ review.id }}')"
+                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >Edit</a
+              >
+              <a
+                href="javascript:void(0);"
+                onclick="deleteReview('{{ review.id }}'); return false;"
+                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >Delete</a
+              >
+            </div>
+          </div>
+
+          <!-- Review Content -->
+          <h4
+            id="dp-name-{{ review.id }}"
+            class="font-bold text-[#FFFBF2] text-lg">
+            {{ review.get_display_name }}
+          </h4>
+          <p class="text-sm text-[#FFFBF2] mb-2">
+            <strong>Restaurant:</strong> {{ review.restoran.name }}
+          </p>
+          <p
+            id="title-{{ review.id }}"
+            class="font-semibold text-[#FFFBF2] mb-1">
+            {{ review.judul_ulasan }}
+          </p>
+          <p class="text-sm text-[#FFFBF2] mb-2">
+            <strong>Rating:</strong>
+            <span id="rating-{{ review.id }}">{{ review.penilaian }} / 5</span>
+          </p>
+          <p class="text-sm mb-2 text-[#FFFBF2] break-words">
+            <strong>Review:</strong>
+            <span id="teks-{{ review.id }}">{{ review.teks_ulasan }}</span>
+          </p>
+          <p id="tanggal-{{ review.id }}" class="text-xs text-[#FFFBF2]">
+            <strong>Date:</strong> {{ review.tanggal }}
+          </p>
+
+          <!-- Display Images if Available -->
+          {% for image in review.images.all %}
+          <img
+            src="{{ image.image.url }}"
+            alt="Review image"
+            class="w-full h-32 object-cover rounded mb-4" />
+          {% empty %}
+          <p class="text-sm text-gray-500">No images available.</p>
+          {% endfor %}
+
+          <!-- Likes Count -->
+          <p class="text-sm text-[#FFFBF2]">
+            <strong>Likes:</strong> {{ review.total_likes }}
+          </p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div
+      id="edit-modal"
+      class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+      <div class="bg-white p-6 rounded-lg max-w-md w-full">
+        <button
+          onclick="closeModal()"
+          class="text-gray-500 hover:text-gray-700 float-right">
+          &times;
+        </button>
+        <h3 class="text-lg font-semibold mb-4">Edit Review</h3>
+
+        <!-- Edit Form -->
+        <form id="edit-form">
+          <div class="mb-4">
+            <label
+              for="display_name"
+              class="block text-sm font-medium text-gray-700"
+              >Display Name</label
+            >
+            <input
+              type="text"
+              name="display_name"
+              id="display_name"
+              class="w-full p-2 border rounded"
+              readonly />
+          </div>
+          <div class="mb-4">
+            <label
+              for="judul_ulasan"
+              class="block text-sm font-medium text-gray-700"
+              >Title</label
+            >
+            <input
+              type="text"
+              name="judul_ulasan"
+              id="judul_ulasan"
+              class="w-full p-2 border rounded" />
+          </div>
+          <div class="mb-4">
+            <label
+              for="penilaian"
+              class="block text-sm font-medium text-gray-700"
+              >Rating</label
+            >
+            <select
+              name="penilaian"
+              id="penilaian"
+              class="w-full p-2 border rounded">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </div>
+          <div class="mb-4">
+            <label
+              for="teks_ulasan"
+              class="block text-sm font-medium text-gray-700"
+              >Review</label
+            >
+            <textarea
+              name="teks_ulasan"
+              id="teks_ulasan"
+              class="w-full p-2 border rounded"></textarea>
+          </div>
+          <button
+            type="button"
+            onclick="editData()"
+            class="bg-blue-600 text-white px-4 py-2 rounded">
+            Save Changes
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let editedId = "";
+
+  function toggleDropdown(event, dropdownId) {
+    event.stopPropagation(); // Prevents closing when clicking on the button itself
+    const dropdown = document.getElementById(dropdownId);
+
+    // Close all other dropdowns
+    document.querySelectorAll(".dropdown-content").forEach((element) => {
+      if (element !== dropdown) {
+        element.classList.add("hidden");
+      }
+    });
+
+    // Toggle the selected dropdown
+    dropdown.classList.toggle("hidden");
+  }
+
+  function editedModal(reviewId) {
+    editedId = reviewId;
+    $("#display_name").val($(`#dp-name-${reviewId}`).text());
+    $("#judul_ulasan").val($(`#title-${reviewId}`).text());
+    // Extract just the number from the rating text
+    const ratingText = $(`#rating-${reviewId}`).text().trim();
+    const ratingValue = ratingText.split("/")[0].trim();
+    $("#penilaian").val(ratingValue);
+    $("#teks_ulasan").val($(`#teks-${reviewId}`).text().trim());
+    $("#edit-modal").removeClass("hidden");
+  }
+
+  function closeModal() {
+    $("#edit-form")[0].reset(); // Clears the form fields
+    $("#edit-modal").addClass("hidden");
+  }
+
+  async function editData() {
+    const formData = new FormData();
+    formData.append("display_name", $("#display_name").val());
+    formData.append("judul_ulasan", $("#judul_ulasan").val());
+    formData.append("penilaian", $("#penilaian").val());
+    formData.append("teks_ulasan", $("#teks_ulasan").val());
+
+    try {
+      const response = await fetch(`/review/edit/ajax/${editedId}/`, {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": "{{ csrf_token }}",
+        },
+        body: formData,
+      });
+
+      if (response.ok) {
+        const dataResponse = await fetch(`/review/json/${editedId}/`);
+        const updatedData = await dataResponse.json();
+        const data = updatedData[0].fields;
+
+        // Update with proper text content
+        $(`#dp-name-${editedId}`).text(data.display_name);
+        $(`#title-${editedId}`).text(data.judul_ulasan);
+        $(`#rating-${editedId}`).text(`${data.penilaian} / 5`);
+        $(`#teks-${editedId}`).text(data.teks_ulasan);
+
+        closeModal();
+        alert("Review updated successfully!");
+      } else {
+        alert("Failed to update review.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
+
+  // Close all dropdowns when clicking outside
+  document.addEventListener("click", function (event) {
+    document.querySelectorAll(".dropdown-content").forEach((dropdown) => {
+      dropdown.classList.add("hidden");
+    });
+  });
+</script>
+
+<style>
+  .hidden {
+    display: none;
+  }
+  .dropdown-content {
+    display: none;
+  }
+  .dropdown-content:not(.hidden) {
+    display: block;
+  }
+</style>
+
+{% endblock content %}

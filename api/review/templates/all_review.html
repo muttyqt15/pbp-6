@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>All Reviews</title>
+{% endblock meta %}
+
+{% block content %}
+<h1>Daftar Semua Review</h1>
+
+<!-- Container for all reviews -->
+<div id="reviews-container" class="container mx-auto max-w-full p-16 bg-[#C1A386] bg-opacity-0 rounded-lg shadow-md mt-32 ">
+    {% for review in all_reviews %}
+    <div class="review-card mb-4 p-4 bg-[#7D6E5F] bg-opacity-90 rounded-lg shadow" data-review-id="{{ review.id }}">
+        <h3 class="text-lg text-[#FFFBF2] font-bold">{{ review.judul_ulasan }}</h3>
+        <p class="text-[#FFFBF2] mb-2">{{ review.teks_ulasan }}</p>
+        <p class="text-sm text-[#FFFBF2]">Rating: {{ review.penilaian }} / 5</p>
+        <p class="text-sm text-[#FFFBF2]">Likes: <span id="like-count-{{ review.id }}" class="like-count">{{ review.num_likes }}</span></p>
+        <button class="like-button bg-[#240F0E] text-white px-2 py-1 rounded mt-2"
+                onclick="toggleLike('{{ review.id }}')">
+            Like
+        </button>
+    </div>
+    {% empty %}
+    <p>Belum ada review untuk restoran ini.</p>
+    {% endfor %}
+    <a href="{% url 'review:main_review' %}" class="bg-[#240F0E] text-white px-4 py-2 rounded mt-4 inline-block">
+        Buat Review
+    </a>
+</div>
+<script>
+    function toggleLike(reviewId) {
+        const url = `/review/like/${reviewId}/`;
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin'
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Update like count
+            const likeCountElement = document.getElementById(`like-count-${reviewId}`);
+            likeCountElement.textContent = data.total_likes;
+
+            // Update button appearance
+            const likeButton = document.querySelector(`[data-review-id='${reviewId}'] .like-button`);
+            if (data.liked) {
+                likeButton.classList.add("bg-red-500");
+                likeButton.classList.remove("bg-blue-500");
+                likeButton.textContent = "Unlike";
+            } else {
+                likeButton.classList.add("bg-blue-500");
+                likeButton.classList.remove("bg-red-500");
+                likeButton.textContent = "Like";
+            }
+
+            // Reorder reviews
+            reorderReviews();
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function reorderReviews() {
+        const reviewsContainer = document.getElementById('reviews-container');
+        const reviews = Array.from(reviewsContainer.querySelectorAll('.review-card'));
+
+        // Sort reviews by the number of likes
+        reviews.sort((a, b) => {
+            const likesA = parseInt(a.querySelector('.like-count').textContent);
+            const likesB = parseInt(b.querySelector('.like-count').textContent);
+            return likesB - likesA;
+        });
+
+        // Append sorted reviews back to the container
+        reviews.forEach(review => reviewsContainer.appendChild(review));
+    }
+</script>
+
+{% endblock content %}
