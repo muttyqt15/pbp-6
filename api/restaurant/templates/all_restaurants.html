@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurants List</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;700&family=Crimson+Text:wght@400;700&family=Lora:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@^2.0/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="bg-gray-100" style="font-family: 'Lora', serif;">
+    <div class="container mx-auto p-6">
+        <h1 class="text-4xl text-[#FFFBF2] text-center font-bold mb-4 mt-24" style="font-family: 'Crimson Pro', serif;"> Restoran </h1>
+        <h3 class="text-lg text-[#FFFBF2] text-center mb-8" style="font-family: 'Crimson Text', serif;">
+            Pemilik bisnis kuliner di Solo? Daftarkan restoran Anda di 
+            <a href="/restaurant/add" class="underline text-blue-500 hover:text-blue-700">sini!</a>
+        </h3>
+        
+        <!-- Search and Sort Bar -->
+        <div class="flex justify-center mb-8">
+            <input type="text" id="searchBar" placeholder="Cari restoran..." class="w-1/3 p-2 border rounded-md" style="font-family: 'Lora', serif;">
+            <select id="sortOptions" class="w-1/6 ml-4 p-2 border rounded-md" style="font-family: 'Lora', serif;">
+                <option value="">Urutkan Berdasarkan</option>
+                <option value="name">Nama</option>
+                <option value="district">Distrik</option>
+                <option value="operational_hours">Jam Operasional</option>
+            </select>
+            <button onclick="filterRestaurants()" class="ml-4 bg-[#240F0E] text-white px-4 py-2 rounded-md">Filter</button>
+        </div>
+
+        <div id="restaurantList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for restaurant in restaurants %}
+            <div class="bg-white rounded-lg shadow-md w-auto overflow-hidden restaurant-card">
+                <div class="relative">
+                    <img src="{{ restaurant.photo_url|default:'https://placehold.co/400x250' }}" alt="Restaurant Photo" class="w-full h-48 object-cover">
+                    <div class="absolute top-2 right-2 bg-gray-800 text-white p-2 rounded-full bg-opacity-75">
+                    </div>
+                </div>
+                <div class="bg-[#7D6E5F] p-6">
+                    <h2 class="text-2xl text-[#FFFBF2] font-bold mb-4 restaurant-name" style="font-family: 'Crimson Pro', serif;">{{ restaurant.name }}</h2>
+                    <p class="text-lg text-[#FFFBF2] mb-2 restaurant-district" style="font-family: 'Crimson Text', serif;">{{ restaurant.district }}</p>
+                    <p class="text-sm text-[#FFFBF2] mb-4">{{ restaurant.address }}</p>
+                    <p class="text-sm text-[#FFFBF2] mb-4 restaurant-operational_hours">Jam Operasional: {{ restaurant.operational_hours }}</p>
+                    <a href="/restaurant/{{ restaurant.id }}" class="bg-[#240F0E] text-white px-4 py-2 rounded-md transition duration-300 ease-in-out hover:bg-blue-700">Lihat Detail</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        function filterRestaurants() {
+            const searchBar = document.getElementById('searchBar').value.toLowerCase();
+            const sortOption = document.getElementById('sortOptions').value;
+
+            // Make an AJAX request to filter restaurants
+            fetch('/restaurant/filter/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    search: searchBar,
+                    sort_by: sortOption
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const restaurantList = document.getElementById('restaurantList');
+                restaurantList.innerHTML = ''; // Clear the current list
+
+                // Loop through the filtered restaurants and add them to the list
+                data.restaurants.forEach(restaurant => {
+                    const restaurantCard = document.createElement('div');
+                    restaurantCard.classList.add('bg-white', 'rounded-lg', 'shadow-md', 'w-auto', 'overflow-hidden', 'restaurant-card');
+                    restaurantCard.innerHTML = `
+                        <div class="relative">
+                            <img src="${restaurant.photo_url || 'https://placehold.co/400x250'}" alt="Restaurant Photo" class="w-full h-48 object-cover">
+                            <div class="absolute top-2 right-2 bg-gray-800 text-white p-2 rounded-full bg-opacity-75"></div>
+                        </div>
+                        <div class="bg-[#7D6E5F] p-6">
+                            <h2 class="text-2xl text-[#FFFBF2] font-bold mb-4 restaurant-name" style="font-family: 'Crimson Pro', serif;">${restaurant.name}</h2>
+                            <p class="text-lg text-[#FFFBF2] mb-2 restaurant-district" style="font-family: 'Crimson Text', serif;">${restaurant.district}</p>
+                            <p class="text-sm text-[#FFFBF2] mb-4">${restaurant.address}</p>
+                            <p class="text-sm text-[#FFFBF2] mb-4 restaurant-operational_hours">Jam Operasional: ${restaurant.operational_hours}</p>
+                            <a href="/restaurant/${restaurant.id}" class="bg-[#240F0E] text-white px-4 py-2 rounded-md transition duration-300 ease-in-out hover:bg-blue-700">Lihat Detail</a>
+                        </div>
+                    `;
+                    restaurantList.appendChild(restaurantCard);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
+{% endblock content %}

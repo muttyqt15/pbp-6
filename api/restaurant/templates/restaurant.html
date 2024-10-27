@@ -74,6 +74,18 @@
                     {% endif %}
                 </div>
 
+                <!-- Restaurant District -->
+                <h3 class="text-xl text-[#FFFBF2] font-bold" style="font-family: 'Crimson Text', serif;">Distrik</h3>
+                <div class="restaurant district flex items-center justify-between">
+                    <input type="text" value="" class="border rounded-md p-2 w-full mr-4 hidden" placeholder="Enter District Here" onblur="saveField(this, 'district', 'Enter District Here')">
+                    <p class="text-[#FFFBF2]">{{ restaurant.district|default:"Enter District Here" }}</p>
+                    {% if is_owner %}
+                    <a class="edit-button text-[#FFFBF2] bg-gray-800 p-2 rounded-full bg-opacity-25 transition duration-300 ease-in-out hover:bg-opacity-100" onclick="makeEditable(this)">
+                        <i class="fas fa-pencil-alt"></i>
+                    </a>
+                    {% endif %}
+                </div>
+                
                 <!-- Restaurant Address -->
                  <h3 class="text-xl text-[#FFFBF2] font-bold" style="font-family: 'Crimson Text', serif;">Alamat</h3>
                 <div class="restaurant-address text-[#FFFBF2] flex items-center justify-between">
@@ -158,7 +170,6 @@
         </div>
     </div>
     <div class="flex-1 p-4 rounded-md">
-
 
     </div>
 </div>
