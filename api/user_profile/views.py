@@ -1,14 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
+from django.contrib import messages
+from django.http import JsonResponse, HttpResponseForbidden
 from .forms import UsernameForm, CustomerProfileForm, OwnerProfileForm
 from .models import CustomerProfile, OwnerProfile
-
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
-from authentication.models import Customer, RestaurantOwner
-from .models import CustomerProfile, OwnerProfile
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 
 @login_required
 def profile_view(request):
@@ -64,3 +60,32 @@ def edit_owner_profile(request):
         'user_form': user_form,
         'profile_form': profile_form
     })
+
+def logout_user(request):
+    logout(request)
+    return redirect('main:login')
+
+def delete_account(request):
+    if request.method == 'POST':
+        user = request.user
+        
+        # Check if the user has a CustomerProfile or OwnerProfile
+        try:
+            customer_profile = CustomerProfile.objects.get(user=user)
+            customer_profile.delete()
+        except CustomerProfile.DoesNotExist:
+            pass
+        
+        try:
+            owner_profile = OwnerProfile.objects.get(user=user)
+            owner_profile.delete()
+        except OwnerProfile.DoesNotExist:
+            pass
+        
+        # Delete the user account
+        user.delete()
+        
+        messages.success(request, "Your account has been successfully deleted.")
+        return redirect('home')  # Redirect to a home page or another appropriate page
+    
+    return HttpResponseForbidden("Invalid request method.")
