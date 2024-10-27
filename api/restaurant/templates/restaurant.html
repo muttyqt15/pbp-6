@@ -41,6 +41,13 @@
                     <i class="fas fa-pencil-alt"></i>
                 </a>
                 {% endif %}
+                <button class="py-2 w-full bg-licorice text-dutch rounded-xl my-2" id="toggle-bookmark" onclick="console.log('hey'); toggleBookmark({{ restaurant.id }})">
+                    {% if is_favorited %}
+                        Tambahkan ke Bookmark
+                    {% else %}
+                        Hilangkan dari Bookmark
+                    {% endif %}
+                </button>
             </div>
 
             <!-- Restaurant Info -->
@@ -74,6 +81,18 @@
                     {% endif %}
                 </div>
 
+                <!-- Restaurant District -->
+                <h3 class="text-xl text-[#FFFBF2] font-bold" style="font-family: 'Crimson Text', serif;">Distrik</h3>
+                <div class="restaurant district flex items-center justify-between">
+                    <input type="text" value="" class="border rounded-md p-2 w-full mr-4 hidden" placeholder="Enter District Here" onblur="saveField(this, 'district', 'Enter District Here')">
+                    <p class="text-[#FFFBF2]">{{ restaurant.district|default:"Enter District Here" }}</p>
+                    {% if is_owner %}
+                    <a class="edit-button text-[#FFFBF2] bg-gray-800 p-2 rounded-full bg-opacity-25 transition duration-300 ease-in-out hover:bg-opacity-100" onclick="makeEditable(this)">
+                        <i class="fas fa-pencil-alt"></i>
+                    </a>
+                    {% endif %}
+                </div>
+                
                 <!-- Restaurant Address -->
                  <h3 class="text-xl text-[#FFFBF2] font-bold" style="font-family: 'Crimson Text', serif;">Alamat</h3>
                 <div class="restaurant-address text-[#FFFBF2] flex items-center justify-between">
@@ -158,12 +177,40 @@
         </div>
     </div>
     <div class="flex-1 p-4 rounded-md">
-
-
+        <!-- Insert Reviews Here -->
     </div>
 </div>
 
     <!-- JavaScript -->
+     <script>
+        function getCSRFToken() {
+            const csrfToken = document.cookie
+              .split("; ")
+              .find((row) => row.startsWith("csrftoken="))
+              ?.split("=")[1];
+            return csrfToken || "";
+          }
+    function toggleBookmark(id) {
+        console.log('hello');
+        const toggleBookmarkButton = document.getElementById('toggle-bookmark');
+        fetch(`/bookmark/toggle/${id}/`, {
+            method: "POST",
+            headers: {
+              "X-CSRFToken": getCSRFToken(), // Include CSRF token for security
+              "Content-Type": "application/json",
+            },
+          })
+            .then((response) => response.json())
+            .then((data) => {
+                const button = document.getElementById("toggle-bookmark");
+                console.log(data)
+                button.textContent = data.is_favorited
+                  ? "Hilangkan dari Bookmark"
+                  : "Tambahkan ke Bookmark";
+            })
+            .catch((error) => console.error("Error:", error));
+    }
+     </script>
     <script>
         function openAddMenuModal() {
             document.getElementById('addMenuModal').classList.remove('hidden');
