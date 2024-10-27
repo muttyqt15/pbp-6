@@ -33,48 +33,61 @@ def add_restaurant(request):
 
     form = RestaurantForm(request.POST or None, request.FILES or None)
 
-    if request.method == "POST" and form.is_valid():
-        # Strip potentially malicious tags from input fields
-        cleaned_name = strip_tags(form.cleaned_data["name"])
-        cleaned_district = strip_tags(form.cleaned_data["district"])
-        cleaned_address = strip_tags(form.cleaned_data["address"])
-        cleaned_operational_hours = strip_tags(form.cleaned_data["operational_hours"])
-        photo = form.cleaned_data["photo"]
+    if request.method == "POST":
+        if form.is_valid():
+            # Strip potentially malicious tags from input fields
+            cleaned_name = strip_tags(form.cleaned_data["name"])
+            cleaned_district = strip_tags(form.cleaned_data["district"])
+            cleaned_address = strip_tags(form.cleaned_data["address"])
+            cleaned_operational_hours = strip_tags(form.cleaned_data["operational_hours"])
+            photo = form.cleaned_data.get("photo")
 
-        # Verify the uploaded file is an image
-        if isinstance(
-            photo, InMemoryUploadedFile
-        ) and not photo.content_type.startswith("image/"):
-            logger.warning(f"User {request.user} attempted to upload a non-image file.")
-            form.add_error("photo", "Uploaded file must be an image.")
-        else:
-            # Save the uploaded file and generate a URL
-            path = default_storage.save(
-                f"restaurant_photos/{photo.name}", ContentFile(photo.read())
-            )
-            photo_url = os.path.join(settings.MEDIA_URL, path)
+            # Verify the uploaded file is an image
+            if photo:
+                if isinstance(photo, InMemoryUploadedFile) and not photo.content_type.startswith("image/"):
+                    form.add_error("photo", "Uploaded file must be an image.")
+                else:
+                    # Save the uploaded file and generate a URL
+                    path = default_storage.save(f"restaurant_photos/{photo.name}", ContentFile(photo.read()))
+                    photo_url = os.path.join(settings.MEDIA_URL, path)
 
-            # Create and save the restaurant instance
-            restaurant = Restaurant(
-                name=cleaned_name,
-                district=cleaned_district,
-                address=cleaned_address,
-                operational_hours=cleaned_operational_hours,
-                photo_url=photo_url,
-            )
-            restaurant.save()
+                    # Create and save the restaurant instance
+                    restaurant = Restaurant(
+                        name=cleaned_name,
+                        district=cleaned_district,
+                        address=cleaned_address,
+                        operational_hours=cleaned_operational_hours,
+                        photo_url=photo_url,
+                    )
+                    restaurant.save()
 
-            # Link the restaurant to the restaurant owner
-            restaurant_owner = request.user.restaurantowner
-            restaurant_owner.restaurant = restaurant
-            restaurant_owner.save()
+                    # Link the restaurant to the restaurant owner
+                    restaurant_owner = request.user.restaurantowner
+                    restaurant_owner.restaurant = restaurant
+                    restaurant_owner.save()
 
-            # Redirect to the newly created restaurant page
-            print("success")
-            return redirect("restaurant", id=restaurant.id)
+                    # Redirect to the newly created restaurant page
+                    return redirect("restaurant", id=restaurant.id)
+
+            else:
+                # Create and save the restaurant instance without a photo
+                restaurant = Restaurant(
+                    name=cleaned_name,
+                    district=cleaned_district,
+                    address=cleaned_address,
+                    operational_hours=cleaned_operational_hours,
+                )
+                restaurant.save()
+
+                # Link the restaurant to the restaurant owner
+                restaurant_owner = request.user.restaurantowner
+                restaurant_owner.restaurant = restaurant
+                restaurant_owner.save()
+
+                # Redirect to the newly created restaurant page
+                return redirect("restaurant", id=restaurant.id)
 
     # If the form is not valid, or the request method is GET, render the form
-    print("failed")
     return render(request, "add_restaurant.html", {"form": form})
 
 
@@ -141,10 +154,9 @@ def restaurant(request, id):
 
             print(f"Is owner check result: {is_owner}")
 
-            food = Food.objects.filter(menu__restaurant=restaurant)
+            menus = Menu.objects.filter(restaurant=restaurant)
 
-            categories = set([f.category for f in food])
-
+            categories = set([f.category for f in menus])
             return render(
                 request,
                 "restaurant.html",
@@ -157,9 +169,9 @@ def restaurant(request, id):
                 },
             )
 
-        food = Food.objects.filter(menu__restaurant=restaurant)
+        menus = Menu.objects.filter(restaurant=restaurant)
 
-        categories = set([f.category for f in food])
+        categories = set([f.category for f in menus])
 
     return render(
         request,
@@ -174,7 +186,6 @@ def restaurant(request, id):
     )
 
 
-@login_required
 @resto_owner_only(redirect_url="/login/")
 @require_http_methods(["POST"])
 def add_menu(request):
@@ -206,7 +217,41 @@ def add_menu(request):
         return JsonResponse({'success': False, 'message': 'Failed to add menu due to an unexpected error.'})
 
 
-@login_required
+@resto_owner_only(redirect_url="/login/")
+@require_http_methods(["POST"])
+def delete_menu(request):
+    """
+    View to handle deleting a menu using AJAX.
+    Only the owner of the restaurant can delete menus.
+    """
+    try:
+        data = json.loads(request.body)
+        menu_id = data.get('menu_id')
+
+        # Ensure the user is a restaurant owner and has a restaurant
+        if not request.user.is_resto_owner:
+            return JsonResponse({'success': False, 'message': 'You do not have permission to delete this menu.'})
+
+        # Get the menu to delete
+        try:
+            menu = Menu.objects.get(id=menu_id, restaurant=request.user.restaurantowner.restaurant)
+        except Menu.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Menu does not exist or you do not have permission.'})
+
+        # Delete the menu
+        menu.delete()
+
+        return JsonResponse({'success': True, 'message': 'Menu deleted successfully.'})
+
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'message': 'Invalid JSON data.'})
+
+    except Exception as e:
+        logger.error(f"Error deleting menu: {e}")
+        return JsonResponse({'success': False, 'message': 'Failed to delete menu due to an unexpected error.'})
+    
+
+@resto_owner_only(redirect_url="/login/")
 @require_http_methods(["POST"])
 def add_food(request):
     """
@@ -246,7 +291,151 @@ def add_food(request):
         logger.error(f"Error adding food item: {e}")
         return JsonResponse({'success': False, 'message': 'Failed to add food item due to an unexpected error.'})
 
-        
+@resto_owner_only(redirect_url="/login/")
+@require_http_methods(["POST"])
+def update_photo(request):
+    """
+    View to handle updating a restaurant's photo using AJAX.
+    Only the owner of the restaurant can update the photo.
+    """
+    try:
+        # Ensure the user is a restaurant owner and has a restaurant
+        if not request.user.is_resto_owner:
+            return JsonResponse({'success': False, 'message': 'You do not have permission to update this photo.'})
+
+        # Get the restaurant associated with the user
+        try:
+            restaurant = request.user.restaurantowner.restaurant
+        except Restaurant.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Restaurant does not exist or you do not have permission.'})
+
+        # Get the uploaded photo file
+        photo = request.FILES.get('photo')
+        if not photo:
+            return JsonResponse({'success': False, 'message': 'No photo provided.'})
+
+        # Check if the uploaded file is an image
+        if isinstance(photo, InMemoryUploadedFile) and not photo.content_type.startswith("image/"):
+            return JsonResponse({'success': False, 'message': 'Uploaded file must be an image.'})
+
+        # Save the uploaded file and generate a URL
+        path = default_storage.save(f"restaurant_photos/{photo.name}", ContentFile(photo.read()))
+        photo_url = os.path.join(settings.MEDIA_URL, path)
+
+        # Update the restaurant instance with the new photo URL
+        restaurant.photo_url = photo_url
+        restaurant.save()
+
+        return JsonResponse({'success': True, 'message': 'Photo updated successfully.'})
+
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': f'Failed to update photo due to an unexpected error: {str(e)}'})    
+
+
+@resto_owner_only(redirect_url="/login/")
+@require_http_methods(["POST"])
+def edit_menu_category(request):
+    """
+    View to handle editing a menu category using AJAX.
+    Only the owner of the restaurant can edit menu categories.
+    """
+    try:
+        data = json.loads(request.body)
+        category_id = data.get('category_id')
+        new_category_name = data.get('category_name', '').strip()
+
+        # Ensure the user is a restaurant owner and has a restaurant
+        if not request.user.is_resto_owner:
+            return JsonResponse({'success': False, 'message': 'You do not have permission to edit this menu category.'})
+
+        # Get the menu category to edit
+        try:
+            menu = Menu.objects.get(id=category_id, restaurant=request.user.restaurantowner.restaurant)
+        except Menu.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Menu category does not exist or you do not have permission.'})
+
+        # Update the menu category
+        if new_category_name:
+            menu.category = new_category_name
+            menu.save()
+
+        return JsonResponse({'success': True, 'message': 'Menu category updated successfully.'})
+
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'message': 'Invalid JSON data.'})
+
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': f'Failed to update menu category due to an unexpected error: {str(e)}'})
+
+@resto_owner_only(redirect_url="/login/")
+@require_http_methods(["POST"])
+def edit_food(request):
+    """
+    View to handle editing a food item using AJAX.
+    Only the owner of the restaurant can edit food items.
+    """
+    try:
+        data = json.loads(request.body)
+        food_id = data.get('food_id')
+        new_food_name = data.get('food_name', '').strip()
+        new_food_price = data.get('food_price', '').strip()
+
+        # Ensure the user is a restaurant owner and has a restaurant
+        if not request.user.is_resto_owner:
+            return JsonResponse({'success': False, 'message': 'You do not have permission to edit this food item.'})
+
+        # Get the food item to edit
+        try:
+            food = Food.objects.get(id=food_id, menu__restaurant=request.user.restaurantowner.restaurant)
+        except Food.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Food item does not exist or you do not have permission.'})
+
+        # Update the food item
+        if new_food_name and new_food_price:
+            food.name = new_food_name
+            food.price = new_food_price
+            food.save()
+
+        return JsonResponse({'success': True, 'message': 'Food item updated successfully.'})
+
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'message': 'Invalid JSON data.'})
+
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': f'Failed to update food item due to an unexpected error: {str(e)}'})
+
+@resto_owner_only(redirect_url="/login/")
+@require_http_methods(["POST"])
+def delete_food(request):
+    """
+    View to handle deleting a food item using AJAX.
+    Only the owner of the restaurant can delete food items.
+    """
+    try:
+        data = json.loads(request.body)
+        food_id = data.get('food_id')
+
+        # Ensure the user is a restaurant owner and has a restaurant
+        if not request.user.is_resto_owner:
+            return JsonResponse({'success': False, 'message': 'You do not have permission to delete this food item.'})
+
+        # Get the food item to delete
+        try:
+            food = Food.objects.get(id=food_id, menu__restaurant=request.user.restaurantowner.restaurant)
+        except Food.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Food item does not exist or you do not have permission.'})
+
+        # Delete the food item
+        food.delete()
+
+        return JsonResponse({'success': True, 'message': 'Food item deleted successfully.'})
+
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'message': 'Invalid JSON data.'})
+
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': f'Failed to delete food item due to an unexpected error: {str(e)}'})
+    
 def menu_view(request, restaurant_id):
     restaurant = Restaurant.objects.get(id=restaurant_id)
     menus = restaurant.menu.all()  # Get all menus for the restaurant
