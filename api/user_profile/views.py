@@ -5,8 +5,8 @@ from django.contrib import messages
 from django.http import JsonResponse, HttpResponseForbidden
 from .forms import UsernameForm, CustomerProfileForm, OwnerProfileForm, UserProfileForm
 from .models import CustomerProfile, OwnerProfile
-from authentication.models import User, RestaurantOwner, Customer
-from review.models import Review
+from api.authentication.models import User, RestaurantOwner, Customer
+from api.review.models import Review
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 

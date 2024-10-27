@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path
-from .views import login
+# from .views import login
 from .views import profile_view, edit_customer_profile, edit_owner_profile, other_profile_view, logout_user, delete_account, edit_profile
 
 urlpatterns = [
