@@ -1,5 +1,6 @@
 from django.db import models
 from api.authentication.models import User
+from django.db.models import Count, F
 
 
 class Thread(models.Model):
@@ -29,6 +30,17 @@ class Thread(models.Model):
     def get_comments(self):
         return self.comments.all()
 
+    @classmethod
+    def get_trending_threads(cls, comment_weight=2, like_weight=1, limit=10):
+        return (
+            cls.objects.annotate(
+                num_comments=Count("comments"),  # Count the comments related to the thread
+                num_likes=Count("likes"),        # Count the likes related to the thread
+                trending_score=F("num_comments") * comment_weight + F("num_likes") * like_weight  # Calculate trending score
+            )
+            .order_by("-trending_score")  # Order by highest trending score
+            [:limit]  # Limit to top trending threads
+        )
     def __str__(self):
         return self.content if len(self.content) > 50 else f"{self.content[:50]}..."
 

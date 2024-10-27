@@ -45,7 +45,7 @@
 
   <!-- Dots indicators -->
   <div
-    class="absolute -bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2">
+    class="absolute -bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2 dots">
     <button
       class="w-3 h-3 rounded-full bg-white transition-colors duration-200"
       onclick="goToSlide(0)"></button>
@@ -62,7 +62,7 @@
   let currentSlide = 0;
   const slides = document.getElementById("slides");
   const totalSlides = 3;
-  const dots = document.querySelectorAll(".absolute.bottom-4 button");
+  const dots = document.querySelectorAll(".absolute.-bottom-6.left-1/2 button");
 
   function updateSlidePosition() {
     slides.style.transform = `translateX(-${currentSlide * 100}%)`;
