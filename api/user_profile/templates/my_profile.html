@@ -1,55 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Profile</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <style>
-        /* Basic styles for the modal */
-        .modal {
-            display: none; 
-            position: fixed; 
-            z-index: 1; 
-            left: 0;
-            top: 0;
-            width: 100%; 
-            height: 100%; 
-            overflow: auto; 
-            background-color: rgb(0,0,0); 
-            background-color: rgba(0,0,0,0.4); 
-            padding-top: 60px; 
-        }
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto; 
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%; 
-        }
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        .error {
-            color: red;
-            font-size: 0.9em;
-        }
-    </style>
-</head>
-<body>
-    <h1>Your Profile</h1>
-    <div>
+{% extends 'base.html' %}
+{% load static %}
+{% block meta %}
+<title>Berita</title>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
+<script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+<meta name="csrf-token" content="{{ csrf_token }}">
+{% endblock meta %}
+
+{% block content %}
+    <!-- <div>
+        <div>
+
+        </div>
+        <div>
+
+        </div>
+        
         <h2 id="usernameDisplay">{{ user.username }}</h2>
+
+
         
         <button id="editProfileBtn">Edit Profile</button>
         <button id="logoutBtn">Logout</button>
@@ -63,11 +32,157 @@
             <p id="bioDisplay">{{ owner_profile.bio }}</p>
             <button id="myRestoBtn">My Resto</button>
         {% endif %}
+    </div> -->
 
+    <!-- Profile Page -->
+    <div class="py-8 pt-28">
+    <div class="max-w-4xl mx-auto p-4 md:p-6 bg-[rgba(125,110,95,0.9)] text-[#fffbf2] rounded-lg shadow-lg transition-transform transform hover:scale-105">
+        <h1 class="text-2xl md:text-3xl font-bold mb-6 text-center">Profile Page</h1>
+
+        <!-- Main Profile Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+
+            <!-- Avatar Section -->
+            <div class="text-center">
+                <h2 class="text-xl md:text-2xl font-semibold mb-4">Avatar</h2>
+
+                <!-- userNow.profile_pic -->
+                {% if profile %}
+                <img src="{{ profile.image }}" alt="profile" class="w-32 h-32 md:w-48 md:h-48 rounded-full mx-auto object-cover mb-4">
+                {% else %}
+                <div class="w-32 h-32 md:w-48 md:h-48 flex items-center justify-center bg-gray-200 rounded-full mx-auto text-2xl md:text-4xl font-semibold">
+                    <!-- {{ profile.password|first }} -->
+                </div>
+                {% endif %}
+
+                <!-- Button Section -->
+                <div class="flex flex-col gap-4 md:gap-4 mt-2 md:mt-4">
+                    <a href="/bookmark/" class="w-full bg-[#B8A08E] hover:bg-[#a48d7b] text-[#fffbf2] font-medium py-2 px-4 rounded-lg transition duration-300">
+                        My Bookmark
+                    </a>
+                    <a href="/review" class="w-full bg-[#8E7263] hover:bg-[#7c6558] text-[#fffbf2] font-medium py-2 px-4 rounded-lg transition duration-300">
+                        My Review
+                    </a>
+                    {% if user.is_resto_owner %}
+                        <a href="{% url 'restaurant' userNow.user.restaurant.id  %}" class="w-full bg-[#5E4B3C] hover:bg-[#4f4033] text-[#fffbf2] font-medium py-2 px-4 rounded-lg transition duration-300">
+                            My Resto
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Profile Form Section -->
+            <div>
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl md:text-2xl font-semibold mb-4">Profile</h2>
+
+                    <div class="flex items-center gap-2">
+                        <button id="editProfileBtn" type="submit" class="bg-[#B8A08E] hover:bg-[#c1a386] text-[#fffbf2] py-2 px-4 rounded-lg">
+                            Edit Profile
+                        </button>
+                        <button id="deleteProfileBtn" type="submit" class="bg-[#B8A08E] hover:bg-[#c1a386] text-[#fffbf2] py-2 px-4 rounded-lg" onclick="showDeleteModal()">
+                            Delete Profile
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Full Name -->
+                <div class="mb-4">
+                    <label for="fullname" class="block font-medium text-[#fffbf2]">Username</label>
+                    <input id="usernameDisplay" type="text" name="fullname" value="{{ userNow.user.user.username }}"
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm 
+                            focus:outline-none focus:ring-[#fffbf2] focus:border-[#fffbf2]" disabled>
+                </div>
+
+                <!-- Email (Disabled) -->
+                <div class="mb-4">
+                    <label for="email" class="block font-medium text-[#fffbf2]">Email</label>
+                    <input type="text" id="emailDisplay" name="email" value="{{ userNow.user.user.email }}" disabled
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm 
+                            focus:outline-none focus:ring-[#fffbf2] focus:border-[#fffbf2]">
+                </div>
+
+                <!-- Bio (Disabled) -->
+                <div class="mb-4">
+                    <label for="bio" class="block font-medium text-[#fffbf2]">Bio</label>
+                    <textarea id="bioDisplay" name="bio" rows="6" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm 
+                        focus:outline-none focus:ring-[#fffbf2] focus:border-[#fffbf2]" disabled>{{ userNow.bio }}</textarea>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
+        <div id="editProfileModalContent" class="relative bg-[rgba(125,110,95,0.9)] rounded-lg shadow-lg w-11/12 md:w-2/3 lg:w-1/3 mx-4 transition-opacity transform scale-95 opacity-0">
+            <div class="flex items-center justify-between p-4 border-b border-gray-200 rounded-t">
+                <h3 class="text-lg md:text-xl font-semibold text-[#fffbf2]">Edit Profile</h3>
+                <button type="button" class="text-[#fffbf2] bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5" id="closeEditProfileModalBtn">
+                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="px-6 py-4 space-y-6">
+                <form id="editProfileForm" method="POST">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label for="editUsername" class="block text-sm font-medium text-[#fffbf2]">Username</label>
+                        <input type="text" id="editUsername" name="judul" class="mt-1 block w-full bg-[#aba197] text-[#fffbf2] border border-[#fffbf2] rounded-md p-2" required value="{{ userNow.user.user.username }}">
+                    </div>
+                    <div class="mb-4">
+                        <label for="editEmail" class="block text-sm font-medium text-[#fffbf2]">Email</label>
+                        <input type="text" id="editEmail" name="judul" class="mt-1 block w-full bg-[#aba197] text-[#fffbf2] border border-[#fffbf2] rounded-md p-2" required value="{{ userNow.user.user.email }}">
+                    </div>
+                    <div class="mb-4">
+                        <label for="bio" class="block text-sm font-medium text-[#fffbf2]">Biography:</label>
+                        <textarea name="bio" id="editBio" rows="4" class="mt-1 block w-full bg-[#aba197] text-[#fffbf2] border border-[#fffbf2] rounded-md p-2">{{ userNow.bio }}</textarea>
+                        <span class="error text-red-500" id="bioError"></span>
+                    </div>
+                </form>
+            </div>
+
+
+            <!-- Modal Footer -->
+            <div class="flex justify-end p-4 border-t border-gray-200 rounded-b space-x-2">
+                <button type="submit" form="editProfileForm" class="bg-[#c1a386] hover:bg-[#a48b72] text-white font-bold py-2 px-4 rounded-lg">Save Changes</button>
+                <button type="button" class="bg-[#c5beb7] hover:bg-[#b9b1a9] text-white font-bold py-2 px-4 rounded-lg" id="cancelEditProfileButton">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- DELETE MODAL -->
+    <div id="deleteModal" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-50 w-full flex items-center justify-center bg-gray-800 bg-opacity-50 overflow-x-hidden overflow-y-auto transition-opacity duration-300 ease-out">
+        <div id="deleteModalContent" style="background-color: rgba(125, 110, 95, 0.9);" class="relative rounded-lg shadow-lg w-5/6 sm:w-3/4 md:w-1/2 lg:w-1/3 mx-4 sm:mx-0 transform scale-95 opacity-0 transition-transform transition-opacity duration-300 ease-out">
+            <!-- Modal header -->
+            <div class="flex items-center justify-between p-4 border-b border-gray-200 rounded-t">
+                <h3 class="text-xl font-semibold text-[#fffbf2]">Hapus Akun</h3>
+                <button type="button" class="text-[#fffbf2] bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center" id="closeDeleteModalBtn">
+                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <!-- Modal body -->
+            <div class="px-6 py-4 space-y-6 form-style">
+                <p class="text-[#fffbf2]">Apakah Anda yakin ingin menghapus akun saat ini?</p>
+            </div>
+            <!-- Modal footer -->
+            <div class="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-2 p-6 border-t border-gray-200 rounded-b justify-center md:justify-end">
+                <button type="button" id="confirmDeleteButton" class="bg-[#c1a386] hover:bg-[#a48b72] text-white font-bold py-2 px-4 rounded-lg">Delete</button>
+                <button type="button" class="bg-[#c5beb7] hover:bg-[#b9b1a9] text-white font-bold py-2 px-4 rounded-lg" id="cancelDeleteButton">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+
     <!-- Modal -->
-    <div id="editProfileModal" class="modal">
+    <!-- <div id="editProfileModal" class="modal hidden">
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2>Edit Profile</h2>
@@ -75,109 +190,153 @@
                 {% csrf_token %}
                 <div>
                     <label for="username">Username:</label>
-                    {{ user_form.username }}
+                    {{ user.username }}
                     <span class="error" id="usernameError"></span>
                 </div>
                 <div>
                     <label for="bio">Biography:</label>
-                    <textarea name="bio" id="bio">{{ user.bio }}</textarea>
+                    <textarea name="bio" id="bio">{{ user_form.bio }}</textarea>
                     <span class="error" id="bioError"></span>
                 </div>
                 <button type="submit">Save Changes</button>
             </form>
         </div>
-    </div>
+    </div> -->
 
     <script>
-        $(document).ready(function() {
-        // Handle logout button click
-        $('#logoutBtn').on('click', function() {
-            $.ajax({
-                type: 'POST',
-                url: '{% url "authentication:logout" %}',  // Use Django's URL template tag
-                data: {
-                    'csrfmiddlewaretoken': '{{ csrf_token }}'  // Include CSRF token
-                },
-                success: function(response) {
-                    window.location.href = '/auth/login/';  // Redirect to login page
-                },
-                error: function(xhr, status, error) {
-                    console.error('Logout Error:', error);
-                }
-            });
-        });
+        document.addEventListener('DOMContentLoaded', function() {
+            const editProfileForm = document.getElementById('editProfileForm');
 
-        // Handle delete account button click
-        $('#deleteAccountBtn').on('click', function() {
-            if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
-                $.ajax({
-                    type: 'POST',
-                    url: '{% url "delete_account" %}',  // Use Django's URL template tag
-                    data: {
-                        'csrfmiddlewaretoken': '{{ csrf_token }}'  // Include CSRF token
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            window.location.href = '/auth/login/';  // Redirect to home page after deletion
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Delete Account Error:', error);
-                    }
-                });
-            }
-        });
-        $(document).ready(function() {
-            // Show the modal when the edit button is clicked
-            $('#editProfileBtn').on('click', function() {
-                $('#editProfileModal').show();
-            });
-
-            // Close the modal when the close button is clicked
-            $('.close').on('click', function() {
-                $('#editProfileModal').hide();
-            });
-
-            // Close the modal when clicking outside of the modal
-            $(window).on('click', function(event) {
-                if ($(event.target).is('#editProfileModal')) {
-                    $('#editProfileModal').hide();
-                }
-            });
-
-            // Handle form submission via AJAX
-            $('#editProfileForm').on('submit', function(event) {
+            editProfileForm.addEventListener('submit', function(event) {
                 event.preventDefault(); // Prevent the default form submission
 
-                $.ajax({
-                    type: 'POST',
-                    url: '/edit-profile/', // URL for the combined edit profile view
-                    data: $(this).serialize(), // Serialize the form data
-                    success: function(response) {
-                        if (response.success) {
-                            // Update the displayed username and bio without reloading the page
-                            $('#usernameDisplay').text(response.updated_username);
-                            $('#bioDisplay').text(response.updated_bio);
-                            $('#editProfileModal').hide(); // Close the modal
-                        } else {
-                            // Clear previous error messages
-                            $('.error').text('');
+                // Serialize the form data
+                const formData = new FormData(editProfileForm);
 
-                            // Display errors
-                            if (response.errors.username) {
-                                $('#usernameError').text(response.errors.username[0]);
-                            }
-                            if (response.errors.bio) {
-                                $('#bioError').text(response.errors.bio[0]);
-                            }
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('AJAX Error:', error);
+                fetch('/profile/edit_profile/', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': formData.get('csrfmiddlewaretoken'), // CSRF token for Django
                     }
-                });
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update the displayed username, email, and bio without reloading the page
+                        document.getElementById('usernameDisplay').value = data.updated_username;
+                        document.getElementById('emailDisplay').value = data.updated_email;
+                        document.getElementById('bioDisplay').value = data.updated_bio;
+                        
+                        document.getElementById('editUsername').value = data.updated_username;
+                        document.getElementById('editEmail').value = data.updated_email;
+                        document.getElementById('editBio').value = data.updated_bio;
+                        
+                        // Hide the modal
+                        document.getElementById('editProfileModal').classList.add('hidden');
+                    } else {
+                        // Clear previous error messages
+                        document.querySelectorAll('.error').forEach(errorElem => {
+                            errorElem.textContent = '';
+                        });
+
+                        // Display errors if any
+                        if (data.errors.username) {
+                            document.getElementById('usernameError').textContent = data.errors.username[0];
+                        }
+                        if (data.errors.bio) {
+                            document.getElementById('bioError').textContent = data.errors.bio[0];
+                        }
+                    }
+                })
+                .catch(error => {})
             });
         });
-    })
+
+        // Open modal and load current data
+        document.getElementById('editProfileBtn').addEventListener('click', () => {
+            const modal = document.getElementById('editProfileModal');
+            modal.classList.remove('hidden');  // Show modal
+            modal.classList.add('flex');       // Flex to center
+
+            // Delay to allow transform animation
+            setTimeout(() => {
+                modal.querySelector('#editProfileModalContent').classList.remove('scale-95', 'opacity-0');
+                modal.querySelector('#editProfileModalContent').classList.add('scale-100', 'opacity-100');
+            }, 10);
+        });
+
+        // Close modal function
+        document.getElementById('closeEditProfileModalBtn').addEventListener('click', () => {
+            const modal = document.getElementById('editProfileModal');
+            modal.classList.add('hidden');      // Hide modal
+            modal.classList.remove('flex');     // Remove flex for transition reset
+        });
+
+
+       
+
+        function previewImage(event, wrapImageID) {
+            const wrapImage = document.getElementById(`${wrapImageID}`);
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+            wrapImage.classList.remove('hidden');
+            wrapImage.innerHTML = `<img id="imagePreview" src=${e.target.result} alt="Image Preview" class="object-cover w-auto h-auto rounded-md" />`;
+            };
+
+            if (file) {
+            reader.readAsDataURL(file); 
+            } else {
+            wrapImage.innerHTML = "";
+            }
+        }
     </script>
-</body>
+
+<script>
+    function showDeleteModal() {
+        const modal = document.getElementById('deleteModal');
+        const modalContent = document.getElementById('deleteModalContent');
+
+        modal.classList.remove('hidden'); 
+        setTimeout(() => {
+            modalContent.classList.remove('opacity-0', 'scale-95');
+            modalContent.classList.add('opacity-100', 'scale-100');
+        }, 50); 
+
+        document.getElementById("cancelDeleteButton").addEventListener("click", hideDeleteModal);
+        document.getElementById("closeDeleteModalBtn").addEventListener("click", hideDeleteModal);
+
+        document.getElementById('confirmDeleteButton').onclick = function() {
+            const deleteUrl = `/profile/delete_account`;  
+
+            fetch(deleteUrl)
+            .then(response => {
+                console.log(response);
+                if (response.ok) {
+                    window.location.href = '/auth/login/';
+                    hideDeleteModal(); 
+                } else {
+                    console.error('Error deleting berita:', response.statusText);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+            
+        };
+    }
+
+    function hideDeleteModal() {
+        const modal = document.getElementById('deleteModal');
+        const modalContent = document.getElementById('deleteModalContent');
+
+        modalContent.classList.remove('opacity-100', 'scale-100');
+        modalContent.classList.add('opacity-0', 'scale-95');
+
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 150); 
+    }
+</script>
+
+{% endblock content %}

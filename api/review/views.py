@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse, HttpResponse
+from django.http import HttpResponseForbidden, JsonResponse, HttpResponse
 from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
@@ -50,6 +50,7 @@ def all_review(request):
     context = {
         'all_reviews': reviews,
     }
+    print(context)
     return render(request, 'all_review.html', context)
 
 # Main review view for the logged-in user's reviews

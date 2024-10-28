@@ -491,7 +491,6 @@ def menu_view(request, restaurant_id):
     menus = restaurant.menu.all()  # Get all menus for the restaurant
     return render(request, 'menu_card.html', {'menus': menus})
 
-
 def get_restaurant_menu(request, id):
     """Returns a single restaurant's menu by ID"""
     restaurant = get_object_or_404(Restaurant, id=id)
