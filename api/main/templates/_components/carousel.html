@@ -2,12 +2,10 @@
   <!-- Carousel container -->
   <div class="relative overflow-hidden rounded-lg shadow-lg">
     <!-- Slides container -->
-    <div
-      class="flex transition-transform duration-500 ease-in-out h-full"
-      id="slides">
-        {% include '_components/carousel-card.html' %}
-        {% include '_components/carousel-card.html' %}
-        {% include '_components/carousel-card.html' %}
+    <div class="flex transition-transform duration-500 ease-in-out h-full" id="slides">
+      {% for rv in reviews %}
+        {% include '_components/carousel-card.html' with detail=rv %}
+      {% endfor %}
     </div>
 
     <!-- Navigation buttons -->
@@ -19,11 +17,7 @@
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24">
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M15 19l-7-7 7-7"></path>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
       </svg>
     </button>
     <button
@@ -34,43 +28,39 @@
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24">
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M9 5l7 7-7 7"></path>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
       </svg>
     </button>
   </div>
 
   <!-- Dots indicators -->
   <div
-    class="absolute -bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2 dots">
-    <button
-      class="w-3 h-3 rounded-full bg-white transition-colors duration-200"
-      onclick="goToSlide(0)"></button>
-    <button
-      class="w-3 h-3 rounded-full bg-white/50 transition-colors duration-200"
-      onclick="goToSlide(1)"></button>
-    <button
-      class="w-3 h-3 rounded-full bg-white/50 transition-colors duration-200"
-      onclick="goToSlide(2)"></button>
+    id="dots"
+    class="absolute -bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2">
   </div>
 </div>
 
 <script>
   let currentSlide = 0;
   const slides = document.getElementById("slides");
-  const totalSlides = 3;
-  const dots = document.querySelectorAll(".absolute.-bottom-6.left-1/2 button");
+  const dotsContainer = document.getElementById("dots");
+  const totalSlides = slides.children.length;
+
+  // Create dots based on totalSlides
+  for (let i = 0; i < totalSlides; i++) {
+    const dot = document.createElement("button");
+    dot.className = "w-3 h-3 rounded-full transition-colors duration-200" + (i === 0 ? " bg-white" : " bg-white/50");
+    dot.onclick = () => goToSlide(i);
+    dotsContainer.appendChild(dot);
+  }
+
+  const dots = dotsContainer.querySelectorAll("button");
 
   function updateSlidePosition() {
     slides.style.transform = `translateX(-${currentSlide * 100}%)`;
     // Update dots
     dots.forEach((dot, index) => {
-      dot.className = `w-3 h-3 rounded-full transition-colors duration-200 ${
-        index === currentSlide ? "bg-white" : "bg-white/50"
-      }`;
+      dot.className = `w-3 h-3 rounded-full transition-colors duration-200 ${index === currentSlide ? "bg-white" : "bg-white/50"}`;
     });
   }
 
