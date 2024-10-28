@@ -63,7 +63,7 @@ class Customer(models.Model):
     # bookmarks = models.ManyToManyField(Restaurant, blank=True)
 
     def __str__(self) -> str:
-        return self.user.username
+        return f"{self.user.username} "
 
     @classmethod
     def get_by_username(cls, username: str):

@@ -132,6 +132,7 @@ def restaurant(request, id):
     restaurant = get_object_or_404(Restaurant, id=id)
     food = []
     categories = set()
+    reviews = restaurant.reviews.all()
 
     # More detailed debug prints
     print(f"User authenticated: {request.user.is_authenticated}")
@@ -173,7 +174,8 @@ def restaurant(request, id):
                     "foods": food,
                     "categories": categories,
                     "is_owner": is_owner,
-                    "is_favorited": is_favorited
+                    "is_favorited": is_favorited,
+                    "reviews": reviews,
                 },
             )
 
@@ -190,6 +192,7 @@ def restaurant(request, id):
             "foods": food,
             "categories": categories,
             "is_owner": False,
+            "reviews": reviews,
         },
     )
 
