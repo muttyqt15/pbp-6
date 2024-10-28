@@ -9,13 +9,20 @@
       class="rounded-3xl bg-transparent backdrop-blur-sm p-8 relative m-[2px]">
       <div
         class="relative z-10 flex gap-4 lg:gap-2 flex-col items-center gap-2">
-        <h3 class="text-2xl font-bold text-left w-full font-pro">
+        <h3 class="text-2xl font-bold text-center w-full font-pro">
           {{ resto.name }}
         </h3>
+        {% if resto.photo_url %}
+        <img
+          src="{{ resto.photo_url }}"
+          alt="food"
+          class="h-48 rounded-lg border border-coyote aspect-square object-cover" />
+        {% else %}
         <img
           src="{% static 'images/hero.jpg' %}"
           alt="food"
-          class="h-48 rounded-lg border border-coyote" />
+          class="h-48 rounded-lg border border-coyote aspect-square" />
+        {% endif %}
         <p
           class="text-[#fff] font-reguler font-lora text-left text-xs lg:text-sm w-full">
           Jam Operasional: <span>{{ resto.operational_hours }}</span>

@@ -143,16 +143,21 @@ def restaurant_list(request):
 
 def restaurant(request, id):
     """Main restaurant page"""
-    user = request.user
-    restaurant = get_object_or_404(Restaurant, id=id)
-    food = []
-    categories = set()
-    reviews = restaurant.reviews.all()
+    user = request.user  # Get the current user
+    restaurant = get_object_or_404(Restaurant, id=id)  # Retrieve the restaurant object
+    food = []  # Initialize food list
+    categories = set()  # Initialize categories set
+    reviews = restaurant.reviews.all()  # Get all reviews for the restaurant
+
+    # Check if the user is authenticated for bookmarking
     is_favorited = Bookmark.objects.filter(
-        user=request.user, restaurant=restaurant
+        user=user if user.is_authenticated else None,  # Use None if anonymous
+        restaurant=restaurant,
     )
-    print(is_favorited)
-    if request.user.is_authenticated:
+
+    # Determine if the user is the restaurant owner
+    is_owner = False
+    if user.is_authenticated:
         if user.is_resto_owner:
             is_owner = (
                 hasattr(user, "resto_owner")
@@ -162,29 +167,11 @@ def restaurant(request, id):
 
             print(f"Is owner check result: {is_owner}")
 
-            menus = Menu.objects.filter(restaurant=restaurant)
-
-            categories = set([f.category for f in menus])
-
-            print(is_favorited, "hello")
-            return render(
-                request,
-                "restaurant.html",
-                {
-                    "user": user,
-                    "restaurant": restaurant,
-                    "foods": food,
-                    "categories": categories,
-                    "is_owner": is_owner,
-                    "is_favorited": is_favorited,
-                    "reviews": reviews,
-                },
-            )
-
+        # Fetch the menus and categories if the user is authenticated
         menus = Menu.objects.filter(restaurant=restaurant)
-
         categories = set([f.category for f in menus])
 
+    # Render the restaurant page for both authenticated and anonymous users
     return render(
         request,
         "restaurant.html",
@@ -193,9 +180,9 @@ def restaurant(request, id):
             "restaurant": restaurant,
             "foods": food,
             "categories": categories,
-            "is_owner": False,
+            "is_owner": is_owner,
+            "is_favorited": is_favorited.exists(),  # Return a boolean for easier template handling
             "reviews": reviews,
-            "is_favorited": is_favorited,
         },
     )
 

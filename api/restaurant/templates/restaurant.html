@@ -52,12 +52,19 @@
             <i class="fas fa-pencil-alt"></i>
           </a>
           {% endif %}
+          {% if user.is_authenticated %}
           <button
             class="py-2 w-full bg-licorice text-dutch rounded-xl my-2"
             id="toggle-bookmark"
             onclick="console.log('hey'); toggleBookmark({{ restaurant.id }})">
-            {% if is_favorited %} Hilangkan dari Bookmark {% else %} Tambahkan ke Bookmark {% endif %}
+            {% if is_favorited %} 
+                Hilangkan dari Bookmark 
+              {% else %} 
+                Tambahkan ke Bookmark 
+              {% endif %}
+            {% endif %}
           </button>
+              
         </div>
 
         <!-- Restaurant Info -->
