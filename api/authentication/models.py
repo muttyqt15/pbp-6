@@ -3,15 +3,6 @@ from django.contrib.auth.models import AbstractUser
 from .constant import Role
 from api.restaurant.models import Restaurant
 
-# Create your models here.
-
-
-# Already has
-# - username
-# - email
-# - first_name
-# - last_name
-# - password
 class User(AbstractUser):
     username = models.CharField(max_length=150, unique=True)
     # profile = models.OneToOneField()
@@ -59,11 +50,12 @@ class RestaurantOwner(models.Model):
 
 class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    phone_number = models.CharField(max_length=15, blank=True, null=True)  # Added phone number field
     # reviews = models.ManyToManyField(Review, blank=True)
     # bookmarks = models.ManyToManyField(Restaurant, blank=True)
 
     def __str__(self) -> str:
-        return f"{self.user.username} - {self.phone_number}"
+        return f"{self.user.username}"
 
     @classmethod
     def get_by_username(cls, username: str):

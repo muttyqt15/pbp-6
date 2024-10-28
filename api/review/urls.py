@@ -1,10 +1,9 @@
 from django.urls import path
-from .views import all_review, main_review, create_review, delete_review_ajax, edit_review_ajax, like_review_ajax, show_json, show_json_by_id
+from .views import main_review, create_review, delete_review_ajax, edit_review_ajax, like_review_ajax, show_json, show_json_by_id
 
 app_name = 'review'
 
 urlpatterns = [
-    path('', all_review, name='all_review'), 
     path('main/', main_review, name='main_review'), 
     path('create/<str:id>/', create_review, name='create_review'),
     path('edit/ajax/<uuid:id>/', edit_review_ajax, name='edit_review_ajax'), 

@@ -39,10 +39,10 @@ def like_review_ajax(request, id):
         "total_likes": review.likes.count()
     })
 
-def all_review(request):
+def all_review(request, id):
     # Retrieve all reviews, ordered by likes and last edited time
     reviews = (
-        Review.objects.all()
+        Review.objects.filter(customer=request.user.customer, restoran=request.restoran_id)
         .annotate(num_likes=Count('likes'))
         .order_by('-num_likes', '-waktu_edit_terakhir')
     )
