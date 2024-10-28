@@ -266,7 +266,17 @@
             <p class="text-sm">Rating: {{ review.penilaian }}</p>
             <p class="text-sm">{{ review.teks_ulasan }}</p>
             <p class="text-sm">Date: {{ review.tanggal }}</p>
-            <p class="text-sm">Likes: {{ review.total_likes }}</p>
+            <p class="text-sm text-[#EEE2CC]"><strong>Like👍 :</strong> {{ review.total_likes }}</p>
+            <div class="max-w-sm mx-auto">
+              {% if review.images.all %}
+                  {% for image in review.images.all %}
+                  <img src="{{ image.image.url }}" alt="Review image" class="w-100 h-50 object-cover rounded-lg mb-4">
+                  {% endfor %}
+              {% else %}
+                  <p class="text-sm text-[#EEE2CC] mb-1">No images available.</p>
+              {% endif %}
+
+          </div>
         </div>
             {% empty %}
             <p class="text-[#FFFBF2]">Belum ada ulasan untuk restoran ini.</p>
