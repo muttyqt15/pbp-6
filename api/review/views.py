@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
+
 from django.http import HttpResponseForbidden, JsonResponse, HttpResponse
+
 from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
@@ -8,6 +10,7 @@ from .forms import ReviewForm
 from .models import Review, ReviewImage
 from django.db.models import Count
 from django.utils import timezone
+
 from django.http import HttpResponseForbidden
 from api.restaurant.models import Restaurant
 
@@ -51,7 +54,6 @@ def all_review(request):
     context = {
         'all_reviews': reviews,
     }
-    print(context)
     return render(request, 'all_review.html', context)
 
 # Main review view for the logged-in user's reviews
@@ -65,6 +67,7 @@ def main_review(request):
 @login_required
 @customer_required
 def create_review(request):
+
     restaurants = Restaurant.objects.all()
     if request.method == "POST":
         form = ReviewForm(request.POST, request.FILES)
@@ -73,6 +76,7 @@ def create_review(request):
             review = form.save(commit=False)
             review.customer = request.user.customer  
             review.restoran = form.cleaned_data.get('restaurant')
+
             review.display_name = form.cleaned_data.get('display_name')
             review.save()
 
@@ -81,11 +85,13 @@ def create_review(request):
                 ReviewImage.objects.create(review=review, image=img)
             
             return redirect('review:main_review')
+
         else:
             print(form.errors)  # Print form errors for debugging
     else:
         form = ReviewForm()
     return render(request, 'create_review.html', {'form': form, 'restaurants': restaurants})
+
 
 @login_required
 @customer_required
