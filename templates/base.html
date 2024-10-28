@@ -38,11 +38,13 @@
       };
     </script>
     {% block meta %} {% endblock meta %}
+    <script src="https://cdn.tailwindcss.com"></script>
   </head>
 
   <body>
     <main class="min-h-screen w-full font-lora bg-batik">
       {% include 'navbar.html' %} {% block content %} {% endblock content %}
+      {% include 'footer.html' %}
     </main>
   </body>
 </html>
