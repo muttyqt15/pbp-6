@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Count, F
 
 
 class Restaurant(models.Model):
@@ -8,7 +9,16 @@ class Restaurant(models.Model):
     address = models.TextField()
     operational_hours = models.CharField(max_length=255)
     photo_url = models.URLField(blank=True) 
-
+    
+    @classmethod
+    def get_trending_restaurants(cls, limit=3):
+        return (
+            cls.objects.annotate(
+                num_reviews=Count("reviews"),  
+            )
+            .order_by("-num_reviews")  # Order by highest trending score
+            [:limit]  # Limit to top trending restaurants
+        )
     def __str__(self):
         return self.name
 

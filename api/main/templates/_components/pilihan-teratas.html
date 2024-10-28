@@ -15,6 +15,7 @@
         alt="food"
         class="h-44 sm:h-48 lg:h-72 object-contain border rounded-3xl" />
       <button
+        onclick="window.location.href = /restaurant/{{ resto.id }}"
         class="w-fit px-6 sm:px-12 lg:px-24 py-2 bg-lion/80 font-reguler text-[#fff] rounded-full hover:bg-dutch hover:text-raisin active:bg-[#A18971] duration-300 transition">
         Melihat Rincian
       </button>
@@ -24,9 +25,9 @@
       Apa kata mereka tentang
       <span
         class="font-extrabold bg-clip-text bg-gradient-to-r from-[#fff] to-dutch text-transparent text-center">
-        Restoran Name</span
+        Warung Selat "Mbak Lies"</span
       >?
     </h3>
-    {% include '_components/carousel.html' %}
+    {% include '_components/carousel.html' with reviews=reviews %}
   </div>
 </div>

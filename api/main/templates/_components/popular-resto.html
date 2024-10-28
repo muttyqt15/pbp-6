@@ -5,8 +5,8 @@
     Restoran Popular
   </h1>
   <div class="flex flex-col md:flex-row gap-6 w-full justify-center items-center">
-    {% include '_components/resto-card.html' %}
-    {% include '_components/resto-card.html' %}
-    {% include '_components/resto-card.html' %}
+    {% for trend in trending %}
+      {% include '_components/resto-card.html' with resto=trend %}
+    {% endfor %}
   </div>
 </div>
