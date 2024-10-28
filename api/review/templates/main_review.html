@@ -12,7 +12,7 @@
     <div class="container mx-auto max-w-lg p-8 bg-gradient-to-b from-[#39352C]/70 to-[#C3B396]/70 rounded-3xl shadow-md mt-32 relative z-10 text-center backdrop-blur-md bg-transparent m-[2px]">
         <h2 class="text-4xl font-bold text-[#EEE2CC] mb-30">Reviews</h2>
         <p class="mb-4 text-[#EEE2CC]">Bagikan pengalaman Anda dengan restoran kami melalui ulasan!</p>
-        <a href="{% url 'review:create_review' %}" class="bg-licorice text-white py-2 px-4 rounded-xl hover:bg-lion-600 transition duration-300">
+        <a href="{% url 'review:create_review' %}" class="bg-licorice text-white py-2 px-4 rounded-md hover:bg-lion-600 transition duration-300">
             Tulis Ulasan
         </a>
     </div>
@@ -64,7 +64,7 @@
     <!-- Back to Restaurant Button -->
     <div class="container mx-auto max-w-lg p-6 bg-opacity-40 rounded-lg shadow-md mt-6 mb-8 relative z-10 text-center">
         {% if restaurant_id %}
-        <a href="{% url 'restaurant' id=restaurant_id %}" class="bg-[#240F0E] text-white px-4 py-2 rounded mt-4 inline-block">Kembali ke Restoran</a>
+        <a href="{% url 'restaurant' id=restaurant_id %}" class="bg-coyote text-white px-4 py-2 rounded mt-4 inline-block">Kembali ke Restoran</a>
         {% else %}
         <p class="text-white">Restoran tidak ditemukan.</p>
         {% endif %}
