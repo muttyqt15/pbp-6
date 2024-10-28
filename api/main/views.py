@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from api.authentication.models import User, RestaurantOwner, Customer
 from api.authentication.decorators import resto_owner_only, customer_only
+from api.restaurant.models import Restaurant
 
 
 def index(request):
