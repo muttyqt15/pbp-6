@@ -45,13 +45,13 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "api.restaurant",
-    "api.authentication",
+    "api.authentication.apps.AuthenticationConfig",  # Keep only one of these lines
     "api.review",
     "api.thread",
     "api.news",
     "api.main",
     "api.bookmark",
-    "api.user_profile",
+    "api.user_profile.apps.UserProfileConfig",
 ]
 
 MIDDLEWARE = [

@@ -174,6 +174,7 @@ def restaurant(request, id):
                     "foods": food,
                     "categories": categories,
                     "is_owner": is_owner,
+                
                     "is_favorited": is_favorited,
                     "reviews": reviews,
                 },
@@ -493,7 +494,6 @@ def menu_view(request, restaurant_id):
     restaurant = Restaurant.objects.get(id=restaurant_id)
     menus = restaurant.menu.all()  # Get all menus for the restaurant
     return render(request, 'menu_card.html', {'menus': menus})
-
 
 def get_restaurant_menu(request, id):
     """Returns a single restaurant's menu by ID"""
