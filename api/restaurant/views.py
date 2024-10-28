@@ -174,6 +174,7 @@ def restaurant(request, id):
                     "foods": food,
                     "categories": categories,
                     "is_owner": is_owner,
+                
                     "is_favorited": is_favorited,
                     "reviews": reviews,
                 },
