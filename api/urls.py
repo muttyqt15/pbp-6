@@ -10,4 +10,5 @@ urlpatterns: list[URLResolver] = [
     path("bookmark/", include("api.bookmark.urls")),
     path("thread/", include("api.thread.urls")),
     path('news/', include('api.news.urls')),
+    path('profile/', include('api.user_profile.urls')),
 ]

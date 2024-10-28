@@ -17,7 +17,7 @@ class Review(models.Model):
     display_name = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
-        return f"Review by {self.get_display_name} on {self.restoran.name}"
+        return f"Review by {self.get_display_name}"
 
     @property
     def total_likes(self):
