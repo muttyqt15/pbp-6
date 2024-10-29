@@ -19,9 +19,9 @@ def profile_view(request):
         else:
             user_customer = Customer.objects.get(user=user)
             userNow = CustomerProfile.objects.get(user=user_customer)
-        
+        print(user_resto)
         return render(request, 'my_profile.html', {
-            'userNow': userNow, 'user': user
+            'user_resto': user_resto, 'user': user
         })
     
     except OwnerProfile.DoesNotExist:

@@ -63,8 +63,8 @@
                     <a href="/review/main" class="w-full bg-[#8E7263] hover:bg-[#7c6558] text-[#fffbf2] font-medium py-2 px-4 rounded-lg transition duration-300">
                         My Review
                     </a>
-                    {% if user.is_resto_owner %}
-                        <a href="{% url 'restaurant' userNow.user.restaurant.id  %}" class="w-full bg-[#5E4B3C] hover:bg-[#4f4033] text-[#fffbf2] font-medium py-2 px-4 rounded-lg transition duration-300">
+                    {% if user_resto.restaurant %}
+                        <a href="{% url 'restaurant' user_resto.restaurant.id  %}" class="w-full bg-[#5E4B3C] hover:bg-[#4f4033] text-[#fffbf2] font-medium py-2 px-4 rounded-lg transition duration-300">
                             My Resto
                         </a>
                     {% endif %}
