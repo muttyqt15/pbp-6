@@ -32,7 +32,7 @@ class User(AbstractUser):
 
 
 class RestaurantOwner(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='resto_owner')
     restaurant = models.OneToOneField(
         Restaurant, on_delete=models.CASCADE, blank=True, null=True
     )
@@ -58,7 +58,7 @@ class RestaurantOwner(models.Model):
 
 
 class Customer(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='customer')
     # reviews = models.ManyToManyField(Review, blank=True)
     # bookmarks = models.ManyToManyField(Restaurant, blank=True)
 

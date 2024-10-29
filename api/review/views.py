@@ -61,7 +61,15 @@ def all_review(request):
 @customer_required
 def main_review(request):
     reviews = Review.objects.filter(customer=request.user.customer).order_by('-tanggal')
-    context = {'reviews': reviews}
+    if reviews.exists():
+        restaurant_id = reviews.first().restoran.id 
+    else:
+        restaurant_id = None 
+
+    context = {
+        'reviews': reviews,
+        'restaurant_id': restaurant_id,
+    }
     return render(request, 'main_review.html', context)
 
 @login_required

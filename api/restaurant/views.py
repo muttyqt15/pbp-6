@@ -26,9 +26,9 @@ def add_restaurant(request):
     """View to add a new restaurant to the database, with security measures."""
 
     # Redirect user if they already have a restaurant
-    if Restaurant.objects.filter(restaurantowner=request.user.restaurantowner).exists():
+    if Restaurant.objects.filter(restaurantowner=request.user.resto_owner).exists():
         restaurant = Restaurant.objects.get(
-            restaurantowner=request.user.restaurantowner
+            restaurantowner=request.user.resto_owner
         )
         return redirect("restaurant", id=restaurant.id)
 
@@ -63,7 +63,7 @@ def add_restaurant(request):
                     restaurant.save()
 
                     # Link the restaurant to the restaurant owner
-                    restaurant_owner = request.user.restaurantowner
+                    restaurant_owner = request.user.resto_owner
                     restaurant_owner.restaurant = restaurant
                     restaurant_owner.save()
 
@@ -81,7 +81,7 @@ def add_restaurant(request):
                 restaurant.save()
 
                 # Link the restaurant to the restaurant owner
-                restaurant_owner = request.user.restaurantowner
+                restaurant_owner = request.user.resto_owner
                 restaurant_owner.restaurant = restaurant
                 restaurant_owner.save()
 
@@ -100,7 +100,7 @@ def edit_restaurant(request, id):
     View to edit an existing restaurant using AJAX.
     Only the owner of the restaurant can edit it.
     """
-    restaurant = get_object_or_404(Restaurant, id=id, restaurantowner=request.user.restaurantowner)
+    restaurant = get_object_or_404(Restaurant, id=id, restaurantowner=request.user.resto_owner)
 
     try:
         # Parse the incoming JSON data
@@ -139,24 +139,24 @@ def restaurant(request, id):
     if request.user.is_authenticated:
         print(f"Username: {user.username}")
         print(f"Is resto owner: {user.is_resto_owner}")
-        if hasattr(user, "restaurantowner"):
-            print(f"Has RestaurantOwner profile: Yes")
-            print(f"RestaurantOwner instance: {user.restaurantowner}")
-            print(f"RestaurantOwner restaurant: {user.restaurantowner.restaurant}")
-            if user.restaurantowner.restaurant:
-                print(f"Owner restaurant ID: {user.restaurantowner.restaurant.id}")
+        if hasattr(user, "resto_owner"):
+            print(f"Has resto_owner profile: Yes")
+            print(f"resto_owner instance: {user.resto_owner}")
+            print(f"resto_owner restaurant: {user.resto_owner.restaurant}")
+            if user.resto_owner.restaurant:
+                print(f"Owner restaurant ID: {user.resto_owner.restaurant.id}")
             else:
                 print("Owner restaurant: None")
         else:
-            print("Has RestaurantOwner profile: No")
+            print("Has resto_owner profile: No")
         print(f"Viewing restaurant ID: {restaurant.id}")
 
     if request.user.is_authenticated:
         if user.is_resto_owner:
             is_owner = (
-                hasattr(user, "restaurantowner")
-                and user.restaurantowner.restaurant is not None
-                and user.restaurantowner.restaurant.id == restaurant.id
+                hasattr(user, "resto_owner")
+                and user.resto_owner.restaurant is not None
+                and user.resto_owner.restaurant.id == restaurant.id
             )
 
             print(f"Is owner check result: {is_owner}")
@@ -214,10 +214,10 @@ def add_menu(request):
             return JsonResponse({'success': False, 'message': 'Menu category is required.'})
 
         # Ensure the user is a restaurant owner and has a restaurant
-        if not hasattr(request.user, 'restaurantowner') or not request.user.restaurantowner.restaurant:
+        if not hasattr(request.user, 'resto_owner') or not request.user.resto_owner.restaurant:
             return JsonResponse({'success': False, 'message': 'You do not have permission to add a menu.'})
 
-        restaurant = request.user.restaurantowner.restaurant
+        restaurant = request.user.resto_owner.restaurant
 
         # Create and save the new menu
         menu = Menu(category=menu_category, restaurant=restaurant)
@@ -246,7 +246,7 @@ def delete_menu(request):
 
         # Get the menu to delete
         try:
-            menu = Menu.objects.get(id=menu_id, restaurant=request.user.restaurantowner.restaurant)
+            menu = Menu.objects.get(id=menu_id, restaurant=request.user.resto_owner.restaurant)
         except Menu.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'Menu does not exist or you do not have permission.'})
 
@@ -286,7 +286,7 @@ def add_food(request):
 
         # Get the menu to which the food item will be added
         try:
-            menu = Menu.objects.get(id=menu_id, restaurant=request.user.restaurantowner.restaurant)
+            menu = Menu.objects.get(id=menu_id, restaurant=request.user.resto_owner.restaurant)
         except Menu.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'Menu does not exist or you do not have permission.'})
 
@@ -317,7 +317,7 @@ def update_photo(request):
 
         # Get the restaurant associated with the user
         try:
-            restaurant = request.user.restaurantowner.restaurant
+            restaurant = request.user.resto_owner.restaurant
         except Restaurant.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'Restaurant does not exist or you do not have permission.'})
 
@@ -362,7 +362,7 @@ def edit_menu_category(request):
 
         # Get the menu category to edit
         try:
-            menu = Menu.objects.get(id=category_id, restaurant=request.user.restaurantowner.restaurant)
+            menu = Menu.objects.get(id=category_id, restaurant=request.user.resto_owner.restaurant)
         except Menu.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'Menu category does not exist or you do not have permission.'})
 
@@ -398,7 +398,7 @@ def edit_food(request):
 
         # Get the food item to edit
         try:
-            food = Food.objects.get(id=food_id, menu__restaurant=request.user.restaurantowner.restaurant)
+            food = Food.objects.get(id=food_id, menu__restaurant=request.user.resto_owner.restaurant)
         except Food.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'Food item does not exist or you do not have permission.'})
 
@@ -433,7 +433,7 @@ def delete_food(request):
 
         # Get the food item to delete
         try:
-            food = Food.objects.get(id=food_id, menu__restaurant=request.user.restaurantowner.restaurant)
+            food = Food.objects.get(id=food_id, menu__restaurant=request.user.resto_owner.restaurant)
         except Food.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'Food item does not exist or you do not have permission.'})
 
