@@ -19,5 +19,4 @@ urlpatterns = [
         path('edit_food/', edit_food, name='edit_food'),
         path('delete_food/', delete_food, name='delete_food'),
         path('filter/', filter_restaurants, name='filter_restaurants'),
-        
 ]
