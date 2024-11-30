@@ -1,7 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
-from .views import add_restaurant, edit_restaurant, get_restaurant_xml, get_restaurants_xml_by_id, get_restaurant_menu, restaurant, add_food, add_menu, menu_view, delete_menu, update_photo, edit_menu_category, edit_food, delete_food, restaurant_list, filter_restaurants
-
+from .views import add_restaurant, edit_restaurant, get_restaurant_xml, get_restaurants_xml_by_id, get_restaurant_menu, restaurant, add_food, add_menu, menu_view, delete_menu, update_photo, edit_menu_category, edit_food, delete_food, restaurant_list, filter_restaurants, serialized_restaurant_list
 urlpatterns = [
         path("", restaurant_list, name="restaurant_list"),
         path("<int:id>", restaurant, name="restaurant"),
@@ -19,4 +18,5 @@ urlpatterns = [
         path('edit_food/', edit_food, name='edit_food'),
         path('delete_food/', delete_food, name='delete_food'),
         path('filter/', filter_restaurants, name='filter_restaurants'),
+        path('serialized/<int:amount>', serialized_restaurant_list, name='serialized_restaurant_list'),
 ]

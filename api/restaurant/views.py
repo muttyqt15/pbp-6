@@ -141,6 +141,14 @@ def restaurant_list(request):
     return render(request, "all_restaurants.html", {"restaurants": restaurants})
 
 
+def serialized_restaurant_list(request, amount=100):
+    """View to list all restaurants in serialized format."""
+    restaurants = Restaurant.objects.all()[:amount]
+    
+    data = serializers.serialize("json", restaurants)
+    return HttpResponse(data, content_type="application/json")
+
+
 def restaurant(request, id):
     """Main restaurant page"""
     user = request.user  # Get the current user
