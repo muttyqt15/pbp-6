@@ -64,7 +64,8 @@ def main_review(request):
     if reviews.exists():
         restaurant_id = reviews.first().restoran.id 
     else:
-        restaurant_id = None
+        restaurant_id = None 
+
     context = {
         'reviews': reviews,
         'restaurant_id': restaurant_id,
@@ -137,16 +138,29 @@ def delete_review_ajax(request, id):
     return JsonResponse({"success": True})
 
 # JSON view for all reviews
+# def show_json(request):
+#     data = Review.objects.all()
+#     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+from django.http import JsonResponse
+from .models import Review
+
 def show_json(request):
-    review = Review.objects.all()
-    # Mengambil semua ReviewImage yang terkait dengan review tertentu
-    reviews = Review.objects.all()  # QuerySet dari semua objek Review
-
+    reviews = Review.objects.all()  # Ambil semua review
+    data = []
     for review in reviews:
-        images = review.images.all()  # Akses gambar untuk masing-masing review
-        print(images)
+        review_data = {
+            "id": str(review.id),
+            "judul_ulasan": review.judul_ulasan,
+            "teks_ulasan": review.teks_ulasan,
+            "penilaian": review.penilaian,
+            "tanggal": review.tanggal,
+            "total_likes": review.total_likes,
+            "images": [image.image.url for image in review.images.all()],  # Semua URL gambar terkait
+        }
+        data.append(review_data)
+    
+    return JsonResponse(data, safe=False)
 
-    return HttpResponse(serializers.serialize("json", review), content_type="application/json")
 
 # JSON view for a specific review by ID
 def show_json_by_id(request, id):
