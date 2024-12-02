@@ -59,6 +59,7 @@ def signup_flutter(request):
             form = SignupForm(data)
             if form.is_valid():
                 form.save()
+                auth_login(request, user)
                 return JsonResponse(
                     {"success": True, "message": "Signup successful. Please log in."},
                     status=201,
