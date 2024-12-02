@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
+
 from django.http import HttpResponseForbidden, JsonResponse, HttpResponse
+
 from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
@@ -8,6 +10,7 @@ from .forms import ReviewForm
 from .models import Review, ReviewImage
 from django.db.models import Count
 from django.utils import timezone
+
 from django.http import HttpResponseForbidden
 from api.restaurant.models import Restaurant
 
@@ -51,7 +54,6 @@ def all_review(request):
     context = {
         'all_reviews': reviews,
     }
-    print(context)
     return render(request, 'all_review.html', context)
 
 # Main review view for the logged-in user's reviews
@@ -62,8 +64,7 @@ def main_review(request):
     if reviews.exists():
         restaurant_id = reviews.first().restoran.id 
     else:
-        restaurant_id = None 
-
+        restaurant_id = None
     context = {
         'reviews': reviews,
         'restaurant_id': restaurant_id,
@@ -73,6 +74,7 @@ def main_review(request):
 @login_required
 @customer_required
 def create_review(request):
+
     restaurants = Restaurant.objects.all()
     if request.method == "POST":
         form = ReviewForm(request.POST, request.FILES)
@@ -81,6 +83,7 @@ def create_review(request):
             review = form.save(commit=False)
             review.customer = request.user.customer  
             review.restoran = form.cleaned_data.get('restaurant')
+
             review.display_name = form.cleaned_data.get('display_name')
             review.save()
 
@@ -89,11 +92,13 @@ def create_review(request):
                 ReviewImage.objects.create(review=review, image=img)
             
             return redirect('review:main_review')
+
         else:
             print(form.errors)  # Print form errors for debugging
     else:
         form = ReviewForm()
     return render(request, 'create_review.html', {'form': form, 'restaurants': restaurants})
+
 
 @login_required
 @customer_required
@@ -133,8 +138,15 @@ def delete_review_ajax(request, id):
 
 # JSON view for all reviews
 def show_json(request):
-    data = Review.objects.all()
-    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+    review = Review.objects.all()
+    # Mengambil semua ReviewImage yang terkait dengan review tertentu
+    reviews = Review.objects.all()  # QuerySet dari semua objek Review
+
+    for review in reviews:
+        images = review.images.all()  # Akses gambar untuk masing-masing review
+        print(images)
+
+    return HttpResponse(serializers.serialize("json", review), content_type="application/json")
 
 # JSON view for a specific review by ID
 def show_json_by_id(request, id):
