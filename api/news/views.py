@@ -75,9 +75,10 @@ def show_berita_json(request):
     except Exception as e:
         return JsonResponse({"error": f"Error: {str(e)}"}, status=500)
 
-@resto_owner_only(redirect_url="/news/")
+# @resto_owner_only(redirect_url="/news/")
 def show_berita_by_owner(request):
     try:
+        # print(request.user)
         berita_data = [
             serialize_berita(berita, berita.like.filter(id=request.user.id).exists())
             for berita in Berita.objects.filter(author__user=request.user)
@@ -151,3 +152,18 @@ def like_berita(request, berita_id):
             berita.like.add(request.user)
         return JsonResponse({"status": True, "likes": berita.like.count(), "liked": not status_liked})
     return HttpResponseForbidden()
+
+
+@csrf_exempt
+def fdelete_berita(request, berita_id):
+    if request.method == "GET":
+        try:
+            berita = get_object_or_404(Berita, pk=berita_id)
+            if berita.gambar and os.path.isfile(berita.gambar.path):
+                os.remove(berita.gambar.path)
+            berita.delete()
+            return HttpResponse(status=204)  # Berikan respons sukses tanpa konten
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+    else:
+        return JsonResponse({"error": "Invalid request method"}, status=405)

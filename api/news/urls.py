@@ -15,6 +15,7 @@ urlpatterns = [
     path("edit_berita/<str:berita_id>/", edit_berita, name="edit_berita"),
     path("delete_berita/<str:berita_id>/", delete_berita, name="delete_berita"),
     path("like_berita/<str:berita_id>/", like_berita, name="like_berita"),
+    path("fdelete_berita/<str:berita_id>/", delete_berita, name="fdelete_berita"),
 ] 
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
