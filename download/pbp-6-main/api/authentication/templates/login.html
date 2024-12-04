@@ -1,0 +1,48 @@
+{% extends 'base.html' %} 
+
+{% block content %}
+<div class="min-h-screen flex flex-col items-center justify-center">
+  <div class="w-full sm:w-3/4 lg:w-1/2 bg-dutch/90 p-10 rounded-[40px] shadow-lg border-licorice border-4">
+    <h2 class="text-3xl text-licorice font-pro font-bold mb-8 text-center">
+      Log In
+    </h2>
+    <form method="POST" class="space-y-6" id="signupForm">
+      {% csrf_token %}
+      {% include 'components/input.html' with label=form.username.label placeholder=form.username.field.widget.attrs.placeholder name=form.username.name %} 
+      
+      {% if form.username.errors %}
+      <div class="text-[#910101] text-sm">
+        {{ form.username.errors|join:', ' }}
+      </div>
+      {% endif %}
+      
+      {% include 'components/input.html' with type="password" label=form.password.label placeholder=form.password.field.widget.attrs.placeholder name=form.password.name %} 
+      
+      {% if form.password.errors %}
+      <div class="text-[#910101] text-sm">
+        {{ form.password.errors|join:', ' }}
+      </div>
+      {% endif %}
+      
+      {% if form.non_field_errors %}
+      <div class="text-[#910101] text-sm">
+        {{ form.non_field_errors|join:', ' }}
+      </div>
+      {% endif %}
+
+      <button
+        type="submit"
+        class="w-full py-3 bg-licorice/80 font-bold text-dutch rounded-full hover:translate-y-[2px] duration-300 transition">
+        Login
+      </button>
+      
+      <a href="/auth/signup" class="w-full group flex justify-center">
+        <p class="text-center font-bold font-pro relative">
+          Belum memiliki akun?
+          <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-current transition-all duration-300 group-hover:w-full"></span>
+        </p>
+      </a>
+    </form>
+  </div>
+</div>
+{% endblock %}

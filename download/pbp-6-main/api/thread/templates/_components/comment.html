@@ -1,0 +1,27 @@
+<div
+  id="comment-{{ comment.id }}"
+  class="bg-coyote/80 font-pro p-6 rounded-lg w-full shadow-md">
+  <div id="content-container-comment-{{ comment.id }}">
+    <p class="text-[#fff] mb-4">{{ comment.content }}</p>
+  </div>
+
+  <div class="flex justify-between mt-4">
+    <div class="flex items-center gap-4">
+      <button
+        id="like-button-comment-{{ comment.id }}"
+        class="like-button text-[#fff]"
+        onclick="toggleCommentLike({{ comment.id }})">
+        {{ comment.like_count }} Likes
+      </button>
+    </div>
+    {% if comment.author.id == user_id %}
+    <div class="flex justify-end mt-4 gap-4" id="edit-buttons-{{ comment.id }}">
+      <button
+        class="text-[#fff] hover:text-[#910101] transition"
+        onclick="deleteComment({{ comment.id }})">
+        Delete
+      </button>
+    </div>
+    {% endif %}
+  </div>
+</div>

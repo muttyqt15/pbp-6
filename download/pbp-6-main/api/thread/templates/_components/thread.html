@@ -1,0 +1,76 @@
+{% load date_extras %} {% load static %}
+<div
+  class="bg-coyote/80 p-0.5 rounded-3xl w-full h-full grid place-items-center"
+>
+  <div
+    id="thread-{{ thread.id }}"
+    class="bg-[#f3ebdb]/20 p-6 rounded-3xl w-full h-full z-50"
+  >
+    <div
+      id="content-container-{{ thread.id }}"
+      onclick="window.location.href = `/thread/{{ thread.id }}/`"
+      data-thread-id="{{ thread.id }}"
+    >
+      <p class="text-[#fffbf2] text-base mb-4 cursor-pointer">
+        {{ thread.content }}
+      </p>
+    </div>
+
+    {% if thread.image %}
+    <img
+      src="{{ thread.image.url }}"
+      alt="Thread Image"
+      class="max-h-[96px] rounded-md object-cover opacity-70 blur-sm hover:filter-none hover:opacity-100 transition-all duration-300 ease-in-out"
+    />
+    {% endif %}
+
+    <div class="flex flex-col justify-end items-end w-full gap-1">
+      <div class="flex w-full gap-2 items-center justify-end">
+        <button
+          id="like-button-{{ thread.id }}"
+          data-thread-id="{{ thread.id }}"
+          class="like-button font-pro font-bold hover:text-[#fffbf2] duration-300 transition text-[#b9b1a9]"
+          onclick="toggleLike({{ thread.id }}, event); event.stopPropagation(); console.log('masuk')"
+        >
+          {{ thread.like_count }} Likes
+        </button>
+        <p class="text-[#fffbf2] font-pro font-bold text-[#fffbf2]">
+          {{ thread.comment_count }} Comments
+        </p>
+      </div>
+      <div class="flex gap-2 w-full items-center justify-end">
+        <p class="text-[#fffbf2] font-pro font-semibold text-sm">
+          {{ thread.author }}
+        </p>
+        <span>&middot;</span>
+        <p class="text-[#fffbf2] font-pro font-semibold text-sm">
+          {{ thread.created_at|time_ago }}
+        </p>
+      </div>
+    </div>
+
+    {% if thread.author.id == user_id %}
+    <div
+      class="flex w-full justify-start gap-4 h-8 px-6"
+      id="edit-buttons-{{ thread.id }}"
+      data-thread-id="{{ thread.id }}"
+    >
+      <button
+        data-thread-id="{{ thread.id }}"
+        class="bg-[#c1a386] hover:bg-[#a48b72] text-white font-bold pt-1 pb-2 px-4 rounded-lg duration-300 transition font-bold"
+        onclick="toggleEditMode({{ thread.id }}, event); event.stopPropagation();"
+      >
+        Edit
+      </button>
+      <button
+        data-thread-id="{{ thread.id }}"
+        class="bg-[#c5beb7] hover:bg-[#b9b1a9] text-white font-bold pt-1 pb-2 px-4 rounded-lg duration-300 transition font-bold"
+        onclick="deleteThread({{ thread.id }}, event); event.stopPropagation();"
+      >
+        Delete
+      </button>
+    </div>
+    {% endif %}
+  </div>
+</div>
+<script src="{% static 'js/thread.js' %}"></script>

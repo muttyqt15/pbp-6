@@ -1,0 +1,21 @@
+{% extends 'base.html' %} 
+{% load static %}
+{% block meta %}
+<title>Mangan'' Solo</title>
+<link rel="stylesheet" href="{% static 'css/carousel.css' %}"/>
+<style>
+  html {
+    scroll-behavior: smooth;
+  }
+</style>
+{% endblock %}
+{% block content %}
+<div class="min-h-screen flex flex-col">
+  {% include '_components/hero.html' %}
+  {% include '_components/funfact.html' %}
+  {% include '_components/popular-resto.html' with trending=trending %}
+  {% include '_components/pilihan-teratas.html' with resto=trend %}
+</div>
+<script src="{% static 'js/carousel.js' %}"></script>
+{% endblock %}
+

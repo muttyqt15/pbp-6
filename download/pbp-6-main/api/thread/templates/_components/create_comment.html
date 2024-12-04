@@ -1,0 +1,17 @@
+<form method="POST" enctype="multipart/form-data" class="space-y-6 w-full flex flex-col justify-end">
+  {% csrf_token %}
+
+  <!-- Textarea for thread content -->
+  <textarea
+    id="content"
+    name="content"
+    rows="4"
+    placeholder="Berikan comment..."
+    required
+    class="w-full text-black placeholder:text-raisin/70 bg-lion/90 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-lion font-pro resize-none transition"></textarea>
+  <button
+    type="submit"
+    class="bg-raisin text-white py-2 px-6 rounded-md hover:bg-black transition">
+    Publikasikan Comment
+  </button>
+</form>
