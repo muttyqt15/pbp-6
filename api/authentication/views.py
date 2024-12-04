@@ -48,38 +48,47 @@ def logout(request):
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
+from .models import User
 
 
-# Signup view
 @csrf_exempt
 def signup_flutter(request):
-    if request.method == "POST":
-        try:
-            data = json.loads(request.body)
-            username = data['username']
-            password1 = data['password1']
-            password2 = data['password2']
-            form = SignupForm(username=username, password1=password1, password2=password2)
-            if form.is_valid():
-                form.save()
-                auth_login(request, user)
-                return JsonResponse(
-                    {"success": True, "message": "Signup successful. Please log in."},
-                    status=201,
-                )
-            else:
-                return JsonResponse(
-                    {"success": False, "errors": form.errors}, status=400
-                )
-        except json.JSONDecodeError:
-            return JsonResponse(
-                {"success": False, "message": "Invalid JSON data"}, status=400
-            )
-    return JsonResponse(
-        {"success": False, "message": "Only POST requests are allowed"}, status=405
-    )
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        print(data)
+        username = data['username']
+        password1 = data['password1']
+        password2 = data['password2']
 
-
+        # Check if the passwords match
+        if password1 != password2:
+            return JsonResponse({
+                "status": False,
+                "message": "Passwords do not match."
+            }, status=400)
+        
+        # Check if the username is already taken
+        if User.objects.filter(username=username).exists():
+            return JsonResponse({
+                "status": False,
+                "message": "Username already exists."
+            }, status=400)
+        
+        # Create the new user
+        user = User.objects.create_user(username=username, password=password1)
+        user.save()
+        
+        return JsonResponse({
+            "username": user.username,
+            "status": 'success',
+            "message": "User created successfully!"
+        }, status=200)
+    
+    else:
+        return JsonResponse({
+            "status": False,
+            "message": "Invalid request method."
+        }, status=400)
 # Login view
 @csrf_exempt
 def login_flutter(request):
