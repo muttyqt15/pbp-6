@@ -56,7 +56,10 @@ def signup_flutter(request):
     if request.method == "POST":
         try:
             data = json.loads(request.body)
-            form = SignupForm(data)
+            username = data['username']
+            password1 = data['password1']
+            password2 = data['password2']
+            form = SignupForm(username=username, password1=password1, password2=password2)
             if form.is_valid():
                 form.save()
                 auth_login(request, user)
@@ -82,11 +85,10 @@ def signup_flutter(request):
 def login_flutter(request):
     if request.method == "POST":
         try:
-            data = json.loads(request.body)
-            form = LoginForm(data)
+            username = request.POST['username']
+            password = request.POST['password']
+            form = LoginForm(request.POST)
             if form.is_valid():
-                username = form.cleaned_data["username"]
-                password = form.cleaned_data["password"]
                 user = authenticate(request, username=username, password=password)
                 if user is not None:
                     auth_login(request, user)
@@ -103,6 +105,7 @@ def login_flutter(request):
                     {"success": False, "errors": form.errors}, status=400
                 )
         except json.JSONDecodeError:
+            print(request.body)
             return JsonResponse(
                 {"success": False, "message": "Invalid JSON data"}, status=400
             )
