@@ -9,10 +9,17 @@
       </p>
     </div>
     <div class="flex flex-col gap-2">
-      <img
+      {% if detail.images.image %}
+        <img
+          src="{{ detail.images.image.url }}"
+          alt="food"
+          class="h-48 rounded-lg border border-coyote" />
+      {% else %}
+        <img
         src="{% static 'images/hero.jpg' %}"
         alt="food"
         class="h-48 rounded-lg border border-coyote" />
+      {% endif %}
       <small>{{ detail.customer }} &middot; {{ detail.waktu_edit_terakhir }}</small>
     </div>
   </div>
