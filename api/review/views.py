@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
-
 from django.http import HttpResponseForbidden, JsonResponse, HttpResponse
-
+from django.http import JsonResponse
+from .models import Review
 from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
@@ -141,8 +141,6 @@ def delete_review_ajax(request, id):
 # def show_json(request):
 #     data = Review.objects.all()
 #     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
-from django.http import JsonResponse
-from .models import Review
 
 def show_json(request):
     reviews = Review.objects.all()  # Ambil semua review
