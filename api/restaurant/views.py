@@ -17,6 +17,7 @@ from api.authentication.models import User, RestaurantOwner, Customer
 import logging
 from django.db.models import Q
 from api.bookmark.models import Bookmark
+from api.review.models import Review, ReviewImage
 
 logger = logging.getLogger(__name__)
 
@@ -144,10 +145,48 @@ def restaurant_list(request):
 def serialized_restaurant_list(request, amount=100):
     """View to list all restaurants in serialized format."""
     restaurants = Restaurant.objects.all()[:amount]
-    
+
     data = serializers.serialize("json", restaurants)
     return HttpResponse(data, content_type="application/json")
 
+
+def serialized_restaurant(request, id):
+    try:
+        restaurant = Restaurant.objects.get(id=id)
+        menus = Menu.objects.filter(restaurant=restaurant)
+        foods = Food.objects.filter(menu__in=menus)
+        reviews = Review.objects.filter(restoran=restaurant)
+
+        # Add images to each review
+        reviews_with_images = []
+        for review in reviews:
+            images = ReviewImage.objects.filter(review=review).values_list('image', flat=True)
+            review_data = {
+                "id": review.id,
+                "judul_ulasan": review.judul_ulasan,
+                "teks_ulasan": review.teks_ulasan,
+                "penilaian": review.penilaian,
+                "display_name": review.display_name,
+                "tanggal": review.tanggal,
+                "images": [request.build_absolute_uri(f"{settings.MEDIA_URL}{image}") for image in images],
+            }
+            reviews_with_images.append(review_data)
+
+        data = {
+            "restaurant": {
+                "id": restaurant.id,
+                "name": restaurant.name,
+                "address": restaurant.address,
+                "operational_hours": restaurant.operational_hours,
+                "photo_url": restaurant.photo_url,
+            },
+            "menus": list(menus.values("id", "category")),
+            "foods": list(foods.values("id", "name", "price")),
+            "reviews": reviews_with_images,
+        }
+        return JsonResponse(data, safe=False)
+    except Restaurant.DoesNotExist:
+        return JsonResponse({"error": "Restaurant not found"}, status=404)
 
 def restaurant(request, id):
     """Main restaurant page"""
