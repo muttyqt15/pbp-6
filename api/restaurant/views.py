@@ -684,9 +684,6 @@ def delete_food(request):
         )
 
 
-require_POST
-
-
 def filter_restaurants(request):
     """Handles AJAX requests to filter and sort restaurants."""
     import json
@@ -747,6 +744,58 @@ def get_restaurant_menu(request, id):
         request, "restaurant_menu.html", {"restaurant": restaurant, "food": food}
     )
 
+def edit_restaurant_api(request, restaurant_id):
+    """View to edit an existing restaurant."""
+    try:
+        restaurant = Restaurant.objects.get(id=restaurant_id, restaurantowner=request.user.resto_owner)
+    except Restaurant.DoesNotExist:
+        return JsonResponse({"error": "Restaurant not found or not authorized."}, status=404)
+
+    form = RestaurantForm(request.POST, request.FILES, instance=restaurant)
+
+    if form.is_valid():
+        # Strip malicious content
+        cleaned_name = strip_tags(form.cleaned_data["name"])
+        cleaned_district = strip_tags(form.cleaned_data["district"])
+        cleaned_address = strip_tags(form.cleaned_data["address"])
+        cleaned_operational_hours = strip_tags(form.cleaned_data["operational_hours"])
+
+        # Handle new image upload
+        photo = request.FILES.get("photo")
+        if photo:
+            # Save the new file and delete the old one
+            if restaurant.photo_url:
+                old_path = os.path.join(settings.MEDIA_ROOT, restaurant.photo_url.replace(settings.MEDIA_URL, ""))
+                if os.path.exists(old_path):
+                    os.remove(old_path)
+            path = default_storage.save(
+                f"restaurant_photos/{photo.name}", ContentFile(photo.read())
+            )
+            restaurant.photo_url = os.path.join(settings.MEDIA_URL, path)
+
+        # Update fields
+        restaurant.name = cleaned_name
+        restaurant.district = cleaned_district
+        restaurant.address = cleaned_address
+        restaurant.operational_hours = cleaned_operational_hours
+        restaurant.save()
+
+        return JsonResponse({
+            "message": "Restaurant updated successfully!",
+            "restaurant_id": restaurant.id,
+            "photo_url": restaurant.photo_url,
+        }, status=200)
+    else:
+        return JsonResponse({"errors": form.errors}, status=400)
+
+# check if this restaurant owner has a restaurant
+def has_restaurant(request):
+    """Check if the restaurant owner has a restaurant."""
+
+    if request.user.role is 'RESTO_OWNER':
+        return JsonResponse({"has_restaurant": request.user.resto_owner.restaurant is not None, "restaurant_id": request.user.resto_owner.restaurant.id})
+    return JsonResponse({"has_restaurant": False})
+
 
 def get_restaurant_xml(request):
     """Returns a list of all restaurants in XML format"""
@@ -774,3 +823,4 @@ def get_restaurants_json_by_id(request, id):
     restaurants = Restaurant.objects.filter(id=id)
     data = serializers.serialize("json", restaurants)
     return JsonResponse(data, safe=False)
+

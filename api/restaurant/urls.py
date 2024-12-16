@@ -20,6 +20,8 @@ from .views import (
     restaurant_list,
     filter_restaurants,
     serialized_restaurant_list,
+    has_restaurant,
+    edit_restaurant_api,
 )
 
 urlpatterns = [
@@ -46,4 +48,6 @@ urlpatterns = [
     ),
     path("serialized/<int:id>", serialized_restaurant, name="serialized_restaurant"),
     path("add_api/", add_restaurant_api, name="add_restaurant_api"),
+    path("has_restaurant/", has_restaurant, name="has_restaurant"),
+    path("edit_api/<int:id>", edit_restaurant_api, name="edit_restaurant_api"),
 ]
