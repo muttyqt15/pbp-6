@@ -98,6 +98,56 @@ def add_restaurant(request):
     return render(request, "add_restaurant.html", {"form": form})
 
 
+@require_POST
+@resto_owner_only(redirect_url="/auth/login/")
+def add_restaurant_api(request):
+    if Restaurant.objects.filter(restaurantowner=request.user.resto_owner).exists():
+        restaurant = Restaurant.objects.get(restaurantowner=request.user.resto_owner)
+        return redirect("restaurant", id=restaurant.id)
+
+    if request.method == "POST":
+        form = RestaurantForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Strip malicious content
+            cleaned_name = strip_tags(form.cleaned_data["name"])
+            cleaned_district = strip_tags(form.cleaned_data["district"])
+            cleaned_address = strip_tags(form.cleaned_data["address"])
+            cleaned_operational_hours = strip_tags(
+                form.cleaned_data["operational_hours"]
+            )
+
+            # Handle photo upload
+            photo = request.FILES.get("photo")
+            photo_url = ""
+
+            if photo:
+                # Save the uploaded file to 'media/restaurant_photos'
+                path = default_storage.save(
+                    f"restaurant_photos/{photo.name}", ContentFile(photo.read())
+                )
+                photo_url = os.path.join(settings.MEDIA_URL, path)
+
+            # Save restaurant with the photo_url
+            restaurant = Restaurant.objects.create(
+                name=cleaned_name,
+                district=cleaned_district,
+                address=cleaned_address,
+                operational_hours=cleaned_operational_hours,
+                photo_url=photo_url,
+            )
+
+            # Link restaurant to the owner
+            restaurant_owner = request.user.resto_owner
+            restaurant_owner.restaurant = restaurant
+            restaurant_owner.save()
+
+            return redirect("restaurant", id=restaurant.id)
+    else:
+        form = RestaurantForm()
+
+    return render(request, "add_restaurant.html", {"form": form})
+
+
 @login_required
 @resto_owner_only(redirect_url="/auth/login/")
 @require_http_methods(["POST"])
@@ -160,17 +210,30 @@ def serialized_restaurant(request, id):
         # Add images to each review
         reviews_with_images = []
         for review in reviews:
-            images = ReviewImage.objects.filter(review=review).values_list('image', flat=True)
-            review_data = {
-                "id": review.id,
-                "judul_ulasan": review.judul_ulasan,
-                "teks_ulasan": review.teks_ulasan,
-                "penilaian": review.penilaian,
-                "display_name": review.display_name,
-                "tanggal": review.tanggal,
-                "images": [request.build_absolute_uri(f"{settings.MEDIA_URL}{image}") for image in images],
-            }
-            reviews_with_images.append(review_data)
+            images = ReviewImage.objects.filter(review=review).values_list(
+                "image", flat=True
+            )
+            reviews_with_images.append(
+                {
+                    "id": str(review.id) if review.id else "No ID",
+                    "judul_ulasan": review.judul_ulasan or "No Title",
+                    "teks_ulasan": review.teks_ulasan or "No review text",
+                    "penilaian": (
+                        review.penilaian if review.penilaian is not None else 0
+                    ),
+                    "display_name": review.get_display_name
+                    or "Anonymous",  # Explicitly include display_name
+                    "tanggal": (
+                        review.tanggal.strftime("%Y-%m-%d")
+                        if review.tanggal
+                        else "No date"
+                    ),  # Force date to string
+                    "images": [
+                        request.build_absolute_uri(f"/media/{image}")
+                        for image in (images or [])
+                    ],
+                }
+            )
 
         data = {
             "restaurant": {
@@ -184,9 +247,11 @@ def serialized_restaurant(request, id):
             "foods": list(foods.values("id", "name", "price")),
             "reviews": reviews_with_images,
         }
+        print(reviews_with_images)
         return JsonResponse(data, safe=False)
     except Restaurant.DoesNotExist:
         return JsonResponse({"error": "Restaurant not found"}, status=404)
+
 
 def restaurant(request, id):
     """Main restaurant page"""
