@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import all_review, main_review, create_review, delete_review_ajax, edit_review_ajax, like_review_ajax, show_json, show_json_by_id
+from .views import all_review, main_review, create_review, delete_review_ajax, edit_review_ajax, like_review_ajax, show_json, show_json_by_id, create_review_flutter, review_detail
 
 app_name = 'review'
 
