@@ -11,4 +11,6 @@ urlpatterns = [
     path('like/<uuid:id>/', like_review_ajax, name='like_review_ajax'),
     path('json/', show_json, name='show_json'),
     path('json/<str:id>/', show_json_by_id, name='show_json_by_id'),
+    path('create-flutter/', create_review_flutter, name='create_review_flutter'),
+    path('product/<uuid:product_id>/', review_detail, name='review_detail'),
 ]
