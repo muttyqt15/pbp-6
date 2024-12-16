@@ -101,8 +101,19 @@ def login_flutter(request):
                 user = authenticate(request, username=username, password=password)
                 if user is not None:
                     auth_login(request, user)
+                    user_data = {
+                        "id": request.user.id,
+                        "username": request.user.username,
+                        "email": request.user.email,
+                        "role": request.user.role
+                    }
                     return JsonResponse(
-                        {"success": True, "message": "Login successful"}, status=200
+                        {
+                            "success": True,
+                            "message": "Login successful",
+                            "data": user_data,
+                        },
+                        status=200,
                     )
                 else:
                     return JsonResponse(
