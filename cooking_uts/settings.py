@@ -32,7 +32,7 @@ SECRET_KEY = environ.get(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = environ.get("PRODUCTION", True)
 
-ALLOWED_HOSTS = ["muttaqin-muzakkir-utspbp.pbp.cs.ui.ac.id", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["muttaqin-muzakkir-utspbp.pbp.cs.ui.ac.id", "localhost", "127.0.0.1", "10.0.2.2"]
 
 
 # Application definition
@@ -52,9 +52,11 @@ INSTALLED_APPS = [
     "api.main",
     "api.bookmark",
     "api.user_profile.apps.UserProfileConfig",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -65,6 +67,12 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "cooking_uts.urls"
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SAMESITE = 'None'
 
 TEMPLATES = [
     {
