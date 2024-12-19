@@ -16,6 +16,7 @@ import uuid
 import os
 import base64
 from django.core.files.base import ContentFile
+from django.contrib.auth.decorators import login_required
 
 def show_main(request):
     is_restaurant_owner = RestaurantOwner.objects.filter(user=request.user).exists() if request.user.is_authenticated else False
@@ -312,5 +313,24 @@ def fedit_berita(request, berita_id):
 
         return JsonResponse({"status": 405, "message": "Invalid method."}, status=405)
 
+    except Exception as e:
+        return JsonResponse({"status": 500, "message": f"Error: {str(e)}"}, status=500)
+
+@csrf_exempt
+def get_user_role(request):
+    try:
+        restaurant_owner = RestaurantOwner.objects.get(user=request.user)
+        if restaurant_owner:
+            return JsonResponse({
+                "status": 200,
+                "role": "restaurant_owner",
+                "is_owner": True
+            })
+        else:
+            return JsonResponse({
+                "status": 200,
+                "role": "customer",
+                "is_owner": False
+            })
     except Exception as e:
         return JsonResponse({"status": 500, "message": f"Error: {str(e)}"}, status=500)
