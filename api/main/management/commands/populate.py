@@ -113,7 +113,7 @@ class Command(BaseCommand):
                     author=random.choice(owners).resto_owner,
                 )
                 # Create a ContentFile and save to the ImageField
-                article.image.save(
+                article.gambar.save(
                     f"{article.judul}.jpg", ContentFile(image_response.content)
                 )
                 news_articles.append(article)
