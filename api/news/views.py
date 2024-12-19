@@ -203,52 +203,6 @@ def fshow_berita_id(request, berita_id):
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
         
-# @csrf_exempt
-# def fadd_berita_ajax(request):
-#     print("DEBUG: Received cookies:", request.COOKIES)
-#     if not request.user.is_authenticated:
-#         print("ERROR: User not authenticated.")
-#         return JsonResponse({"status": 401, "message": "User not authenticated."}, status=401)
-
-#     if request.method == 'POST':
-#         try:
-#             judul = strip_tags(request.POST.get("judul"))
-#             konten = strip_tags(request.POST.get("konten"))
-#             gambar = request.FILES.get("gambar")
-
-#             print("DEBUG: Judul:", judul)
-#             print("DEBUG: Konten:", konten)
-#             print("DEBUG: Gambar:", gambar)
-
-#             if not judul or not konten:
-#                 print("ERROR: Judul atau Konten kosong.")
-#                 return JsonResponse({"status": 400, "message": "Judul dan Konten tidak boleh kosong."}, status=400)
-
-#             restaurant_owner = RestaurantOwner.objects.get(user=request.user)
-#             print("DEBUG: RestaurantOwner ditemukan:", restaurant_owner)
-
-#             berita = Berita(
-#                 author=restaurant_owner,
-#                 judul=judul,
-#                 gambar=gambar,
-#                 konten=konten
-#             )
-#             berita.save()
-#             print("DEBUG: Berita berhasil disimpan dengan ID:", berita.id)
-
-#             return JsonResponse({"status": 200, "message": "Berita berhasil dibuat"}, status=200)
-#         except RestaurantOwner.DoesNotExist:
-#             print(f"ERROR: User {request.user} bukan RestaurantOwner.")
-#             return JsonResponse({"status": 403, "message": "User is not a Restaurant Owner."}, status=403)
-#         except Exception as e:
-#             print("ERROR: Exception saat menangani request:", str(e))
-#             return JsonResponse({"status": 500, "message": f"Error: {str(e)}"}, status=500)
-
-#     print("ERROR: Metode request tidak valid.")
-#     return JsonResponse({"status": 405, "message": "Invalid method."}, status=405)
-
-
-
 @csrf_exempt
 def fadd_berita_ajax(request):
     print("DEBUG: Received cookies:", request.COOKIES)
