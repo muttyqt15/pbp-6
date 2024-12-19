@@ -1,8 +1,8 @@
 from django.contrib import admin
-from django.urls import path, include, URLResolver
+from django.urls import path, include
 from django.contrib.auth.decorators import login_required
 
-urlpatterns: list[URLResolver] = [
+urlpatterns = [
     path("", include("api.main.urls")),
     path("auth/", include("api.authentication.urls")),
     path("restaurant/", include("api.restaurant.urls")),
