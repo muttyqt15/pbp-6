@@ -210,18 +210,29 @@ def fget_thread(request):
         print(e)
         return JsonResponse({"success": False, "error": str(e)}, status=500)
 
+import base64
+from django.core.files.base import ContentFile
 
-# Create a thread (Flutter-specific)
-@login_required_json
+@login_required
 @csrf_exempt
 @require_http_methods(["POST"])
 def fcreate_thread(request):
     try:
         data = json.loads(request.body)
-        form = ThreadForm(data, request.FILES)
+        # Decode base64 image if present
+        if "image" in data and data["image"]:
+            image_data = data.pop("image")
+            format, imgstr = image_data.split(";base64,")  # Extract base64 and format
+            ext = format.split("/")[-1]  # Get file extension (e.g., png, jpg)
+            image_file = ContentFile(
+                base64.b64decode(imgstr), name=f"thread_image.{ext}"
+            )
+            data["image"] = image_file  # Assign the decoded file to the form data
+        form = ThreadForm(data)
         if form.is_valid():
             thread = form.save(commit=False)
             thread.author = request.user
+            thread.image = image_file
             thread.save()
             return JsonResponse(
                 {
@@ -261,7 +272,6 @@ def flike_thread(request, thread_id):
 # Delete a thread (Flutter-specific)
 @login_required_json
 @csrf_exempt
-@require_http_methods(["DELETE"])
 def fdelete_thread(request, thread_id):
     thread = get_object_or_404(Thread, id=thread_id)
     if request.user == thread.author:
@@ -278,7 +288,6 @@ def fdelete_thread(request, thread_id):
 # Edit a thread (Flutter-specific)
 @login_required_json
 @csrf_exempt
-@require_http_methods(["PUT"])
 def fedit_thread(request, thread_id):
     thread = get_object_or_404(Thread, id=thread_id)
     try:
