@@ -94,15 +94,26 @@ def signup_flutter(request):
 def login_flutter(request):
     if request.method == "POST":
         try:
-            username = request.POST['username']
-            password = request.POST['password']
+            username = request.POST.get('username', '')
+            password = request.POST.get('password', '')
             form = LoginForm(request.POST)
             if form.is_valid():
                 user = authenticate(request, username=username, password=password)
                 if user is not None:
                     auth_login(request, user)
+                    user_data = {
+                        "id": request.user.id,
+                        "username": request.user.username,
+                        "email": request.user.email,
+                        "role": request.user.role
+                    }
                     return JsonResponse(
-                        {"success": True, "message": "Login successful"}, status=200
+                        {
+                            "success": True,
+                            "message": "Login successful",
+                            "data": user_data,
+                        },
+                        status=200,
                     )
                 else:
                     return JsonResponse(
