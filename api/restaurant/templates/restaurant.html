@@ -55,37 +55,6 @@
                     {% endif %}
                 </button>
             </div>
-    <div
-      class="container mx-auto bg-[#7D6E5F] bg-opacity-90 p-6 rounded-lg shadow-md mt-32">
-      <!-- Restaurant Photo and Info -->
-      <div class="flex mb-6">
-        <!-- Restaurant Photo -->
-        <div class="photo-container relative w-1/2 pr-4">
-          <img
-            src="{{ restaurant.photo_url|default:'https://placehold.co/600x400' }}"
-            alt="Restaurant Photo"
-            class="w-full h-64 object-cover rounded-md" />
-          {% if is_owner %}
-          <a
-            class="edit-button absolute top-2 right-6 bg-gray-800 text-[#FFFBF2] p-2 rounded-full bg-opacity-25 transition duration-300 ease-in-out hover:bg-opacity-100"
-            onclick="openEditPhotoModal()">
-            <i class="fas fa-pencil-alt"></i>
-          </a>
-          {% endif %}
-          {% if user.is_authenticated %}
-          <button
-            class="py-2 w-full bg-licorice text-dutch rounded-xl my-2"
-            id="toggle-bookmark"
-            onclick="console.log('hey'); toggleBookmark({{ restaurant.id }})">
-            {% if is_favorited %} 
-                Hilangkan dari Bookmark 
-              {% else %} 
-                Tambahkan ke Bookmark 
-              {% endif %}
-            {% endif %}
-          </button>
-              
-        </div>
 
         <!-- Restaurant Info -->
         <div class="restaurant-info w-1/2 space-y-4">
@@ -313,23 +282,6 @@
               >Buat Ulasan</a
             >
       </div>
-    </div>
-
-    <div class="flex-1 p-4 rounded-md">
-        <!-- Insert Reviews Here -->
-        <h3 class="text-xl text-[#FFFBF2] font-bold" style="font-family: 'Crimson Text', serif;">REVIEWS</h3>
-        {% for review in restaurant.reviews.all %}
-        <div class="review bg-[#240F0E] text-[#FFFBF2] p-4 rounded-md mt-4">
-            <h4 class="text-lg font-bold">{{ review.display_name }}</h4>
-            <p class="text-sm">{{ review.judul_ulasan }}</p>
-            <p class="text-sm">Rating: {{ review.penilaian }}</p>
-            <p class="text-sm">{{ review.teks_ulasan }}</p>
-            <p class="text-sm">Date: {{ review.tanggal }}</p>
-            <p class="text-sm">Likes: {{ review.total_likes }}</p>
-            {% empty %}
-            <p class="text-[#FFFBF2]">Belum ada ulasan untuk restoran ini.</p>
-        {% endfor %}
-        <a href="{% url 'review:main_review' %}" class="bg-[#240F0E] text-white px-4 py-2 rounded mt-4 inline-block">Buat Ulasan</a>
     </div>
 </div>
 
