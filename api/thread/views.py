@@ -1,6 +1,5 @@
 from .forms import ThreadForm, CommentForm
 from .models import Thread, Comment
-import json
 from django.utils.html import strip_tags
 from django.core import serializers
 from django.http import HttpResponse, JsonResponse, HttpResponseForbidden
@@ -12,6 +11,11 @@ from django.shortcuts import (
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_POST
 from django.views.decorators.csrf import csrf_exempt
+from api.user_profile.models import CustomerProfile, OwnerProfile
+from django.core.files.base import ContentFile
+from api.authentication.decorators import login_required_json
+import base64
+import json
 
 
 @login_required()
@@ -193,46 +197,88 @@ def detail_thread(request, id):
     )
 
 
-from api.authentication.decorators import login_required_json
-
-
 def fget_thread(request):
     try:
-        threads = Thread.objects.all().values()
+        # Fetch threads and related author information
+        threads = Thread.objects.select_related("author").order_by("-created_at")
+        # Construct the response with additional author details
+        thread_list = []
+        for thread in threads:
+            author = thread.author
+            author_profile = None
+
+            # Check if the author is a Customer or RestaurantOwner and fetch the profile
+            if hasattr(author, "customer"):
+                # Author is a Customer, get their profile
+                author_profile = CustomerProfile.objects.filter(
+                    user=author.customer
+                ).first()
+            elif hasattr(author, "resto_owner"):
+                # Author is a RestaurantOwner, get their profile
+                author_profile = OwnerProfile.objects.filter(
+                    user=author.resto_owner
+                ).first()
+
+            if request.user.is_authenticated:
+                # check if liked by user
+                liked = thread.likes.filter(id=request.user.id).exists()
+            print(thread.comments.count())
+            print(liked)
+            thread_list.append(
+                {
+                    "id": thread.id,
+                    "content": thread.content,
+                    "created_at": thread.created_at,
+                    "updated_at": thread.updated_at,
+                    "author_id": author.id,
+                    "author_name": author.username,
+                    "author_profile_pic": (
+                        author_profile.profile_pic.url
+                        if author_profile and author_profile.profile_pic
+                        else None
+                    ),
+                    "image": thread.image.url if thread.image else None,
+                    "comment_count": thread.comments.count(),
+                    "likes_count": thread.likes.count(),
+                    "liked": liked,
+                }
+            )
+
         return JsonResponse(
             {
                 "success": True,
                 "message": "Threads successfully fetched!",
-                "threads": list(threads),
+                "threads": thread_list,
             },
         )
     except Exception as e:
         print(e)
         return JsonResponse({"success": False, "error": str(e)}, status=500)
 
-import base64
-from django.core.files.base import ContentFile
 
 @login_required
 @csrf_exempt
 @require_http_methods(["POST"])
 def fcreate_thread(request):
+    print(request.user)
     try:
         data = json.loads(request.body)
-        # Decode base64 image if present
-        if "image" in data and data["image"]:
-            image_data = data.pop("image")
-            format, imgstr = image_data.split(";base64,")  # Extract base64 and format
-            ext = format.split("/")[-1]  # Get file extension (e.g., png, jpg)
-            image_file = ContentFile(
-                base64.b64decode(imgstr), name=f"thread_image.{ext}"
-            )
-            data["image"] = image_file  # Assign the decoded file to the form data
+        print(data)
         form = ThreadForm(data)
         if form.is_valid():
             thread = form.save(commit=False)
             thread.author = request.user
-            thread.image = image_file
+            if "image" in data and data["image"]:
+                image_data = data.pop("image")
+                format, imgstr = image_data.split(
+                    ";base64,"
+                )  # Extract base64 and format
+                ext = format.split("/")[-1]  # Get file extension (e.g., png, jpg)
+                # Decode base64 image if present
+                image_file = ContentFile(
+                    base64.b64decode(imgstr), name=f"thread_image.{ext}"
+                )
+                thread.image = image_file
             thread.save()
             return JsonResponse(
                 {
@@ -273,6 +319,7 @@ def flike_thread(request, thread_id):
 @login_required_json
 @csrf_exempt
 def fdelete_thread(request, thread_id):
+    print(request.user)
     thread = get_object_or_404(Thread, id=thread_id)
     if request.user == thread.author:
         thread.delete()
@@ -318,29 +365,61 @@ def fedit_thread(request, thread_id):
 
 
 # Get thread details (Flutter-specific)
-@login_required_json
 @csrf_exempt
 @require_http_methods(["GET"])
 def fget_thread_details(request, thread_id):
     thread = get_object_or_404(Thread, id=thread_id)
-    comments = [
-        {
-            "id": comment.id,
-            "content": comment.content,
-            "author": comment.author.username,
-            "likes": comment.like_count,
-        }
-        for comment in thread.comments.all()
-    ]
+    # Fetch threads and related author information
+    comments = Comment.objects.filter(thread=thread).select_related("author").order_by("-created_at")
+    # Construct the response with additional author details
+    comment_list = []
+    for comment in comments:
+        author = comment.author
+        author_profile = None
+
+        # Check if the author is a Customer or RestaurantOwner and fetch the profile
+        if hasattr(author, "customer"):
+            # Author is a Customer, get their profile
+            author_profile = CustomerProfile.objects.filter(
+                user=author.customer
+            ).first()
+        elif hasattr(author, "resto_owner"):
+            # Author is a RestaurantOwner, get their profile
+            author_profile = OwnerProfile.objects.filter(
+                user=author.resto_owner
+            ).first()
+
+        if request.user.is_authenticated:
+            # check if liked by user
+            liked = comment.likes.filter(id=request.user.id).exists()
+        comment_list.append(
+            {
+                "id": comment.id,
+                "content": comment.content,
+                "created_at": comment.created_at,
+                "updated_at": comment.updated_at,
+                "author_id": author.id,
+                "author_name": author.username,
+                "author_profile_pic": (
+                    author_profile.profile_pic.url
+                    if author_profile and author_profile.profile_pic
+                    else None
+                ),
+                "likes_count": comment.likes.count(),
+                "liked": liked,
+            }
+        )
     return JsonResponse(
         {
             "success": True,
             "data": {
-                "id": thread.id,
-                "content": thread.content,
-                "image": thread.image.url if thread.image else None,
-                "likes": thread.like_count,
-                "comments": comments,
+                "thread": {
+                    "id": thread.id,
+                    "content": thread.content,
+                    "image": thread.image.url if thread.image else None,
+                    "likes": thread.like_count,
+                },
+                "comments": comment_list,
             },
         }
     )
@@ -398,7 +477,6 @@ def flike_comment(request, comment_id):
 # Delete a comment (Flutter-specific)
 @login_required_json
 @csrf_exempt
-@require_http_methods(["DELETE"])
 def fdelete_comment(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
     if request.user == comment.author:
