@@ -121,8 +121,7 @@ def edit_review_ajax(request, id):
         "judul_ulasan": review.judul_ulasan,
         "teks_ulasan": review.teks_ulasan,
         "penilaian": review.penilaian,
-        "tanggal": review.tanggal.strftime('%Y-%m-%d'),
-        # Add any additional context fields here if needed
+        "tanggal": review.tanggal.strftime('%d %B %Y'),
     })
 
 # AJAX-only view to delete a review
@@ -172,20 +171,9 @@ def show_json_by_id(request, id):
 def user_reviews_flutter(request):
     try:
         user = request.user.customer
-        sort_by = request.GET.get('sort_by', '')  # Ambil parameter sort_by
 
-        # Ambil review milik user dan hitung jumlah likes (gunakan nama lain)
-        reviews = Review.objects.filter(customer=user).annotate(total_likes_count=Count('likes'))
-
-        # Sorting berdasarkan parameter
-        if sort_by == "like":
-            reviews = reviews.order_by('-total_likes_count')
-        elif sort_by == "rate":
-            reviews = reviews.order_by('-penilaian')
-        elif sort_by == "date":
-            reviews = reviews.order_by('-tanggal')
-        else:
-            reviews = reviews.order_by('-tanggal')
+        # Ambil review milik user dan hitung jumlah likes
+        reviews = Review.objects.filter(customer=user).annotate(total_likes_count=Count('likes')).order_by('-tanggal')
 
         # Format data JSON sesuai dengan Flutter model
         review_list = [
@@ -193,11 +181,11 @@ def user_reviews_flutter(request):
                 "id": str(review.pk),
                 "restoran_name": review.restoran.name if review.restoran else "Nama Restoran",
                 "judul_ulasan": review.judul_ulasan,
-                "teks_ulasan": review.teks_ulasan, 
+                "teks_ulasan": review.teks_ulasan,
                 "penilaian": review.penilaian,
                 "tanggal": review.tanggal.strftime('%Y-%m-%d'),
-                "display_name": review.get_display_name,  # Ambil dari properti get_display_name
-                "total_likes": review.total_likes_count,  # Gunakan hasil annotate
+                "display_name": review.get_display_name, 
+                "total_likes": review.total_likes_count,  
                 "images": [
                     request.build_absolute_uri(image.image.url) for image in review.images.all()
                 ],
