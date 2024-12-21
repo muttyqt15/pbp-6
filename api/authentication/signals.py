@@ -5,7 +5,9 @@ from api.user_profile.models import CustomerProfile, OwnerProfile  # Pastikan pa
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
+    print("boom!")
     if created:
+        print("boom!2")
         # Buat profil untuk Customer
         if instance.role == "CUSTOMER":
             customer = Customer.objects.create(user=instance)

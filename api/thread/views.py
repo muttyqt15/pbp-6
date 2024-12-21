@@ -196,7 +196,6 @@ def detail_thread(request, id):
         {"thread": thread, "comments": comments, "user": request.user, "form": form},
     )
 
-
 def fget_thread(request):
     try:
         # Fetch threads and related author information
