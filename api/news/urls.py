@@ -1,6 +1,6 @@
 from django.urls import path
 from api.news.views import show_main, owner_panel, show_berita_json, add_berita_ajax, show_berita_by_owner, edit_berita, delete_berita, like_berita
-from api.news.views import flike_berita, fdelete_berita, fshow_berita_id, fadd_berita_ajax, fedit_berita
+from api.news.views import flike_berita, fdelete_berita, fshow_berita_id, fadd_berita_ajax, fedit_berita, get_user_role
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -21,6 +21,7 @@ urlpatterns = [
     path("fshow_berita_id/<str:berita_id>/",fshow_berita_id , name='fshow_by_json'),
     path("fadd_berita_ajax/", fadd_berita_ajax, name="fadd_berita_ajax"),
     path("fedit_berita/<str:berita_id>/", fedit_berita, name="fedit_berita"),
+    path('get_user_role/', get_user_role, name='get_user_role')
 ] 
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
