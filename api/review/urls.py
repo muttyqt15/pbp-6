@@ -12,7 +12,6 @@ urlpatterns = [
     path('like/<uuid:id>/', views.like_review_ajax, name='like_review_ajax'),
     path('json/', views.show_json, name='show_json'),
     path('json/<str:id>/', views.show_json_by_id, name='show_json_by_id'),
-    path('flutter/list/', views.list_reviews_flutter, name="list_reviews_flutter"),
     path('flutter/create/', views.create_review_flutter, name="create_review_flutter"),
     path('flutter/user-reviews/', views.user_reviews_flutter, name='user_reviews_flutter'),
     path('flutter/<int:id>/edit/', views.edit_review_flutter, name="edit_review_flutter"),

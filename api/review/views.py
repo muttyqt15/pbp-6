@@ -171,15 +171,13 @@ def show_json_by_id(request, id):
 def user_reviews_flutter(request):
     try:
         user = request.user.customer
-
-        # Ambil review milik user dan hitung jumlah likes
         reviews = Review.objects.filter(customer=user).annotate(total_likes_count=Count('likes')).order_by('-tanggal')
 
-        # Format data JSON sesuai dengan Flutter model
         review_list = [
             {
                 "id": str(review.pk),
                 "restoran_name": review.restoran.name if review.restoran else "Nama Restoran",
+                "resto_id": review.restoran.id,
                 "judul_ulasan": review.judul_ulasan,
                 "teks_ulasan": review.teks_ulasan,
                 "penilaian": review.penilaian,
@@ -204,7 +202,7 @@ def create_review_flutter(request):
         try:
             # Mengambil data teks
             display_name = request.POST.get('display_name', '')
-            restoran_id = request.POST.get('restoran_id')
+            restoran_id = request.POST.get('resto_id')
             judul_ulasan = request.POST.get('judul_ulasan')
             teks_ulasan = request.POST.get('teks_ulasan')
             penilaian = request.POST.get('penilaian')
@@ -246,10 +244,12 @@ def create_review_flutter(request):
 
     return JsonResponse({"status": "error", "message": "Invalid HTTP method."}, status=405)
 
+
 @login_required
 @csrf_exempt
 def edit_review_flutter(request, id):
     try:
+        # Ambil review berdasarkan ID dan pastikan milik user yang sedang login
         review = get_object_or_404(Review, pk=id, customer=request.user.customer)
 
         if request.method == 'POST':
@@ -258,6 +258,7 @@ def edit_review_flutter(request, id):
             except json.JSONDecodeError:
                 return JsonResponse({"status": "error", "message": "Invalid JSON format."}, status=400)
 
+            # Validasi penilaian
             new_penilaian = data.get("penilaian", review.penilaian)
             if new_penilaian is not None:
                 try:
@@ -267,19 +268,39 @@ def edit_review_flutter(request, id):
                 except ValueError:
                     return JsonResponse({"status": "error", "message": "Penilaian harus antara 1-5"}, status=400)
 
+            # Update field berdasarkan data JSON
             review.judul_ulasan = data.get("judul_ulasan", review.judul_ulasan)
             review.teks_ulasan = data.get("teks_ulasan", review.teks_ulasan)
             review.penilaian = new_penilaian
             review.display_name = data.get("display_name", review.display_name)
 
+            # Simpan perubahan
             review.save()
 
-            return JsonResponse({"status": "success", "message": "Review updated successfully."}, status=200)
+            # Response setelah update
+            return JsonResponse({
+                "status": "success",
+                "message": "Review updated successfully.",
+                "data": {
+                    "id": str(review.pk),
+                    "restoran_name": review.restoran.name if review.restoran else "Nama Restoran",
+                    "judul_ulasan": review.judul_ulasan,
+                    "teks_ulasan": review.teks_ulasan,
+                    "penilaian": review.penilaian,
+                    "tanggal": review.tanggal.strftime('%Y-%m-%d'),
+                    "display_name": review.get_display_name,
+                    "total_likes": review.likes.count(),
+                    "images": [
+                        request.build_absolute_uri(image.image.url) for image in review.images.all()
+                    ],
+                }
+            }, status=200)
 
         return JsonResponse({"status": "error", "message": "Invalid HTTP method."}, status=405)
 
     except Exception as e:
         return JsonResponse({"status": "error", "message": str(e)}, status=500)
+
 
 # Delete a review (Flutter-specific)
 @login_required
@@ -291,39 +312,6 @@ def delete_review_flutter(request, id):
             review.delete()
             return JsonResponse({"status": "success", "message": "Review deleted successfully."}, status=200)
         return JsonResponse({"status": "error", "message": "Invalid HTTP method."}, status=405)
-    except Exception as e:
-        return JsonResponse({"status": "error", "message": str(e)}, status=500)
-
-# List all reviews (Flutter-specific)
-@csrf_exempt
-def list_reviews_flutter(request):
-    try:
-        page_number = request.GET.get('page', 1)  # Nomor halaman
-        reviews = Review.objects.all().annotate(total_likes=Count('likes')).order_by('-tanggal')
-
-        paginator = Paginator(reviews, 10)  # 10 reviews per halaman
-        page_obj = paginator.get_page(page_number)
-
-        review_list = [
-            {
-                "id": str(review.id),
-                "judul_ulasan": review.judul_ulasan,
-                "teks_ulasan": review.teks_ulasan,
-                "penilaian": review.penilaian,
-                "tanggal": review.tanggal.strftime('%Y-%m-%d'),
-                "total_likes": review.total_likes,
-                "images": [image.image.url for image in review.images.all()],
-            }
-            for review in page_obj
-        ]
-
-        return JsonResponse({
-            "status": "success",
-            "data": review_list,
-            "page": page_number,
-            "total_pages": paginator.num_pages,
-        }, status=200)
-
     except Exception as e:
         return JsonResponse({"status": "error", "message": str(e)}, status=500)
 
