@@ -402,15 +402,8 @@ def fetch_profile(request):
 
         elif user.is_resto_owner:
             # Jika pengguna adalah RestaurantOwner
-            print(user)
             restaurant_owner = RestaurantOwner.objects.get(user=user)
-            print('restaurant_owner')
-            print(restaurant_owner.id)
-            print(restaurant_owner)
             profile, created = OwnerProfile.objects.get_or_create(user=restaurant_owner)
-            print('profile')
-            print(profile.bio)
-            print(profile.profile_pic_url)
             profile_data = {
                 'role': 'restaurant_owner',
                 'username': user.username,
@@ -418,7 +411,6 @@ def fetch_profile(request):
                 'bio': profile.bio,
                 'profile_pic': profile.profile_pic_url
             }
-            print(profile_data)
         else:
             return JsonResponse({'success': False, 'message': 'User role not recognized'}, status=400)
 
