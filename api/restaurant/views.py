@@ -18,6 +18,8 @@ import logging
 from django.db.models import Q
 from api.bookmark.models import Bookmark
 from api.review.models import Review, ReviewImage
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponseForbidden
 
 logger = logging.getLogger(__name__)
 
@@ -238,6 +240,7 @@ def serialized_restaurant(request, id):
         data = {
             "restaurant": {
                 "id": restaurant.id,
+                "district": restaurant.district,
                 "name": restaurant.name,
                 "address": restaurant.address,
                 "operational_hours": restaurant.operational_hours,
@@ -789,12 +792,16 @@ def edit_restaurant_api(request, restaurant_id):
         return JsonResponse({"errors": form.errors}, status=400)
 
 # check if this restaurant owner has a restaurant
-def has_restaurant(request):
+def has_restaurant(request, id):
     """Check if the restaurant owner has a restaurant."""
-
-    if request.user.role == 'RESTO_OWNER':
-        return JsonResponse({"has_restaurant": request.user.resto_owner.restaurant is not None, "restaurant_id": request.user.resto_owner.restaurant.id})
+    # get user with the id 
+    user = get_object_or_404(User, id=id)
+    # check if the user is a restaurant owner
+    if user.role == 'RESTO_OWNER':
+        # check if the restaurant owner has a restaurant
+        return JsonResponse({"has_restaurant": user.resto_owner.restaurant is not None, "statusCode": 200, 'restaurant_id': user.resto_owner.restaurant.id if user.resto_owner.restaurant else None})
     return JsonResponse({"has_restaurant": False})
+    
 
 
 def get_restaurant_xml(request):
@@ -824,14 +831,19 @@ def get_restaurants_json_by_id(request, id):
     data = serializers.serialize("json", restaurants)
     return JsonResponse(data, safe=False)
 
-def flutter_like_review(request, id):
-    review = get_object_or_404(Review, pk=id)
-    review.likes.add(request.user)
-    review.save()
-    return JsonResponse({"success": True, "total_likes": review.total_likes})
+@csrf_exempt
+@login_required()
+def like_review(request, id):
+    if request.method == "POST":
+        review = get_object_or_404(Review, pk=id)
+        status_liked = request.user in review.likes.all()
+        print('get')
+        if status_liked:  # O(n), is this ok?
+            print('unlike')
+            review.likes.remove(request.user)
+        else:
+            review.likes.add(request.user)
+        return JsonResponse({"likes": review.like_count, "liked": status_liked})
+    return HttpResponseForbidden()
 
-def flutter_unlike_review(request, id):
-    review = get_object_or_404(Review, pk=id)
-    review.likes.remove(request.user)
-    review.save()
-    return JsonResponse({"success": True, "total_likes": review.total_likes})
+

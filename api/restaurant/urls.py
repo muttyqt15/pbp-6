@@ -22,8 +22,7 @@ from .views import (
     serialized_restaurant_list,
     has_restaurant,
     edit_restaurant_api,
-    flutter_like_review,
-    flutter_unlike_review
+    like_review,
 )
 
 urlpatterns = [
@@ -50,8 +49,8 @@ urlpatterns = [
     ),
     path("serialized/<int:id>", serialized_restaurant, name="serialized_restaurant"),
     path("add_api/", add_restaurant_api, name="add_restaurant_api"),
-    path("has_restaurant/", has_restaurant, name="has_restaurant"),
+    path("has_restaurant/<int:id>", has_restaurant, name="has_restaurant"),
     path("edit_api/<int:id>", edit_restaurant_api, name="edit_restaurant_api"),
-    path("flutter_like_review/", flutter_like_review, name="flutter_like_review"),
-    path("flutter_unlike_review/", flutter_unlike_review, name="flutter_unlike_review"),
+    path("like_review/", like_review, name="like_review"),
+   
 ]
