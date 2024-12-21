@@ -15,7 +15,9 @@ from django.http import HttpResponseForbidden
 from api.restaurant.models import Restaurant
 from django.core.files.base import ContentFile
 from django.core.paginator import Paginator
-
+from django.views.decorators.http import require_http_methods
+import logging
+logger = logging.getLogger(__name__)
 # Custom decorator to check if the user has a customer profile
 def customer_required(view_func):
     def _wrapped_view(request, *args, **kwargs):
@@ -302,17 +304,47 @@ def edit_review_flutter(request, id):
 
 
 # Delete a review (Flutter-specific)
-@login_required
 @csrf_exempt
-def delete_review_flutter(request, id):
+@require_http_methods(["POST", "DELETE"])
+@login_required
+def delete_review_flutter(request, review_id):
     try:
-        review = get_object_or_404(Review, pk=id, customer=request.user.customer)
-        if request.method == 'DELETE':
-            review.delete()
-            return JsonResponse({"status": "success", "message": "Review deleted successfully."}, status=200)
-        return JsonResponse({"status": "error", "message": "Invalid HTTP method."}, status=405)
+        logger.info(f"User: {request.user}, Review ID: {review_id}")
+        # Periksa apakah user memiliki role customer
+        if not hasattr(request.user, 'customer'):
+            return JsonResponse(
+                {"status": "error", "message": "Only customers can delete reviews."},
+                status=403,
+            )
+
+        # Ambil ulasan berdasarkan ID
+        review = get_object_or_404(Review, id=review_id)
+
+        # Pastikan ulasan milik customer yang sedang login
+        if review.customer.user != request.user:
+            return JsonResponse(
+                {"status": "error", "message": "You are not authorized to delete this review."},
+                status=403,
+            )
+
+        # Hapus ulasan
+        review.delete()
+        return JsonResponse(
+            {"status": "success", "message": "Review deleted successfully."},
+            status=200,
+        )
+
+    except Review.DoesNotExist:
+        return JsonResponse(
+            {"status": "error", "message": "Review not found."},
+            status=404,
+        )
+
     except Exception as e:
-        return JsonResponse({"status": "error", "message": str(e)}, status=500)
+        return JsonResponse(
+            {"status": "error", "message": str(e)},
+            status=500,
+        )
 
 # Like/Unlike a review (Flutter-specific)
 @login_required

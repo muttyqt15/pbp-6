@@ -15,6 +15,6 @@ urlpatterns = [
     path('flutter/create/', views.create_review_flutter, name="create_review_flutter"),
     path('flutter/user-reviews/', views.user_reviews_flutter, name='user_reviews_flutter'),
     path('flutter/<int:id>/edit/', views.edit_review_flutter, name="edit_review_flutter"),
-    path('flutter/<int:id>/delete/', views.delete_review_flutter, name="delete_review_flutter"),
+    path('flutter/delete/<uuid:review_id>/', views.delete_review_flutter, name='delete_review_flutter'),
     path('flutter/<int:id>/like/', views.like_review_flutter, name="like_review_flutter"),
 ]
