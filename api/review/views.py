@@ -18,6 +18,7 @@ from django.core.paginator import Paginator
 from django.views.decorators.http import require_http_methods
 import logging
 logger = logging.getLogger(__name__)
+
 # Custom decorator to check if the user has a customer profile
 def customer_required(view_func):
     def _wrapped_view(request, *args, **kwargs):
@@ -46,20 +47,6 @@ def like_review_ajax(request, id):
         "liked": liked,
         "total_likes": review.likes.count()
     })
-
-def all_review(request):
-    # Retrieve all reviews, ordered by likes and last edited time
-    reviews = (
-        Review.objects.all()
-        .annotate(num_likes=Count('likes'))
-        .order_by('-num_likes', '-waktu_edit_terakhir')
-    )
-    
-    context = {
-        'all_reviews': reviews,
-    }
-    print(context)
-    return render(request, 'all_review.html', context)
 
 # Main review view for the logged-in user's reviews
 @login_required
@@ -196,52 +183,52 @@ def user_reviews_flutter(request):
     except Exception as e:
         return JsonResponse({"status": "error", "message": str(e)}, status=500)
     
-@login_required
+
 @csrf_exempt
+@login_required
 def create_review_flutter(request):
     if request.method == 'POST':
         try:
-            # Mengambil data teks
-            display_name = request.POST.get('display_name', '')
-            restoran_id = request.POST.get('resto_id')
+            # Debugging headers dan cookies
+            print(f"Headers: {request.headers}")
+            print(f"Cookies: {request.COOKIES}")
+            
+            display_name = request.POST.get('display_name', None)  # Bisa None
+            restoran_id = request.POST.get('restoran_id')
             judul_ulasan = request.POST.get('judul_ulasan')
             teks_ulasan = request.POST.get('teks_ulasan')
             penilaian = request.POST.get('penilaian')
 
-            # Validasi input wajib
-            if not (judul_ulasan and teks_ulasan and penilaian and restoran_id):
-                return JsonResponse({"status": "error", "message": "Semua field wajib diisi."}, status=400)
-
-            # Validasi penilaian
-            try:
-                penilaian = int(penilaian)
-                if penilaian < 1 or penilaian > 5:
-                    raise ValueError
-            except ValueError:
-                return JsonResponse({"status": "error", "message": "Penilaian harus antara 1-5"}, status=400)
+            # Validasi input
+            if not all([restoran_id, judul_ulasan, teks_ulasan, penilaian]):
+                return JsonResponse({"status": "error", "message": "All fields except display_name are required."}, status=400)
 
             # Validasi restoran
             restoran = get_object_or_404(Restaurant, id=restoran_id)
 
-            # Buat review baru
+            # Buat review
             new_review = Review.objects.create(
                 customer=request.user.customer,
                 restoran=restoran,
                 judul_ulasan=judul_ulasan,
                 teks_ulasan=teks_ulasan,
-                penilaian=penilaian,
-                display_name=display_name
+                penilaian=int(penilaian),
+                display_name=display_name  # Bisa None
             )
 
-            # Handle file upload
-            images = request.FILES.getlist('images')
-            for image in images:
-                ReviewImage.objects.create(review=new_review, image=image)
+            # Handle image
+            image_base64 = request.POST.get('image_base64', None)
+            if image_base64:
+                image_data = base64.b64decode(image_base64)
+                ReviewImage.objects.create(
+                    review=new_review,
+                    image=ContentFile(image_data, name="uploaded_image.jpg")
+                )
 
-            return JsonResponse({"status": "success", "message": "Review berhasil dibuat."}, status=201)
+            return JsonResponse({"status": "success", "message": "Review created successfully."}, status=201)
 
         except Exception as e:
-            return JsonResponse({"status": "error", "message": str(e)}, status=500)
+            return JsonResponse({"status": "error", "message": f"An error occurred: {str(e)}"}, status=500)
 
     return JsonResponse({"status": "error", "message": "Invalid HTTP method."}, status=405)
 
@@ -345,29 +332,22 @@ def delete_review_flutter(request, review_id):
             {"status": "error", "message": str(e)},
             status=500,
         )
-
-# Like/Unlike a review (Flutter-specific)
-@login_required
-@csrf_exempt
-def like_review_flutter(request, id):
-    try:
-        review = get_object_or_404(Review, pk=id)
-        customer = request.user.customer
-        if request.method == 'POST':
-            # Jika sudah like, maka unlike. Jika belum, maka like.
-            if review.likes.filter(pk=customer.pk).exists():
-                review.likes.remove(customer)
-                message = "Review unliked."
-            else:
-                review.likes.add(customer)
-                message = "Review liked."
-
-            return JsonResponse({
-                "status": "success",
-                "message": message,
-                "total_likes": review.likes.count()
-            }, status=200)
-        else:
-            return JsonResponse({"status": "error", "message": "Invalid HTTP method."}, status=405)
-    except Exception as e:
-        return JsonResponse({"status": "error", "message": str(e)}, status=500)
+    
+def all_restaurants_flutter(request):
+    if request.method == "GET":
+        restaurants = Restaurant.objects.all()
+        data = [
+            {
+                "pk": restaurant.pk,
+                "fields": {
+                    "name": restaurant.name,
+                    "district": restaurant.district,
+                    "address": restaurant.address,
+                    "operational_hours": restaurant.operational_hours,
+                    "photo_url": restaurant.photo_url,
+                },
+            }
+            for restaurant in restaurants
+        ]
+        return JsonResponse(data, safe=False)
+    return JsonResponse({"error": "Invalid request method"}, status=400)
