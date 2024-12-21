@@ -451,4 +451,57 @@
         }, 150); 
     }
 </script>
+<script>
+    function toggleLike(beritaId) {
+        const likeButton = document.getElementById('like-button');
+        const likeIcon = document.getElementById('like-icon');
+        const likeIconCard = document.getElementById(`like-icon-${beritaId}`); 
+        const originalText = likeButton.textContent;
+
+        likeButton.disabled = true;
+
+        fetch(`/news/like_berita/${beritaId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.status){
+                window.location.href = "/auth/login";
+                return;
+            } else 
+                document.getElementById('modalJumlahLike').textContent = `${data.likes}`;
+                document.getElementById(`jumlah-like-${beritaId}`).textContent = `${data.likes}`;
+
+                if (data.liked) {
+                    likeIcon.classList.add('text-[#fffbf2]');
+                    likeIcon.classList.add('hover:text-[#b9b1a9]');
+                    likeIcon.classList.remove('text-[#b9b1a9]');
+                    likeIcon.classList.remove('hover:text-[#fffbf2]');
+                    likeIconCard.classList.add('text-[#fffbf2]');
+                    likeIconCard.classList.add('hover:text-[#b9b1a9]');
+                    likeIconCard.classList.remove('text-[#b9b1a9]');
+                    likeIconCard.classList.remove('hover:text-[#fffbf2]');
+                } else {
+                    likeIcon.classList.add('text-[#b9b1a9]');
+                    likeIcon.classList.add('hover:text-[#fffbf2]');
+                    likeIcon.classList.remove('text-[#fffbf2]');
+                    likeIcon.classList.remove('hover:text-[#b9b1a9]');
+                    likeIconCard.classList.add('text-[#b9b1a9]');
+                    likeIconCard.classList.add('hover:text-[#fffbf2]');
+                    likeIconCard.classList.remove('text-[#fffbf2]');
+                    likeIconCard.classList.remove('hover:text-[#b9b1a9]');
+                }
+            })
+        .catch(error => {
+            likeButton.textContent = originalText;  
+        })
+        .finally(() => {
+            likeButton.disabled = false;
+        });
+    }
+</script>
 {% endblock content %}

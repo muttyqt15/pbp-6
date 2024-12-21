@@ -33,8 +33,28 @@ def toggle_bookmark(request, restaurant_id):
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
 @login_required
+@csrf_exempt
 def delete_bookmark(request, bookmark_id):
     bookmark = get_object_or_404(Bookmark, pk=bookmark_id, user=request.user)
     bookmark.delete()
     return redirect('bookmark:bookmark_list')
+
+@login_required
+def get_bookmarks(request):
+    # Ambil semua bookmark milik user yang sedang login
+    bookmarks = Bookmark.objects.filter(user=request.user).select_related('restaurant')
+    
+    # Format data menjadi JSON-friendly
+    bookmarks_data = [
+        {
+            'id': bookmark.restaurant.id,
+            'name': bookmark.restaurant.name,
+            'address': bookmark.restaurant.address,
+            'is_favorited': True  # Karena ini data bookmark, otomatis di-favorite
+        }
+        for bookmark in bookmarks
+    ]
+    
+    # Kembalikan sebagai response JSON
+    return JsonResponse({'bookmarks': bookmarks_data}, safe=False)
 
