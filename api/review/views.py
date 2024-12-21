@@ -1,7 +1,8 @@
+import base64
+import json
+import traceback
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseForbidden, JsonResponse, HttpResponse
-from django.http import JsonResponse
-from .models import Review
 from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
@@ -10,9 +11,10 @@ from .forms import ReviewForm
 from .models import Review, ReviewImage
 from django.db.models import Count
 from django.utils import timezone
-
 from django.http import HttpResponseForbidden
 from api.restaurant.models import Restaurant
+from django.core.files.base import ContentFile
+from django.core.paginator import Paginator
 
 # Custom decorator to check if the user has a customer profile
 def customer_required(view_func):
@@ -54,6 +56,7 @@ def all_review(request):
     context = {
         'all_reviews': reviews,
     }
+    print(context)
     return render(request, 'all_review.html', context)
 
 # Main review view for the logged-in user's reviews
@@ -75,7 +78,6 @@ def main_review(request):
 @login_required
 @customer_required
 def create_review(request):
-
     restaurants = Restaurant.objects.all()
     if request.method == "POST":
         form = ReviewForm(request.POST, request.FILES)
@@ -84,7 +86,6 @@ def create_review(request):
             review = form.save(commit=False)
             review.customer = request.user.customer  
             review.restoran = form.cleaned_data.get('restaurant')
-
             review.display_name = form.cleaned_data.get('display_name')
             review.save()
 
@@ -93,13 +94,11 @@ def create_review(request):
                 ReviewImage.objects.create(review=review, image=img)
             
             return redirect('review:main_review')
-
         else:
             print(form.errors)  # Print form errors for debugging
     else:
         form = ReviewForm()
     return render(request, 'create_review.html', {'form': form, 'restaurants': restaurants})
-
 
 @login_required
 @customer_required
@@ -122,10 +121,8 @@ def edit_review_ajax(request, id):
         "judul_ulasan": review.judul_ulasan,
         "teks_ulasan": review.teks_ulasan,
         "penilaian": review.penilaian,
-        "tanggal": review.tanggal.strftime('%Y-%m-%d'),
-        # Add any additional context fields here if needed
+        "tanggal": review.tanggal.strftime('%d %B %Y'),
     })
-
 
 # AJAX-only view to delete a review
 @login_required
@@ -138,29 +135,207 @@ def delete_review_ajax(request, id):
     return JsonResponse({"success": True})
 
 # JSON view for all reviews
-# def show_json(request):
-#     data = Review.objects.all()
-#     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
-
 def show_json(request):
-    reviews = Review.objects.all()  # Ambil semua review
-    data = []
-    for review in reviews:
-        review_data = {
-            "id": str(review.id),
-            "judul_ulasan": review.judul_ulasan,
-            "teks_ulasan": review.teks_ulasan,
-            "penilaian": review.penilaian,
-            "tanggal": review.tanggal,
-            "total_likes": review.total_likes,
-            "images": [image.image.url for image in review.images.all()],  # Semua URL gambar terkait
-        }
-        data.append(review_data)
-    
-    return JsonResponse(data, safe=False)
+    reviews = Review.objects.all()
+    serialized_data = serializers.serialize("json", reviews)
+    data_list = json.loads(serialized_data)
 
+    # Tambahkan field images secara manual
+    for obj in data_list:
+        review_id = obj['pk']
+        review = get_object_or_404(Review, pk=review_id)
+        # Kumpulkan URL dari ReviewImage terkait
+        images = [image.image.url for image in review.images.all()]
+        obj['fields']['images'] = images
+
+    return JsonResponse(data_list, safe=False)
 
 # JSON view for a specific review by ID
 def show_json_by_id(request, id):
-    data = Review.objects.filter(pk=id)
-    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+    reviews = Review.objects.filter(pk=id)
+    serialized_data = serializers.serialize("json", reviews)
+    data_list = json.loads(serialized_data)
+
+    # Tambahkan field images secara manual
+    for obj in data_list:
+        review_id = obj['pk']
+        review = get_object_or_404(Review, pk=review_id)
+        images = [image.image.url for image in review.images.all()]
+        obj['fields']['images'] = images
+
+    return JsonResponse(data_list, safe=False)
+
+# Create a review (Flutter-specific)
+@login_required
+@csrf_exempt
+def user_reviews_flutter(request):
+    try:
+        user = request.user.customer
+        reviews = Review.objects.filter(customer=user).annotate(total_likes_count=Count('likes')).order_by('-tanggal')
+
+        review_list = [
+            {
+                "id": str(review.pk),
+                "restoran_name": review.restoran.name if review.restoran else "Nama Restoran",
+                "judul_ulasan": review.judul_ulasan,
+                "teks_ulasan": review.teks_ulasan,
+                "penilaian": review.penilaian,
+                "tanggal": review.tanggal.strftime('%Y-%m-%d'),
+                "display_name": review.get_display_name, 
+                "total_likes": review.total_likes_count,  
+                "images": [
+                    request.build_absolute_uri(image.image.url) for image in review.images.all()
+                ],
+            }
+            for review in reviews
+        ]
+
+        return JsonResponse({"status": "success", "data": review_list}, status=200)
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": str(e)}, status=500)
+    
+@login_required
+@csrf_exempt
+def create_review_flutter(request):
+    if request.method == 'POST':
+        try:
+            # Mengambil data teks
+            display_name = request.POST.get('display_name', '')
+            restoran_id = request.POST.get('resto_id')
+            judul_ulasan = request.POST.get('judul_ulasan')
+            teks_ulasan = request.POST.get('teks_ulasan')
+            penilaian = request.POST.get('penilaian')
+
+            # Validasi input wajib
+            if not (judul_ulasan and teks_ulasan and penilaian and restoran_id):
+                return JsonResponse({"status": "error", "message": "Semua field wajib diisi."}, status=400)
+
+            # Validasi penilaian
+            try:
+                penilaian = int(penilaian)
+                if penilaian < 1 or penilaian > 5:
+                    raise ValueError
+            except ValueError:
+                return JsonResponse({"status": "error", "message": "Penilaian harus antara 1-5"}, status=400)
+
+            # Validasi restoran
+            restoran = get_object_or_404(Restaurant, id=restoran_id)
+
+            # Buat review baru
+            new_review = Review.objects.create(
+                customer=request.user.customer,
+                restoran=restoran,
+                judul_ulasan=judul_ulasan,
+                teks_ulasan=teks_ulasan,
+                penilaian=penilaian,
+                display_name=display_name
+            )
+
+            # Handle file upload
+            images = request.FILES.getlist('images')
+            for image in images:
+                ReviewImage.objects.create(review=new_review, image=image)
+
+            return JsonResponse({"status": "success", "message": "Review berhasil dibuat."}, status=201)
+
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)}, status=500)
+
+    return JsonResponse({"status": "error", "message": "Invalid HTTP method."}, status=405)
+
+
+@login_required
+@csrf_exempt
+def edit_review_flutter(request, id):
+    try:
+        # Ambil review berdasarkan ID dan pastikan milik user yang sedang login
+        review = get_object_or_404(Review, pk=id, customer=request.user.customer)
+
+        if request.method == 'POST':
+            try:
+                data = json.loads(request.body)
+            except json.JSONDecodeError:
+                return JsonResponse({"status": "error", "message": "Invalid JSON format."}, status=400)
+
+            # Validasi penilaian
+            new_penilaian = data.get("penilaian", review.penilaian)
+            if new_penilaian is not None:
+                try:
+                    new_penilaian = int(new_penilaian)
+                    if new_penilaian < 1 or new_penilaian > 5:
+                        raise ValueError
+                except ValueError:
+                    return JsonResponse({"status": "error", "message": "Penilaian harus antara 1-5"}, status=400)
+
+            # Update field berdasarkan data JSON
+            review.judul_ulasan = data.get("judul_ulasan", review.judul_ulasan)
+            review.teks_ulasan = data.get("teks_ulasan", review.teks_ulasan)
+            review.penilaian = new_penilaian
+            review.display_name = data.get("display_name", review.display_name)
+
+            # Simpan perubahan
+            review.save()
+
+            # Response setelah update
+            return JsonResponse({
+                "status": "success",
+                "message": "Review updated successfully.",
+                "data": {
+                    "id": str(review.pk),
+                    "restoran_name": review.restoran.name if review.restoran else "Nama Restoran",
+                    "judul_ulasan": review.judul_ulasan,
+                    "teks_ulasan": review.teks_ulasan,
+                    "penilaian": review.penilaian,
+                    "tanggal": review.tanggal.strftime('%Y-%m-%d'),
+                    "display_name": review.get_display_name,
+                    "total_likes": review.likes.count(),
+                    "images": [
+                        request.build_absolute_uri(image.image.url) for image in review.images.all()
+                    ],
+                }
+            }, status=200)
+
+        return JsonResponse({"status": "error", "message": "Invalid HTTP method."}, status=405)
+
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": str(e)}, status=500)
+
+
+# Delete a review (Flutter-specific)
+@login_required
+@csrf_exempt
+def delete_review_flutter(request, id):
+    try:
+        review = get_object_or_404(Review, pk=id, customer=request.user.customer)
+        if request.method == 'DELETE':
+            review.delete()
+            return JsonResponse({"status": "success", "message": "Review deleted successfully."}, status=200)
+        return JsonResponse({"status": "error", "message": "Invalid HTTP method."}, status=405)
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": str(e)}, status=500)
+
+# Like/Unlike a review (Flutter-specific)
+@login_required
+@csrf_exempt
+def like_review_flutter(request, id):
+    try:
+        review = get_object_or_404(Review, pk=id)
+        customer = request.user.customer
+        if request.method == 'POST':
+            # Jika sudah like, maka unlike. Jika belum, maka like.
+            if review.likes.filter(pk=customer.pk).exists():
+                review.likes.remove(customer)
+                message = "Review unliked."
+            else:
+                review.likes.add(customer)
+                message = "Review liked."
+
+            return JsonResponse({
+                "status": "success",
+                "message": message,
+                "total_likes": review.likes.count()
+            }, status=200)
+        else:
+            return JsonResponse({"status": "error", "message": "Invalid HTTP method."}, status=405)
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": str(e)}, status=500)
