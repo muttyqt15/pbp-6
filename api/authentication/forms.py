@@ -40,13 +40,6 @@ class SignupForm(UserCreationForm):
 
         if commit:
             user.save()  # First save the user to associate foreign keys later.
-
-            # Now create the associated profile based on the role
-            if user.role == Role.RESTO_OWNER:
-                RestaurantOwner.objects.create(user=user)
-            else:
-                Customer.objects.create(user=user)
-
         return user
 
 

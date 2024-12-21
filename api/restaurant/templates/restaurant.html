@@ -35,31 +35,26 @@
         font-family: "Lora", serif;
       }
     </style>
-    <div
-      class="container mx-auto bg-[#7D6E5F] bg-opacity-90 p-6 rounded-lg shadow-md mt-32">
-      <!-- Restaurant Photo and Info -->
-      <div class="flex mb-6">
-        <!-- Restaurant Photo -->
-        <div class="photo-container relative w-1/2 pr-4">
-          <img
-            src="{{ restaurant.photo_url|default:'https://placehold.co/600x400' }}"
-            alt="Restaurant Photo"
-            class="w-full h-64 object-cover rounded-md" />
-          {% if is_owner %}
-          <a
-            class="edit-button absolute top-2 right-6 bg-gray-800 text-[#FFFBF2] p-2 rounded-full bg-opacity-25 transition duration-300 ease-in-out hover:bg-opacity-100"
-            onclick="openEditPhotoModal()">
-            <i class="fas fa-pencil-alt"></i>
-          </a>
-          {% endif %}
-          <button
-            class="py-2 w-full bg-licorice text-dutch rounded-xl my-2"
-            id="toggle-bookmark"
-            onclick="console.log('hey'); toggleBookmark({{ restaurant.id }})">
-            {% if is_favorited %} Tambahkan ke Bookmark {% else %} Hilangkan
-            dari Bookmark {% endif %}
-          </button>
-        </div>
+    
+    <div class="container mx-auto bg-[#7D6E5F] bg-opacity-90 p-6 rounded-lg shadow-md mt-32">
+        <!-- Restaurant Photo and Info -->
+        <div class="flex mb-6">
+            <!-- Restaurant Photo -->
+            <div class="photo-container relative w-1/2 pr-4">
+                <img src="{{ restaurant.photo_url|default:'https://placehold.co/600x400' }}" alt="Restaurant Photo" class="w-full h-64 object-cover rounded-md">
+                {% if is_owner %}
+                <a class="edit-button absolute top-2 right-6 bg-gray-800 text-[#FFFBF2] p-2 rounded-full bg-opacity-25 transition duration-300 ease-in-out hover:bg-opacity-100" onclick="openEditPhotoModal()">
+                    <i class="fas fa-pencil-alt"></i>
+                </a>
+                {% endif %}
+                <button class="py-2 w-full bg-licorice text-dutch rounded-xl my-2" id="toggle-bookmark" onclick="console.log('hey'); toggleBookmark({{ restaurant.id }})">
+                    {% if is_favorited %}
+                        Tambahkan ke Bookmark
+                    {% else %}
+                        Hilangkan dari Bookmark
+                    {% endif %}
+                </button>
+            </div>
 
         <!-- Restaurant Info -->
         <div class="restaurant-info w-1/2 space-y-4">
@@ -288,8 +283,38 @@
             >
       </div>
     </div>
+</div>
 
     <!-- JavaScript -->
+     <script>
+        function getCSRFToken() {
+            const csrfToken = document.cookie
+              .split("; ")
+              .find((row) => row.startsWith("csrftoken="))
+              ?.split("=")[1];
+            return csrfToken || "";
+          }
+    function toggleBookmark(id) {
+        console.log('hello');
+        const toggleBookmarkButton = document.getElementById('toggle-bookmark');
+        fetch(`/bookmark/toggle/${id}/`, {
+            method: "POST",
+            headers: {
+              "X-CSRFToken": getCSRFToken(), // Include CSRF token for security
+              "Content-Type": "application/json",
+            },
+          })
+            .then((response) => response.json())
+            .then((data) => {
+                const button = document.getElementById("toggle-bookmark");
+                console.log(data)
+                button.textContent = data.is_favorited
+                  ? "Hilangkan dari Bookmark"
+                  : "Tambahkan ke Bookmark";
+            })
+            .catch((error) => console.error("Error:", error));
+    }
+     </script>
     <script>
       function getCSRFToken() {
         const csrfToken = document.cookie

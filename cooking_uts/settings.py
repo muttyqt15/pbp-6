@@ -32,7 +32,12 @@ SECRET_KEY = environ.get(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = environ.get("PRODUCTION", True)
 
-ALLOWED_HOSTS = ["muttaqin-muzakkir-utspbp.pbp.cs.ui.ac.id", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = [
+    "muttaqin-muzakkir-utspbp.pbp.cs.ui.ac.id",
+    "localhost",
+    "127.0.0.1",
+    "10.0.2.2",
+]
 
 
 # Application definition
@@ -51,17 +56,26 @@ INSTALLED_APPS = [
     "api.news",
     "api.main",
     "api.bookmark",
-    "api.user_profile.apps.UserProfileConfig",
+    "api.user_profile",
+    "corsheaders",
 ]
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = "None"
+SESSION_COOKIE_SAMESITE = "None"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
 ]
 
 ROOT_URLCONF = "cooking_uts.urls"
@@ -132,9 +146,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [
-    BASE_DIR / "static",  # Pastikan direktori ini sesuai dengan lokasi file Anda
+    BASE_DIR / "static",
 ]
 
 MEDIA_URL = "/media/"

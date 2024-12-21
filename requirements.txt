@@ -8,3 +8,5 @@ python-dotenv
 pandas
 openpyxl
 Pillow
+faker
+django-cors-headers

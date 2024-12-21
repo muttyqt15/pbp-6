@@ -124,6 +124,7 @@
                     <!-- <div class="mb-4">
                         <label for="editUsername" class="block text-sm font-medium text-[#fffbf2]">Username</label>
                         <input type="text" id="editUsername" name="judul" class="mt-1 block w-full bg-[#aba197] text-[#fffbf2] border border-[#fffbf2] rounded-md p-2" disabled value="{{ userNow.user.user.username }}">
+                        <input type="text" id="editUsername" name="judul" class="mt-1 block w-full bg-[#aba197] text-[#fffbf2] border border-[#fffbf2] rounded-md p-2" disabled value="{{ userNow.user.user.username }}">
                     </div>
                     <div class="mb-4">
                         <label for="editEmail" class="block text-sm font-medium text-[#fffbf2]">Email</label>
@@ -286,6 +287,11 @@ document.addEventListener('DOMContentLoaded', function () {
             modal.classList.remove('flex');     // Remove flex for transition reset
         });
 
+        document.getElementById('cancelEditProfileButton').addEventListener('click', () => {
+            const modal = document.getElementById('editProfileModal');
+            modal.classList.add('hidden');      // Hide modal
+            modal.classList.remove('flex');     // Remove flex for transition reset
+        });
         document.getElementById('cancelEditProfileButton').addEventListener('click', () => {
             const modal = document.getElementById('editProfileModal');
             modal.classList.add('hidden');      // Hide modal

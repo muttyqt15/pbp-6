@@ -1,5 +1,6 @@
 from django.db import models
-
+from django.utils import timezone
+from datetime import timedelta
 
 class Restaurant(models.Model):
     id = models.AutoField(primary_key=True)
@@ -9,7 +10,16 @@ class Restaurant(models.Model):
     operational_hours = models.CharField(max_length=255)
     photo_url = models.URLField(blank=True) 
     
+    @classmethod
+    def get_trending(cls):
+        trending_restaurants = cls.objects.annotate(
+            recent_reviews=models.Count(
+                'reviews', 
+            )
+        ).order_by('-recent_reviews')[:3]  # Get top 3
 
+        return trending_restaurants
+    
     def __str__(self):
         return self.name
 
@@ -31,4 +41,4 @@ class Food(models.Model):
     name = models.CharField(max_length=255)
     price = models.CharField(max_length=255)
     def __str__(self): 
-        return f"{self.name} at {self.restaurant.name}"
+        return f"{self.name}"

@@ -7,7 +7,9 @@ from api.restaurant.models import Restaurant
 
 def index(request):
     user = request.user
-    ctx = {"user": user}
+    trending = Restaurant.get_trending()
+    print(trending)
+    ctx = {"user": user, "trending": trending, "trend": trending[0]}
     return render(request, "main.html", ctx)
 
 
