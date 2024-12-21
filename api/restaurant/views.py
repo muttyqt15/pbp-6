@@ -792,7 +792,7 @@ def edit_restaurant_api(request, restaurant_id):
 def has_restaurant(request):
     """Check if the restaurant owner has a restaurant."""
 
-    if request.user.role is 'RESTO_OWNER':
+    if request.user.role == 'RESTO_OWNER':
         return JsonResponse({"has_restaurant": request.user.resto_owner.restaurant is not None, "restaurant_id": request.user.resto_owner.restaurant.id})
     return JsonResponse({"has_restaurant": False})
 
@@ -824,3 +824,14 @@ def get_restaurants_json_by_id(request, id):
     data = serializers.serialize("json", restaurants)
     return JsonResponse(data, safe=False)
 
+def flutter_like_review(request, id):
+    review = get_object_or_404(Review, pk=id)
+    review.likes.add(request.user)
+    review.save()
+    return JsonResponse({"success": True, "total_likes": review.total_likes})
+
+def flutter_unlike_review(request, id):
+    review = get_object_or_404(Review, pk=id)
+    review.likes.remove(request.user)
+    review.save()
+    return JsonResponse({"success": True, "total_likes": review.total_likes})
