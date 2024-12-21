@@ -222,8 +222,6 @@ def fget_thread(request):
             if request.user.is_authenticated:
                 # check if liked by user
                 liked = thread.likes.filter(id=request.user.id).exists()
-            print(thread.comments.count())
-            print(liked)
             thread_list.append(
                 {
                     "id": thread.id,
@@ -252,7 +250,7 @@ def fget_thread(request):
             },
         )
     except Exception as e:
-        print(e)
+        (e)
         return JsonResponse({"success": False, "error": str(e)}, status=500)
 
 
@@ -260,10 +258,8 @@ def fget_thread(request):
 @csrf_exempt
 @require_http_methods(["POST"])
 def fcreate_thread(request):
-    print(request.user)
     try:
         data = json.loads(request.body)
-        print(data)
         form = ThreadForm(data)
         if form.is_valid():
             thread = form.save(commit=False)
@@ -319,7 +315,6 @@ def flike_thread(request, thread_id):
 @login_required_json
 @csrf_exempt
 def fdelete_thread(request, thread_id):
-    print(request.user)
     thread = get_object_or_404(Thread, id=thread_id)
     if request.user == thread.author:
         thread.delete()
