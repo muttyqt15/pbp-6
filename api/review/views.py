@@ -177,7 +177,6 @@ def user_reviews_flutter(request):
             {
                 "id": str(review.pk),
                 "restoran_name": review.restoran.name if review.restoran else "Nama Restoran",
-                "resto_id": review.restoran.id,
                 "judul_ulasan": review.judul_ulasan,
                 "teks_ulasan": review.teks_ulasan,
                 "penilaian": review.penilaian,
