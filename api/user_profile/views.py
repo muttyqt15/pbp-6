@@ -391,7 +391,10 @@ def fetch_profile(request):
         if user.is_customer:
             # Jika pengguna adalah Customer
             customer = Customer.objects.get(user=user)
-            profile, created = CustomerProfile.objects.get(user=customer)
+            profile, created = CustomerProfile.objects.get_or_create(user=customer)
+            print(profile.bio)
+            print(profile.profile_pic_url)
+            print(user.email)
             profile_data = {
                 'role': 'customer',
                 'username': user.username,

@@ -82,7 +82,7 @@ def signup_flutter(request):
         
         return JsonResponse({
             "username": user.username,
-            "status": 'success',
+            "status": True,
             "message": "User created successfully!"
         }, status=200)
     
