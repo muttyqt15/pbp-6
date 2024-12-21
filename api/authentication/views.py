@@ -59,6 +59,7 @@ def signup_flutter(request):
         username = data['username']
         password1 = data['password1']
         password2 = data['password2']
+        role = data['role']
 
         # Check if the passwords match
         if password1 != password2:
@@ -76,6 +77,7 @@ def signup_flutter(request):
         
         # Create the new user
         user = User.objects.create_user(username=username, password=password1)
+        user.role = role
         user.save()
         
         return JsonResponse({

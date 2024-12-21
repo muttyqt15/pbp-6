@@ -28,4 +28,5 @@ urlpatterns = [
         name="fdelete_comment",
     ),
     path("fget_thread/", views.fget_thread, name="fget_thread"),
+    path("fget_thread/<int:thread_id>/", views.fget_thread_details, name="fget_thread_details"),
 ]
