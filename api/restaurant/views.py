@@ -20,6 +20,8 @@ from api.bookmark.models import Bookmark
 from api.review.models import Review, ReviewImage
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseForbidden
+from api.authentication.decorators import login_required_json
+import base64
 
 logger = logging.getLogger(__name__)
 
@@ -97,56 +99,6 @@ def add_restaurant(request):
                 return redirect("restaurant", id=restaurant.id)
 
     # If the form is not valid, or the request method is GET, render the form
-    return render(request, "add_restaurant.html", {"form": form})
-
-
-@require_POST
-@resto_owner_only(redirect_url="/auth/login/")
-def add_restaurant_api(request):
-    if Restaurant.objects.filter(restaurantowner=request.user.resto_owner).exists():
-        restaurant = Restaurant.objects.get(restaurantowner=request.user.resto_owner)
-        return redirect("restaurant", id=restaurant.id)
-
-    if request.method == "POST":
-        form = RestaurantForm(request.POST, request.FILES)
-        if form.is_valid():
-            # Strip malicious content
-            cleaned_name = strip_tags(form.cleaned_data["name"])
-            cleaned_district = strip_tags(form.cleaned_data["district"])
-            cleaned_address = strip_tags(form.cleaned_data["address"])
-            cleaned_operational_hours = strip_tags(
-                form.cleaned_data["operational_hours"]
-            )
-
-            # Handle photo upload
-            photo = request.FILES.get("photo")
-            photo_url = ""
-
-            if photo:
-                # Save the uploaded file to 'media/restaurant_photos'
-                path = default_storage.save(
-                    f"restaurant_photos/{photo.name}", ContentFile(photo.read())
-                )
-                photo_url = os.path.join(settings.MEDIA_URL, path)
-
-            # Save restaurant with the photo_url
-            restaurant = Restaurant.objects.create(
-                name=cleaned_name,
-                district=cleaned_district,
-                address=cleaned_address,
-                operational_hours=cleaned_operational_hours,
-                photo_url=photo_url,
-            )
-
-            # Link restaurant to the owner
-            restaurant_owner = request.user.resto_owner
-            restaurant_owner.restaurant = restaurant
-            restaurant_owner.save()
-
-            return redirect("restaurant", id=restaurant.id)
-    else:
-        form = RestaurantForm()
-
     return render(request, "add_restaurant.html", {"form": form})
 
 
@@ -747,61 +699,121 @@ def get_restaurant_menu(request, id):
         request, "restaurant_menu.html", {"restaurant": restaurant, "food": food}
     )
 
-def edit_restaurant_api(request, restaurant_id):
-    """View to edit an existing restaurant."""
-    try:
-        restaurant = Restaurant.objects.get(id=restaurant_id, restaurantowner=request.user.resto_owner)
-    except Restaurant.DoesNotExist:
-        return JsonResponse({"error": "Restaurant not found or not authorized."}, status=404)
 
-    form = RestaurantForm(request.POST, request.FILES, instance=restaurant)
+@require_POST
+@login_required_json
+@csrf_exempt
+def add_restaurant_api(request):
+    data = json.loads(request.body)
+    form = RestaurantForm(data)
+    if "image" in data and data["image"]:
+        image_data = data.pop("image")
+        format, imgstr = image_data.split(";base64,")  # Extract base64 and format
+        ext = format.split("/")[-1]  # Get file extension (e.g., png, jpg)
+        # Decode base64 image if present
+        image_file = ContentFile(base64.b64decode(imgstr), name=f"thread_image.{ext}")
 
     if form.is_valid():
-        # Strip malicious content
+        resto = form.save(commit=False)
+        resto.name = strip_tags(form.cleaned_data["name"])
+        resto.district = strip_tags(form.cleaned_data["district"])
+        resto.address = strip_tags(form.cleaned_data["address"])
+        resto.operational_hours = strip_tags(form.cleaned_data["operational_hours"])
+
+        if "image" in data and data["image"]:
+            resto.photo_url = f"restaurant_photos/{image_file.name}"
+            default_storage.save(resto.photo_url, image_file)
+        resto.save()
+
+        restaurant_owner = request.user.resto_owner
+        restaurant_owner.restaurant = resto
+        restaurant_owner.save()
+
+        return JsonResponse(
+            {
+                "success": True,
+                "message": "Restaurant added successfully.",
+                "resto_id": resto.id,
+            },
+            status=201,
+        )
+    else:
+        return JsonResponse({"success": False, "errors": form.errors}, status=400)
+
+@csrf_exempt
+def edit_restaurant_api(request, id):
+    """View to edit an existing restaurant."""
+    try:
+        print('11111111111')
+        restaurant = Restaurant.objects.get(
+            id=id, restaurantowner=request.user.resto_owner
+        )
+        print('222222222222')
+    except Restaurant.DoesNotExist:
+        return JsonResponse(
+            {"error": "Restaurant not found or not authorized."}, status=404
+        )
+    data = json.loads(request.body)
+    form = RestaurantForm(data)
+    
+    if "image" in data and data["image"]:
+        image_data = data.pop("image")
+        format, imgstr = image_data.split(";base64,")  # Extract base64 and format
+        ext = format.split("/")[-1]  # Get file extension (e.g., png, jpg)
+        # Decode base64 image if present
+        image_file = ContentFile(base64.b64decode(imgstr), name=f"thread_image.{ext}")
+
+    if form.is_valid():
         cleaned_name = strip_tags(form.cleaned_data["name"])
         cleaned_district = strip_tags(form.cleaned_data["district"])
         cleaned_address = strip_tags(form.cleaned_data["address"])
         cleaned_operational_hours = strip_tags(form.cleaned_data["operational_hours"])
 
-        # Handle new image upload
-        photo = request.FILES.get("photo")
-        if photo:
-            # Save the new file and delete the old one
-            if restaurant.photo_url:
-                old_path = os.path.join(settings.MEDIA_ROOT, restaurant.photo_url.replace(settings.MEDIA_URL, ""))
-                if os.path.exists(old_path):
-                    os.remove(old_path)
-            path = default_storage.save(
-                f"restaurant_photos/{photo.name}", ContentFile(photo.read())
-            )
-            restaurant.photo_url = os.path.join(settings.MEDIA_URL, path)
-
+            
+        if "image" in data and data["image"]:
+            restaurant.photo_url = f"restaurant_photos/{image_file.name}"
+            default_storage.save(restaurant.photo_url, image_file)
+        
         # Update fields
         restaurant.name = cleaned_name
         restaurant.district = cleaned_district
         restaurant.address = cleaned_address
         restaurant.operational_hours = cleaned_operational_hours
+
         restaurant.save()
 
-        return JsonResponse({
-            "message": "Restaurant updated successfully!",
-            "restaurant_id": restaurant.id,
-            "photo_url": restaurant.photo_url,
-        }, status=200)
+        return JsonResponse(
+            {
+                "message": "Restaurant updated successfully!",
+                "restaurant_id": restaurant.id,
+                "photo_url": restaurant.photo_url,
+            },
+            status=200,
+        )
     else:
         return JsonResponse({"errors": form.errors}, status=400)
+
 
 # check if this restaurant owner has a restaurant
 def has_restaurant(request, id):
     """Check if the restaurant owner has a restaurant."""
-    # get user with the id 
+    # get user with the id
     user = get_object_or_404(User, id=id)
     # check if the user is a restaurant owner
-    if user.role == 'RESTO_OWNER':
+    if user.role == "RESTO_OWNER":
         # check if the restaurant owner has a restaurant
-        return JsonResponse({"has_restaurant": user.resto_owner.restaurant is not None, "statusCode": 200, 'restaurant_id': user.resto_owner.restaurant.id if user.resto_owner.restaurant else None})
+        return JsonResponse(
+            {
+                "has_restaurant": user.resto_owner.restaurant is not None,
+                "statusCode": 200,
+                "restaurant_id": (
+                    user.resto_owner.restaurant.id
+                    if user.resto_owner.restaurant
+                    else None
+                ),
+            }
+        )
     return JsonResponse({"has_restaurant": False})
-    
 
 
 def get_restaurant_xml(request):
@@ -831,19 +843,18 @@ def get_restaurants_json_by_id(request, id):
     data = serializers.serialize("json", restaurants)
     return JsonResponse(data, safe=False)
 
+
 @csrf_exempt
 @login_required()
 def like_review(request, id):
     if request.method == "POST":
         review = get_object_or_404(Review, pk=id)
         status_liked = request.user in review.likes.all()
-        print('get')
+        print("get")
         if status_liked:  # O(n), is this ok?
-            print('unlike')
+            print("unlike")
             review.likes.remove(request.user)
         else:
             review.likes.add(request.user)
         return JsonResponse({"likes": review.like_count, "liked": status_liked})
     return HttpResponseForbidden()
-
-
