@@ -136,14 +136,30 @@ def login_flutter(request):
     )
 
 
-# Logout view
+from django.contrib.auth import logout as auth_logout
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+
 @csrf_exempt
 def logout_flutter(request):
     if request.method == "POST":
-        auth_logout(request)
-        return JsonResponse(
-            {"success": True, "message": "Logout successful"}, status=200
-        )
+        username = request.user.username if request.user.is_authenticated else "Anonymous"
+
+        try:
+            # Logout the user and clear session
+            auth_logout(request)
+            request.session.flush()
+
+            return JsonResponse({
+                "username": username,
+                "success": True,
+                "message": "Logout berhasil!"
+            }, status=200)
+        except Exception as e:
+            return JsonResponse({
+                "success": False,
+                "message": f"Logout gagal: {str(e)}"
+            }, status=500)
     return JsonResponse(
         {"success": False, "message": "Only POST requests are allowed"}, status=405
     )
