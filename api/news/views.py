@@ -1,3 +1,5 @@
+import json
+from django.core.files import File
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from api.news.forms import BeritaEntryForm
@@ -12,6 +14,9 @@ from django.utils.html import strip_tags
 from api.authentication.decorators import resto_owner_only
 import uuid
 import os
+import base64
+from django.core.files.base import ContentFile
+from django.contrib.auth.decorators import login_required
 
 def show_main(request):
     is_restaurant_owner = RestaurantOwner.objects.filter(user=request.user).exists() if request.user.is_authenticated else False
@@ -75,7 +80,7 @@ def show_berita_json(request):
     except Exception as e:
         return JsonResponse({"error": f"Error: {str(e)}"}, status=500)
 
-@resto_owner_only(redirect_url="/news/")
+# @resto_owner_only(redirect_url="/news/")
 def show_berita_by_owner(request):
     try:
         berita_data = [
@@ -138,6 +143,7 @@ def add_berita_ajax(request):
     except Exception as e:
         return HttpResponse(f"Error: {str(e)}", status=500)
 
+
 def like_berita(request, berita_id):
     if not request.user.is_authenticated:
         return JsonResponse({"status": False, "liked": False})
@@ -151,3 +157,181 @@ def like_berita(request, berita_id):
             berita.like.add(request.user)
         return JsonResponse({"status": True, "likes": berita.like.count(), "liked": not status_liked})
     return HttpResponseForbidden()
+    
+
+@csrf_exempt
+def flike_berita(request, berita_id):
+    if not request.user.is_authenticated:
+        return JsonResponse({"status": False, "logged_in": False, "liked": False})
+    
+    if request.method == "POST":
+        berita = get_object_or_404(Berita, pk=berita_id)
+        status_liked = request.user in berita.like.all()
+        if status_liked:
+            berita.like.remove(request.user)
+        else:
+            berita.like.add(request.user)
+        return JsonResponse({
+            "status": True,
+            "logged_in": True,
+            "liked": not status_liked,
+            "likes": berita.like.count()
+        })
+    return JsonResponse({"status": False, "logged_in": False}, status=405)
+
+
+
+def fdelete_berita(request, berita_id):
+    if request.method == "GET":
+        try:
+            berita = Berita.objects.get(pk=berita_id)
+            if berita.gambar and os.path.isfile(berita.gambar.path):
+                os.remove(berita.gambar.path)
+            berita.delete()
+            return JsonResponse({"status": 200, "message": "Berita deleted successfully"}, status=200)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+    else:
+        return JsonResponse({"error": "Invalid request method"}, status=405)
+
+@csrf_exempt
+def fshow_berita_id(request, berita_id):
+    try:
+        berita = get_object_or_404(Berita, pk=berita_id)
+        liked = berita.like.filter(id=request.user.id).exists() if request.user.is_authenticated else False
+        berita_data = serialize_berita(berita, liked)
+        return JsonResponse(berita_data, safe=False)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
+        
+@csrf_exempt
+def fadd_berita_ajax(request):
+    print("DEBUG: Received cookies:", request.COOKIES)
+    if not request.user.is_authenticated:
+        print("ERROR: User not authenticated.")
+        return JsonResponse({"status": 401, "message": "User not authenticated."}, status=401)
+
+    if request.method == 'POST':
+        try:
+            judul = strip_tags(request.POST.get("judul"))
+            konten = strip_tags(request.POST.get("konten"))
+            gambar_file = request.FILES.get("gambar")  # Untuk file multipart
+            gambar_base64 = request.POST.get("gambar_base64")  # Untuk gambar base64
+
+            print("DEBUG: Judul:", judul)
+            print("DEBUG: Konten:", konten)
+
+            if not judul or not konten:
+                print("ERROR: Judul atau Konten kosong.")
+                return JsonResponse({"status": 400, "message": "Judul dan Konten tidak boleh kosong."}, status=400)
+
+            restaurant_owner = RestaurantOwner.objects.get(user=request.user)
+            print("DEBUG: RestaurantOwner ditemukan:", restaurant_owner)
+
+            # Simpan berita tanpa gambar terlebih dahulu untuk mendapatkan ID
+            berita = Berita(
+                author=restaurant_owner,
+                judul=judul,
+                konten=konten
+            )
+            berita.save()
+
+            # Proses gambar jika ada
+            if gambar_base64:
+                format, imgstr = gambar_base64.split(';base64,') if ';base64,' in gambar_base64 else (None, gambar_base64)
+                ext = format.split('/')[-1] if format else 'png'
+                gambar_name = f"berita_{berita.id}_{timezone.now().date()}_{timezone.now().time()}.{ext}"
+                gambar = ContentFile(base64.b64decode(imgstr), name=gambar_name)
+                berita.gambar = gambar
+            elif gambar_file:
+                ext = gambar_file.name.split('.')[-1]
+                gambar_name = f"berita_{berita.id}.{ext}"
+                gambar_file.name = gambar_name
+                berita.gambar = gambar_file
+            else:
+                # Gunakan dummy image jika tidak ada gambar
+                berita.gambar = 'news/dummy.jpg'
+
+            # Simpan ulang berita dengan gambar
+            berita.save()
+            print("DEBUG: Berita berhasil disimpan dengan ID:", berita.id)
+
+            return JsonResponse({"status": 200, "message": "Berita berhasil dibuat"}, status=200)
+
+        except RestaurantOwner.DoesNotExist:
+            print(f"ERROR: User {request.user} bukan RestaurantOwner.")
+            return JsonResponse({"status": 403, "message": "User is not a Restaurant Owner."}, status=403)
+        except Exception as e:
+            print("ERROR: Exception saat menangani request:", str(e))
+            return JsonResponse({"status": 500, "message": f"Error: {str(e)}"}, status=500)
+
+    print("ERROR: Metode request tidak valid.")
+    return JsonResponse({"status": 405, "message": "Invalid method."}, status=405)
+
+@csrf_exempt
+def fedit_berita(request, berita_id):
+    try:
+        berita = get_object_or_404(Berita, pk=berita_id)
+
+        if request.method == 'POST':
+            judul = strip_tags(request.POST.get("judul"))
+            konten = strip_tags(request.POST.get("konten"))
+            gambar_file = request.FILES.get("gambar")  # Untuk file multipart
+            gambar_base64 = request.POST.get("gambar_base64")  # Untuk gambar base64
+
+            # Validasi judul dan konten
+            if not judul or not konten:
+                return JsonResponse(
+                    {"status": 400, "message": "Judul dan Konten wajib diisi."},
+                    status=400,
+                )
+
+            # Update judul dan konten
+            berita.judul = judul
+            berita.konten = konten
+
+            # Proses gambar baru jika ada
+            if gambar_base64:
+                # Decode base64 dan simpan sebagai file
+                format, imgstr = gambar_base64.split(';base64,') if ';base64,' in gambar_base64 else (None, gambar_base64)
+                ext = format.split('/')[-1] if format else 'png'
+                gambar = ContentFile(base64.b64decode(imgstr), name=f"berita_{berita.id}_{timezone.now().date()}_{timezone.now().time()}.{ext}")
+                if berita.gambar:
+                    berita.gambar.delete()  # Hapus gambar lama
+                berita.gambar = gambar
+            elif gambar_file:
+                # Simpan file gambar baru
+                if berita.gambar:
+                    berita.gambar.delete()  # Hapus gambar lama
+                berita.gambar = gambar_file
+            # Jika tidak ada gambar baru, biarkan gambar yang lama tetap ada
+            else:
+                print("DEBUG: Tidak ada perubahan pada gambar.")
+
+            berita.save()
+            return JsonResponse({"status": 200, "message": "Berita berhasil diperbarui"}, status=200)
+
+        return JsonResponse({"status": 405, "message": "Invalid method."}, status=405)
+
+    except Exception as e:
+        return JsonResponse({"status": 500, "message": f"Error: {str(e)}"}, status=500)
+
+@csrf_exempt
+def get_user_role(request):
+    print(request)
+    try:
+        restaurant_owner = RestaurantOwner.objects.get(user=request.user)
+        if restaurant_owner:
+            return JsonResponse({
+                "status": 200,
+                "role": "restaurant_owner",
+                "is_owner": True
+            })
+        else:
+            return JsonResponse({
+                "status": 200,
+                "role": "customer",
+                "is_owner": False
+            })
+    except Exception as e:
+        return JsonResponse({"status": 500, "message": f"Error: {str(e)}"}, status=500)

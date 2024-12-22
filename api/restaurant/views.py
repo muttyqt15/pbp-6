@@ -17,6 +17,11 @@ from api.authentication.models import User, RestaurantOwner, Customer
 import logging
 from django.db.models import Q
 from api.bookmark.models import Bookmark
+from api.review.models import Review, ReviewImage
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponseForbidden
+from api.authentication.decorators import login_required_json
+import base64
 
 logger = logging.getLogger(__name__)
 
@@ -139,6 +144,68 @@ def restaurant_list(request):
     """View to list all restaurants."""
     restaurants = Restaurant.objects.all()
     return render(request, "all_restaurants.html", {"restaurants": restaurants})
+
+
+def serialized_restaurant_list(request, amount=100):
+    """View to list all restaurants in serialized format."""
+    restaurants = Restaurant.objects.all()[:amount]
+
+    data = serializers.serialize("json", restaurants)
+    return HttpResponse(data, content_type="application/json")
+
+
+def serialized_restaurant(request, id):
+    try:
+        restaurant = Restaurant.objects.get(id=id)
+        menus = Menu.objects.filter(restaurant=restaurant)
+        foods = Food.objects.filter(menu__in=menus)
+        reviews = Review.objects.filter(restoran=restaurant)
+
+        # Add images to each review
+        reviews_with_images = []
+        for review in reviews:
+            images = ReviewImage.objects.filter(review=review).values_list(
+                "image", flat=True
+            )
+            reviews_with_images.append(
+                {
+                    "id": str(review.id) if review.id else "No ID",
+                    "judul_ulasan": review.judul_ulasan or "No Title",
+                    "teks_ulasan": review.teks_ulasan or "No review text",
+                    "penilaian": (
+                        review.penilaian if review.penilaian is not None else 0
+                    ),
+                    "display_name": review.get_display_name
+                    or "Anonymous",  # Explicitly include display_name
+                    "tanggal": (
+                        review.tanggal.strftime("%Y-%m-%d")
+                        if review.tanggal
+                        else "No date"
+                    ),  # Force date to string
+                    "images": [
+                        request.build_absolute_uri(f"/media/{image}")
+                        for image in (images or [])
+                    ],
+                }
+            )
+
+        data = {
+            "restaurant": {
+                "id": restaurant.id,
+                "district": restaurant.district,
+                "name": restaurant.name,
+                "address": restaurant.address,
+                "operational_hours": restaurant.operational_hours,
+                "photo_url": restaurant.photo_url,
+            },
+            "menus": list(menus.values("id", "category")),
+            "foods": list(foods.values("id", "name", "price")),
+            "reviews": reviews_with_images,
+        }
+        print(reviews_with_images)
+        return JsonResponse(data, safe=False)
+    except Restaurant.DoesNotExist:
+        return JsonResponse({"error": "Restaurant not found"}, status=404)
 
 
 def restaurant(request, id):
@@ -572,9 +639,6 @@ def delete_food(request):
         )
 
 
-require_POST
-
-
 def filter_restaurants(request):
     """Handles AJAX requests to filter and sort restaurants."""
     import json
@@ -636,6 +700,122 @@ def get_restaurant_menu(request, id):
     )
 
 
+@require_POST
+@login_required_json
+@csrf_exempt
+def add_restaurant_api(request):
+    data = json.loads(request.body)
+    form = RestaurantForm(data)
+    if "image" in data and data["image"]:
+        image_data = data.pop("image")
+        format, imgstr = image_data.split(";base64,")  # Extract base64 and format
+        ext = format.split("/")[-1]  # Get file extension (e.g., png, jpg)
+        # Decode base64 image if present
+        image_file = ContentFile(base64.b64decode(imgstr), name=f"thread_image.{ext}")
+
+    if form.is_valid():
+        resto = form.save(commit=False)
+        resto.name = strip_tags(form.cleaned_data["name"])
+        resto.district = strip_tags(form.cleaned_data["district"])
+        resto.address = strip_tags(form.cleaned_data["address"])
+        resto.operational_hours = strip_tags(form.cleaned_data["operational_hours"])
+
+        if "image" in data and data["image"]:
+            resto.photo_url = f"restaurant_photos/{image_file.name}"
+            default_storage.save(resto.photo_url, image_file)
+        resto.save()
+
+        restaurant_owner = request.user.resto_owner
+        restaurant_owner.restaurant = resto
+        restaurant_owner.save()
+
+        return JsonResponse(
+            {
+                "success": True,
+                "message": "Restaurant added successfully.",
+                "resto_id": resto.id,
+            },
+            status=201,
+        )
+    else:
+        return JsonResponse({"success": False, "errors": form.errors}, status=400)
+
+@csrf_exempt
+def edit_restaurant_api(request, id):
+    """View to edit an existing restaurant."""
+    try:
+        print('11111111111')
+        restaurant = Restaurant.objects.get(
+            id=id, restaurantowner=request.user.resto_owner
+        )
+        print('222222222222')
+    except Restaurant.DoesNotExist:
+        return JsonResponse(
+            {"error": "Restaurant not found or not authorized."}, status=404
+        )
+    data = json.loads(request.body)
+    form = RestaurantForm(data)
+    
+    if "image" in data and data["image"]:
+        image_data = data.pop("image")
+        format, imgstr = image_data.split(";base64,")  # Extract base64 and format
+        ext = format.split("/")[-1]  # Get file extension (e.g., png, jpg)
+        # Decode base64 image if present
+        image_file = ContentFile(base64.b64decode(imgstr), name=f"thread_image.{ext}")
+
+    if form.is_valid():
+        cleaned_name = strip_tags(form.cleaned_data["name"])
+        cleaned_district = strip_tags(form.cleaned_data["district"])
+        cleaned_address = strip_tags(form.cleaned_data["address"])
+        cleaned_operational_hours = strip_tags(form.cleaned_data["operational_hours"])
+
+            
+        if "image" in data and data["image"]:
+            restaurant.photo_url = f"restaurant_photos/{image_file.name}"
+            default_storage.save(restaurant.photo_url, image_file)
+        
+        # Update fields
+        restaurant.name = cleaned_name
+        restaurant.district = cleaned_district
+        restaurant.address = cleaned_address
+        restaurant.operational_hours = cleaned_operational_hours
+
+        restaurant.save()
+
+        return JsonResponse(
+            {
+                "message": "Restaurant updated successfully!",
+                "restaurant_id": restaurant.id,
+                "photo_url": restaurant.photo_url,
+            },
+            status=200,
+        )
+    else:
+        return JsonResponse({"errors": form.errors}, status=400)
+
+
+# check if this restaurant owner has a restaurant
+def has_restaurant(request, id):
+    """Check if the restaurant owner has a restaurant."""
+    # get user with the id
+    user = get_object_or_404(User, id=id)
+    # check if the user is a restaurant owner
+    if user.role == "RESTO_OWNER":
+        # check if the restaurant owner has a restaurant
+        return JsonResponse(
+            {
+                "has_restaurant": user.resto_owner.restaurant is not None,
+                "statusCode": 200,
+                "restaurant_id": (
+                    user.resto_owner.restaurant.id
+                    if user.resto_owner.restaurant
+                    else None
+                ),
+            }
+        )
+    return JsonResponse({"has_restaurant": False})
+
+
 def get_restaurant_xml(request):
     """Returns a list of all restaurants in XML format"""
     restaurants = Restaurant.objects.all()
@@ -662,3 +842,19 @@ def get_restaurants_json_by_id(request, id):
     restaurants = Restaurant.objects.filter(id=id)
     data = serializers.serialize("json", restaurants)
     return JsonResponse(data, safe=False)
+
+
+@csrf_exempt
+@login_required()
+def like_review(request, id):
+    if request.method == "POST":
+        review = get_object_or_404(Review, pk=id)
+        status_liked = request.user in review.likes.all()
+        print("get")
+        if status_liked:  # O(n), is this ok?
+            print("unlike")
+            review.likes.remove(request.user)
+        else:
+            review.likes.add(request.user)
+        return JsonResponse({"likes": review.like_count, "liked": status_liked})
+    return HttpResponseForbidden()

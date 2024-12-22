@@ -8,7 +8,7 @@
 {% block content %}
 <div class="container mx-auto max-w-lg p-6 bg-white rounded-lg shadow-md">
     <h2 class="text-2xl font-bold text-center mb-4">Edit Your Review</h2>
-    <form id="edit-review-form" method="POST" action="/review/edit/ajax/{{ review.id/">
+    <form id="edit-review-form" method="POST" action="/review/edit/ajax/{{ review.id }}">
         {% csrf_token %}
         
         <!-- Display Name Field -->

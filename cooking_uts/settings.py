@@ -32,7 +32,15 @@ SECRET_KEY = environ.get(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = environ.get("PRODUCTION", True)
 
-ALLOWED_HOSTS = ["muttaqin-muzakkir-utspbp.pbp.cs.ui.ac.id", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = [
+    "muttaqin-muzakkir-utspbp.pbp.cs.ui.ac.id",
+    "localhost",
+    "127.0.0.1",
+    "10.0.2.2",
+    "0.0.0.0",
+    "34.101.100.85"
+]
+
 
 
 # Application definition
@@ -52,10 +60,25 @@ INSTALLED_APPS = [
     "api.main",
     "api.bookmark",
     "api.user_profile",
+    "corsheaders",
+]
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = "None"
+SESSION_COOKIE_SAMESITE = "None"
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8000",  # Local development server on port 8000
+    "https://muttaqin-muzakkir-utspbp.pbp.cs.ui.ac.id",  # Production domain with https
+    "http://34.101.100.85:8000",  # External IP in production (use https)
 ]
 
+
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -132,9 +155,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [
-    BASE_DIR / "static",  # Pastikan direktori ini sesuai dengan lokasi file Anda
+    BASE_DIR / "static",
 ]
 
 MEDIA_URL = "/media/"

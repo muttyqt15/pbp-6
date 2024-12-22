@@ -1,0 +1,3305 @@
+[
+    {
+        "model": "restaurant.restaurant",
+        "pk": 1,
+        "fields": {
+            "name": "Omah Selat",
+            "district": "Jebres",
+            "address": "Jl. Gotong Royong No.13, Kelurahan Jagalan, Kecamatan Jebres, Kota Solo.",
+            "operational_hours": "senin - sabtu 10.00 - 18.00 WIB, minggu 10.00 - 17.00 WIB",
+            "photo_url": "https://bukumenusolo.com/wp-content/uploads/2023/05/Update-Buku-Menu-Solo-Buku-Harga-Menu-Omah-Selat-Solo-–-Referensi-Kuliner-di-Solo-Terbaru-3.jpg"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 1,
+        "fields": {
+            "category": "Selat Solo",
+            "restaurant": 1
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 1,
+        "fields": {
+            "name": "Selat Segar Solo",
+            "price": "25000",
+            "menu": 1
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 2,
+        "fields": {
+            "name": "Sate Kere Mbak Mamik",
+            "district": "Jebres",
+            "address": "Jl. Monginsidi No. 10, Jebres, Surakarta.",
+            "operational_hours": "senin - minggu 17.00 - 21.00 WIB",
+            "photo_url": "https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/7a128673-3e65-4577-88fa-e9d072ea44d6.jpg?auto=format"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 2,
+        "fields": {
+            "category": "Sate Kere",
+            "restaurant": 2
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 2,
+        "fields": {
+            "name": "Sate Kere Komplit",
+            "price": "23000",
+            "menu": 2
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 3,
+        "fields": {
+            "name": "Sate Kere Gembus",
+            "price": "13000",
+            "menu": 2
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 3,
+        "fields": {
+            "name": "Sate Kere Horee Busukan",
+            "district": "Jebres",
+            "address": "Jl. Mojosongo, Kec. Jebres, Surakarta",
+            "operational_hours": "senin - sabtu 16.00 - 21.00 WIB, minggu tutup",
+            "photo_url": "https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/5a30622e-b47c-4c2c-b042-500e8328a8ee_Go-Biz_20200826_170417.jpeg?auto=format dan  https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/04621551-d581-4bd8-9509-9ae196f4076a_Go-Biz_20200828_185141.jpeg?auto=format"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 3,
+        "fields": {
+            "category": "Sate Kere",
+            "restaurant": 3
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 4,
+        "fields": {
+            "name": "Sate Gembus",
+            "price": "12000",
+            "menu": 3
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 5,
+        "fields": {
+            "name": "Sate Koyor",
+            "price": "25000",
+            "menu": 3
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 4,
+        "fields": {
+            "name": "Nas Liwet Solo Yu Lestari",
+            "district": "Jebres",
+            "address": "Jl. RE. Martadinata No.198, Gandekan, Kec. Jebres, Kota Surakarta, Jawa Tengah 57122",
+            "operational_hours": "senin - minggu 05.30 - 10.00 WIB",
+            "photo_url": "https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/a8e17691-f44a-42a4-acf8-c6fab3ca88ef_0bb51bb4-f7bd-4108-9d27-8c3f36fadf82_master-menu-item-image_1586920224230.jpg?auto=format"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 4,
+        "fields": {
+            "category": "Nasi Liwet",
+            "restaurant": 4
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 6,
+        "fields": {
+            "name": "Nasi Liwet Biasa",
+            "price": "15000",
+            "menu": 4
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 5,
+        "fields": {
+            "name": "Nasi Liwet Bu Sri Pasar Gede",
+            "district": "Jebres",
+            "address": "Jl. Jendral Urip Sumoharjo, Sudiroprajan, Kecamatan Jebres, Kota Solo, Jawa Tengah.",
+            "operational_hours": "senin - minggu 06.30-11.00 WIB",
+            "photo_url": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/17/61/5b/c7/nasi-liwet-bu-sri-pasar.jpg?w=1400&h=800&s=1"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 5,
+        "fields": {
+            "category": "Nasi Liwet",
+            "restaurant": 5
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 7,
+        "fields": {
+            "name": "Nasi Liwet",
+            "price": "12000",
+            "menu": 5
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 6,
+        "fields": {
+            "name": "Warung Tengkleng Mbah Karmin",
+            "district": "Jebres",
+            "address": "Jl. Bibis Wetan, Tegalharjo, Kec. Jebres, Kota Surakarta, Jawa Tengah 57134",
+            "operational_hours": "senin - minggu 09.00 - 21.00 WIB",
+            "photo_url": "https://www.horego.com/_next/image?url=https%3A%2F%2Fdzglkev4c34xb.cloudfront.net%2Fhorego.com%2Fjebres%2Frestaurant%2Fwarung-tengkleng-mbah-karmin%2Ffood%2Fthumbnail%2Faf1qipnnzkkfxvmwzh_fmitqqh7qtxwytg9lhvioupig.jpg&w=1080&q=50"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 6,
+        "fields": {
+            "category": "Tengkleng",
+            "restaurant": 6
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 8,
+        "fields": {
+            "name": "Tengkleng",
+            "price": "25000",
+            "menu": 6
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 7,
+        "fields": {
+            "name": "Selat Laras Miroso",
+            "district": "Jebres",
+            "address": "Jl. Ir. Sutami, Jebres, Surakarta",
+            "operational_hours": "senin tutup, selasa - minggu 10.30 - 19.30 WIB",
+            "photo_url": "https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/9d8c5b4f-435d-4309-a981-8d69d2675ee1_Go-Biz_20230317_131404.jpeg?auto=format"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 7,
+        "fields": {
+            "category": "Selat Solo",
+            "restaurant": 7
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 9,
+        "fields": {
+            "name": "Selat Galantin",
+            "price": "15500",
+            "menu": 7
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 8,
+        "fields": {
+            "name": "Nasi Liwet Yu Darmi",
+            "district": "Jebres",
+            "address": "Jl. Gotong Royong No.77, Sewu, Kec. Jebres, Kota Surakarta, Jawa Tengah 57129",
+            "operational_hours": "senin - minggu 05.30 - 10.00 WIB",
+            "photo_url": "https://lh3.googleusercontent.com/p/AF1QipMCetg3hOvjop2qyhSo3fG9zPAEScMJwYFwaKhV=s1360-w1360-h1020"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 8,
+        "fields": {
+            "category": "Nasi Liwet",
+            "restaurant": 8
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 10,
+        "fields": {
+            "name": "Nasi Liwet Suwir",
+            "price": "18000",
+            "menu": 8
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 9,
+        "fields": {
+            "name": "Nasi Liwet Yu Marni Bok Bolong",
+            "district": "Jebres",
+            "address": "Jl. Jend. Urip Sumoharjo, Jebres, Kec. Jebres, Kota Surakarta, Jawa Tengah",
+            "operational_hours": "senin - minggu 05.00 - 10.00 WIB",
+            "photo_url": "https://lh3.googleusercontent.com/p/AF1QipPw0Qfo9WMtb7RO_ecG9WmTlxA8dk0iWEKGJrFx=s1360-w1360-h1020"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 9,
+        "fields": {
+            "category": "Nasi Liwet",
+            "restaurant": 9
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 11,
+        "fields": {
+            "name": "Nasi Liwet",
+            "price": "10000",
+            "menu": 9
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 10,
+        "fields": {
+            "name": "Sate Kambing Muda Kondhang Laris",
+            "district": "Jebres",
+            "address": "Jl. Ki Hajar Dewantara No.56, Jebres, Surakarta, Jawa Tengah.",
+            "operational_hours": "senin - sabtu 10.00 - 21.00 WIB, minggu 08.00 - 21.00 WIB",
+            "photo_url": "https://cdn.idntimes.com/content-images/community/2024/02/2024-01-25-8c8b697d9ef8fcc879a41c6e0fee23d1.jpg"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 10,
+        "fields": {
+            "category": "Sate Buntel",
+            "restaurant": 10
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 12,
+        "fields": {
+            "name": "Sate Buntel",
+            "price": "14000",
+            "menu": 10
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 11,
+        "fields": {
+            "name": "Sate Kere Pak Ndut",
+            "district": "Jebres",
+            "address": "Jl. RE Martadinata, Jebres, Surakarta",
+            "operational_hours": "senin - kamis 12.30 -17.30 WIB, sabtu - minggu 12.30 - 17.30 WIB",
+            "photo_url": "https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/27ba644a-0831-4701-8dce-051618536d08_Go-Biz_20200718_200232.jpeg?auto=format"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 11,
+        "fields": {
+            "category": "Sate Kere",
+            "restaurant": 11
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 13,
+        "fields": {
+            "name": "Sate Kere Campur",
+            "price": "12500",
+            "menu": 11
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 12,
+        "fields": {
+            "name": "Sate Kere Mak Narti Widuran",
+            "district": "Jebres",
+            "address": "Jl. Sutan Syahrir No.97, Kepatihan Kulon, Kec. Jebres, Kota Surakarta, Jawa Tengah 57129",
+            "operational_hours": "senin - selasa 08.00 - 01.00 WIB, rabu 08.00 - 00.00 WIB, kamis 00.00 - 23.59 WIB, jumat - minggu 08.00 - 01.00 WIB",
+            "photo_url": "https://lh3.googleusercontent.com/p/AF1QipMNrHrD_BRlv5OwjDlps20PbFspn1aYAK_WpnPZ=s1360-w1360-h1020"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 12,
+        "fields": {
+            "category": "Sate Kere",
+            "restaurant": 12
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 14,
+        "fields": {
+            "name": "Sate Kere",
+            "price": "30000",
+            "menu": 12
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 13,
+        "fields": {
+            "name": "Nasi Liwet Bu Sarmi",
+            "district": "Jebres",
+            "address": "Jl. Kapten Mulyadi, Kedung Lumbu, Kec. Ps. Kliwon, Kota Surakarta, Jawa Tengah 57113",
+            "operational_hours": "senin - minggu 18.00 - 00.00 WIB",
+            "photo_url": "https://lh3.googleusercontent.com/p/AF1QipMinL5Tbuuez-A8gmp1WmFxYBzzRLwwjz7FQfHj=s680-w680-h510"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 13,
+        "fields": {
+            "category": "Nasi Liwet",
+            "restaurant": 13
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 15,
+        "fields": {
+            "name": "Nasi Liwet",
+            "price": "13000",
+            "menu": 13
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 14,
+        "fields": {
+            "name": "Sate Kambing Pak H Djaman",
+            "district": "Jebres",
+            "address": "Jl. Brigjend Katamso No.90, Mojosongo, Kec. Jebres, Kota Surakarta, Jawa Tengah 57127",
+            "operational_hours": "senin - minggu 08.00 - 19.00 WIB",
+            "photo_url": "https://lh3.googleusercontent.com/p/AF1QipMvWL73SISzmIabapjbt1EqRyqPpggRexniVQUG=s1360-w1360-h1020"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 14,
+        "fields": {
+            "category": "Sate Buntel",
+            "restaurant": 14
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 16,
+        "fields": {
+            "name": "Sate Buntel",
+            "price": "25000",
+            "menu": 14
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 15,
+        "fields": {
+            "name": "Selat Solo Mbak Elly",
+            "district": "Jebres",
+            "address": "Jl. Letnan Jenderal Sutoyo No. 217, Jebres, Surakarta",
+            "operational_hours": "senin - minggu 09.00 - 17.30 WIB",
+            "photo_url": "https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/a1c7d682-2d73-40e3-973b-2ae9e9d79d8f_e3d4ab87-7d56-4d23-a536-bb017cffb8e7_file20190716-20911-9atjps.jpeg?auto=format"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 15,
+        "fields": {
+            "category": "Selat Solo",
+            "restaurant": 15
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 17,
+        "fields": {
+            "name": "Selat Solo",
+            "price": "16000",
+            "menu": 15
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 16,
+        "fields": {
+            "name": "Nasi Liwet Bu Painah",
+            "district": "Jebres",
+            "address": "Jl. Sutan Syahrir, Kepatihan Wetan, Kec. Jebres, Kota Surakarta, Jawa Tengah 57129",
+            "operational_hours": "senin - minggu 18.00 - 00.00 WIB",
+            "photo_url": "https://i0.wp.com/betanews.id/wp-content/uploads/2023/02/20230210_Betanews_Nasi-Liwet-2.jpg?resize=600%2C350&ssl=1"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 16,
+        "fields": {
+            "category": "Nasi Liwet",
+            "restaurant": 16
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 18,
+        "fields": {
+            "name": "Nasi Liwet",
+            "price": "20000",
+            "menu": 16
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 17,
+        "fields": {
+            "name": "Sate Kambing Mbak Puji",
+            "district": "Jebres",
+            "address": "Jl. Ledoksari No.15, Purwodiningratan, Kec. Jebres, Kota Surakarta, Jawa Tengah 57128",
+            "operational_hours": "senin - sabtu 13.00 - 17.00 WIB, minggu tutup",
+            "photo_url": "https://lh3.googleusercontent.com/p/AF1QipOKbvsMxGaKlFfUiurKV9BQtEI9oYmEhRhBOc2x=s1360-w1360-h1020"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 17,
+        "fields": {
+            "category": "Sate Buntel",
+            "restaurant": 17
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 19,
+        "fields": {
+            "name": "Sate Buntel",
+            "price": "46000",
+            "menu": 17
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 18,
+        "fields": {
+            "name": "Sate Kambing Mas Pur",
+            "district": "Jebres",
+            "address": "Jl. Gotong Royong No.91, Sewu, Kec. Jebres, Kota Surakarta",
+            "operational_hours": "06.30 - 16.00",
+            "photo_url": "https://lh3.googleusercontent.com/p/AF1QipOO98ZWWhC5tWNO9ufSiUL0XESDbIOjG-5EnnMw=s680-w680-h510"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 18,
+        "fields": {
+            "category": "Sate, sate",
+            "restaurant": 18
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 20,
+        "fields": {
+            "name": "Sate Buntel",
+            "price": "24000",
+            "menu": 18
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 21,
+        "fields": {
+            "name": "Sate Daging",
+            "price": "22000",
+            "menu": 18
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 19,
+        "fields": {
+            "name": "Sate Kambing Muda Pak H Djaman Dempo",
+            "district": "Jebres",
+            "address": "Jl. Letjen Sutoyo No.136, Mojosongo, Kec. Jebres, Kota Surakarta, Jawa Tengah 57127",
+            "operational_hours": "senin - minggu 09.00 - 19.00 WIB",
+            "photo_url": "https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/3063bbbf-f1fb-4999-a121-8c42a4af4e85_Go-Biz_20220604_110430.jpeg?auto=format"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 19,
+        "fields": {
+            "category": "Sate Buntel, tengkleng",
+            "restaurant": 19
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 22,
+        "fields": {
+            "name": "Sate Buntel",
+            "price": "30000",
+            "menu": 19
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 23,
+        "fields": {
+            "name": "Tengkleng Kuah",
+            "price": "35000",
+            "menu": 19
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 20,
+        "fields": {
+            "name": "Warung Selat Mbak Lies",
+            "district": "Serengan",
+            "address": "Jl. Yudhistira No.9, Serengan, Kec. Serengan, Kota Surakarta",
+            "operational_hours": "07.00 - 18.00",
+            "photo_url": "https://media-cdn.tripadvisor.com/media/photo-s/1a/d6/6b/0f/20200201-142922-largejpg.jpg"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 20,
+        "fields": {
+            "category": "Selat Solo",
+            "restaurant": 20
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 24,
+        "fields": {
+            "name": "Selat Lidah",
+            "price": "19000",
+            "menu": 20
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 25,
+        "fields": {
+            "name": "Selat bestik",
+            "price": "16000",
+            "menu": 20
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 21,
+        "fields": {
+            "name": "Sate Kambing Murni Pak Min",
+            "district": "Serengan",
+            "address": "Jl. Yos Sudarso 414, Serengan, Surakarta",
+            "operational_hours": "08.30 - 16.29",
+            "photo_url": "https://lh3.googleusercontent.com/p/AF1QipPdWPgI9plfkQJnhUVNSZZA-FZwTGJNRKIBU1zu=s1360-w1360-h1020"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 21,
+        "fields": {
+            "category": "Sate Buntel, tengkleng",
+            "restaurant": 21
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 26,
+        "fields": {
+            "name": "Sate Kambing",
+            "price": "50000",
+            "menu": 21
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 27,
+        "fields": {
+            "name": "Tengkleng Kuah",
+            "price": "45000",
+            "menu": 21
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 22,
+        "fields": {
+            "name": "Sate Kere Notosuman",
+            "district": "Serengan",
+            "address": "jalan mayangsari 3 nomor 11 rt 04 rw 07, danukusuman, serengan, surakarta",
+            "operational_hours": "10.00 - 23.59",
+            "photo_url": "https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/044816a5-4cca-4c0b-b048-087000475c8f_Go-Biz_20240904_121129.jpeg?auto=format"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 22,
+        "fields": {
+            "category": "Sate Kere",
+            "restaurant": 22
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 28,
+        "fields": {
+            "name": "Sate Kere",
+            "price": "21000",
+            "menu": 22
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 29,
+        "fields": {
+            "name": "Sate Jeroan",
+            "price": "33000",
+            "menu": 22
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 23,
+        "fields": {
+            "name": "Warung Makan Tengkleng Barokah",
+            "district": "Serengan",
+            "address": "Jl. Honggowongso, Tipes, Kec. Serengan, Kota",
+            "operational_hours": "10.00 - 16.00",
+            "photo_url": "https://lh5.googleusercontent.com/p/AF1QipPLMzMu16IUtN2yvuDxiZEvKefgcN11iVqyw28t=w130-h87-n-k-no"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 23,
+        "fields": {
+            "category": "Tengkleng",
+            "restaurant": 23
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 30,
+        "fields": {
+            "name": "Tengkleng Kuah Segar",
+            "price": "35000",
+            "menu": 23
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 24,
+        "fields": {
+            "name": "Sate Tegal Kambing Muda",
+            "district": "Serengan",
+            "address": "Jl. Veteran No.239A, Kec. Serengan, Kota Surakarta",
+            "operational_hours": "10.00 - 20.45",
+            "photo_url": "https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/f1f3ae13-e98a-420f-92c4-87b30192354d_Go-Biz_20211025_231232.jpeg?auto=format"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 24,
+        "fields": {
+            "category": "Sate Buntel",
+            "restaurant": 24
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 31,
+        "fields": {
+            "name": "Sate Daging Murni",
+            "price": "38000",
+            "menu": 24
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 25,
+        "fields": {
+            "name": "Warung Solo",
+            "district": "Serengan",
+            "address": "Jl. Kedempel No 1, Serengan, Surakarta",
+            "operational_hours": "09.00 - 17.00",
+            "photo_url": "https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/564ad495-6e94-4fbf-bb20-3edb41dd33b5.jpg?auto=format"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 25,
+        "fields": {
+            "category": "Tengkleng",
+            "restaurant": 25
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 32,
+        "fields": {
+            "name": "Tengkleng Solo",
+            "price": "25000",
+            "menu": 25
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 26,
+        "fields": {
+            "name": "Selat Solo Bu Rina",
+            "district": "Serengan",
+            "address": "Jl. Patimura No.8, Serengan, Surakarta",
+            "operational_hours": "10.00 - 17.00",
+            "photo_url": "https://lh3.googleusercontent.com/p/AF1QipMTVD4XU-YJmmyEwezshqYw0y_i0hh7qG4xBmsB=s1360-w1360-h1020"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 26,
+        "fields": {
+            "category": "Selat Solo",
+            "restaurant": 26
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 33,
+        "fields": {
+            "name": "Selat Galantin",
+            "price": "13000",
+            "menu": 26
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 34,
+        "fields": {
+            "name": "Selat Daging",
+            "price": "13000",
+            "menu": 26
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 27,
+        "fields": {
+            "name": "Tengkleng Sastro",
+            "district": "Serengan",
+            "address": "Jl. Pringgodani No.9,  Kratonan, Kec. Serengan, Kota Surakarta",
+            "operational_hours": "10.00 - 23.00",
+            "photo_url": "https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/1efd299a-db9f-40d4-b6e9-973ee536bd3c_GENERIC_RESTAURANT_IMAGE.jpg?auto=format"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 27,
+        "fields": {
+            "category": "Sate, tengkleng",
+            "restaurant": 27
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 35,
+        "fields": {
+            "name": "Sate Kambing",
+            "price": "32500",
+            "menu": 27
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 36,
+        "fields": {
+            "name": "Tengkleng",
+            "price": "51000",
+            "menu": 27
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 28,
+        "fields": {
+            "name": "Sate Ayam Gus Sidiq",
+            "district": "Serengan",
+            "address": "Jl.Gatot Subroto No 161, Jayengan, Kec. Serengan, Kota Surakarta",
+            "operational_hours": "09.00 - 17.00",
+            "photo_url": "https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/1750638a-4931-41e5-a838-4a66d0bee6b6_Go-Biz_20240819_114559.jpeg?auto=format"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 28,
+        "fields": {
+            "category": "Sate Buntel",
+            "restaurant": 28
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 37,
+        "fields": {
+            "name": "Sate Ayam Daging",
+            "price": "19000",
+            "menu": 28
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 38,
+        "fields": {
+            "name": "Sate Ayam Campur",
+            "price": "21500",
+            "menu": 28
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 29,
+        "fields": {
+            "name": "Sate Kambing Mas Wal",
+            "district": "Serengan",
+            "address": "Jalan Honggowongso No. 140 Kel. Tipes Kec. Serengan, Kota Surakarta",
+            "operational_hours": "07.00 - 15.45",
+            "photo_url": "https://fastly.4sqi.net/img/general/600x600/9952944_WSnfwYFf0O71ZOH9W_2UFlu-wk1bd24Ao_WrENiAlKA.jpg"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 29,
+        "fields": {
+            "category": "Sate Buntel",
+            "restaurant": 29
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 39,
+        "fields": {
+            "name": "Sate Kambing",
+            "price": "31500",
+            "menu": 29
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 30,
+        "fields": {
+            "name": "Selat Notosuman Bu Haryati",
+            "district": "Serengan",
+            "address": "Jl. Moh Yamin No. 24, Kec. Serengan, Kota Surakarta",
+            "operational_hours": "08.15 - 15.30",
+            "photo_url": "https://img.restaurantguru.com/r752-Selat-Notosuman-Bu-Haryati-advertisement.jpg"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 30,
+        "fields": {
+            "category": "Selat Solo",
+            "restaurant": 30
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 40,
+        "fields": {
+            "name": "Selat Solo",
+            "price": "28500",
+            "menu": 30
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 31,
+        "fields": {
+            "name": "Selat Solo Mekasari",
+            "district": "Serengan",
+            "address": "Jl. Dr. Rajiman No.178, Kemlayan, Kec. Serengan, Kota Surakarta",
+            "operational_hours": "10.00 - 20.45",
+            "photo_url": "https://lh5.googleusercontent.com/p/AF1QipO14gXgGab6knAlN-O_DPmPgBoV9qurDpI_P81H=w173-h175-n-k-no"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 31,
+        "fields": {
+            "category": "Selat Solo",
+            "restaurant": 31
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 41,
+        "fields": {
+            "name": "Selat Solo",
+            "price": "30000",
+            "menu": 31
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 42,
+        "fields": {
+            "name": "Selat Galantin",
+            "price": "30000",
+            "menu": 31
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 32,
+        "fields": {
+            "name": "Nasi Liwet Bu Sri",
+            "district": "Serengan",
+            "address": "Jl. Veteran 149, Kec. Serengan, Kota. Surakarta",
+            "operational_hours": "06.00 - 17.00",
+            "photo_url": "https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/dd32fd0f-3536-4d3c-84ac-eb7d53f670d6_IMG_20200617_204951_479.jpg?auto=format"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 32,
+        "fields": {
+            "category": "Nasi Liwet",
+            "restaurant": 32
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 43,
+        "fields": {
+            "name": "Nasi Liwet Suwir",
+            "price": "15000",
+            "menu": 32
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 33,
+        "fields": {
+            "name": "Nasi Liwet Bu Waris",
+            "district": "Serengan",
+            "address": "Jalan Yos Sudarso No. 146 Jayengan, Kec. Serengan, Kota Surakarta",
+            "operational_hours": "18.00 - 23.59",
+            "photo_url": "https://lh5.googleusercontent.com/p/AF1QipOpYJqg6RJaJyuq7U_pQcBVz4Z2uGK9_Cqke6ZA=s522-k-no"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 33,
+        "fields": {
+            "category": "Nasi Liwet",
+            "restaurant": 33
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 44,
+        "fields": {
+            "name": "Nasi Liwet Ayam",
+            "price": "16000",
+            "menu": 33
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 34,
+        "fields": {
+            "name": "Nasi Liwet Bu Hadi Bejo",
+            "district": "Serengan",
+            "address": "Jl. Gatot Subroto No.167, Jayengan, Kec. Serengan, Kota Surakarta",
+            "operational_hours": "05.30 - 09.00",
+            "photo_url": "https://i.ytimg.com/vi/8FZJ-EWWgs4/maxresdefault.jpg"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 34,
+        "fields": {
+            "category": "Nasi Liwet",
+            "restaurant": 34
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 45,
+        "fields": {
+            "name": "Nasi Liwet Suwir",
+            "price": "10000",
+            "menu": 34
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 46,
+        "fields": {
+            "name": "Nasi Liwet Ayam",
+            "price": "19000",
+            "menu": 34
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 35,
+        "fields": {
+            "name": "Nasi Liwet Yu Sani Gemblegan",
+            "district": "Serengan",
+            "address": "Jl. Veteran, Kec. Serengan, Kota Surakarta",
+            "operational_hours": "16.30 - 23.00",
+            "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0BRLwNvcQ660yWD6vPD8K_PG6ygoH1oFboQ&s"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 35,
+        "fields": {
+            "category": "Nasi Liwet",
+            "restaurant": 35
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 47,
+        "fields": {
+            "name": "Nasi Suwir Telur",
+            "price": "17500",
+            "menu": 35
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 36,
+        "fields": {
+            "name": "Warung Pecel Dewi",
+            "district": "Serengan",
+            "address": "Jalan Honggowongso 97, Jayengan, Kec. Serengan, Kota Surakarta",
+            "operational_hours": "07.00 - 14.00",
+            "photo_url": "https://lh3.googleusercontent.com/p/AF1QipM_ronRIvX1bG1P7tvDPiU-JG28f2rKgFZBdp_T=s1360-w1360-h1020"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 36,
+        "fields": {
+            "category": "Pecel Solo",
+            "restaurant": 36
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 48,
+        "fields": {
+            "name": "Nasi Pecel",
+            "price": "16500",
+            "menu": 36
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 37,
+        "fields": {
+            "name": "Tumpang Dan Pecel Pak Seto",
+            "district": "Serengan",
+            "address": "Jl. Gatot Subroto No.241, Kratonan, Kec. Serengan, Kota Surakarta",
+            "operational_hours": "06.00 - 16.00",
+            "photo_url": "https://lh3.googleusercontent.com/p/AF1QipMuQhdRaDYmooWR-E9Rlvk5jDiVrUfr7Q45qLI8=s1360-w1360-h1020"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 37,
+        "fields": {
+            "category": "Pecel Solo",
+            "restaurant": 37
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 49,
+        "fields": {
+            "name": "Nasi Pecel",
+            "price": "15000",
+            "menu": 37
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 38,
+        "fields": {
+            "name": "Soto & Pecel Manteb",
+            "district": "Serengan",
+            "address": "Jl Babar Layar 4 No 38 Dawung Wetan, Danukusuman, Kec. Serengan, Kota Surakarta",
+            "operational_hours": "06.00 - 19.00",
+            "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR98utSyAbcbXpHNkzVVudgDG9OSgWEaMwCzA&s"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 38,
+        "fields": {
+            "category": "Pecel Solo",
+            "restaurant": 38
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 50,
+        "fields": {
+            "name": "Nasi Pecel Telur",
+            "price": "10000",
+            "menu": 38
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 39,
+        "fields": {
+            "name": "Sate Kere Mbah Yem",
+            "district": "Serengan",
+            "address": "Matahari Singosare, Lantai Dasar, Jl. Gatot Subroto, Kec. Serengan, Kota Surakarta",
+            "operational_hours": "11.00 - 16.30",
+            "photo_url": "https://lh3.googleusercontent.com/p/AF1QipOKenZKTTFRStZ13tz-K0CjBdMaKwj9EepKKXnv=s1360-w1360-h1020"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 39,
+        "fields": {
+            "category": "Sate Kere",
+            "restaurant": 39
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 51,
+        "fields": {
+            "name": "Sate Kere",
+            "price": "20000",
+            "menu": 39
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 40,
+        "fields": {
+            "name": "Warung Makan Sate Mbak Tin",
+            "district": "Serengan",
+            "address": "Jl. Gatot Subroto No.285, Kratonan, Kec. Serengan, Kota Surakarta",
+            "operational_hours": "10.00 - 15.00",
+            "photo_url": "https://lh5.googleusercontent.com/p/AF1QipOptxlm-h9OgM-CSrqX-aEIEOrCRF9WMBzUDZgc=w480-h300-k-n-rw"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 40,
+        "fields": {
+            "category": "Sate Buntel, tengkleng",
+            "restaurant": 40
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 52,
+        "fields": {
+            "name": "Sate Buntel",
+            "price": "52000",
+            "menu": 40
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 53,
+        "fields": {
+            "name": "Tengkleng",
+            "price": "45000",
+            "menu": 40
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 41,
+        "fields": {
+            "name": "Sate Kere Pak Sardi",
+            "district": "Serengan",
+            "address": "Jl. Dr. Rajiman No.164, Kemlayan, Kec. Serengan, Kota Surakarta",
+            "operational_hours": "13.00 - 22.00",
+            "photo_url": "https://lh5.googleusercontent.com/p/AF1QipNc4LmdFivMOjr27RVlFHp1Ch3P2nbP9qSnfC-J=w408-h725-k-no"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 41,
+        "fields": {
+            "category": "Sate Kere",
+            "restaurant": 41
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 54,
+        "fields": {
+            "name": "Sate Kere",
+            "price": "20000",
+            "menu": 41
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 42,
+        "fields": {
+            "name": "Sate Kambing Bu Hj Bejo",
+            "district": "Pasar_Kliwon",
+            "address": "Jl. Sungai Sebakung No.10, Kedung Lumbu, Kec. Ps. Kliwon, Kota Surakarta",
+            "operational_hours": "08.00 - 16.00",
+            "photo_url": ""
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 42,
+        "fields": {
+            "category": "Sate",
+            "restaurant": 42
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 55,
+        "fields": {
+            "name": "Sate Buntel",
+            "price": "60000",
+            "menu": 42
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 56,
+        "fields": {
+            "name": "Sate Daging",
+            "price": "60000",
+            "menu": 42
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 43,
+        "fields": {
+            "name": "Nasi Liwet Jenang Lemu Mba Danik",
+            "district": "Pasar_Kliwon",
+            "address": "Jl. Kapten Mulyadi No.225, Ps. Kliwon, Kec. Ps. Kliwon, Kota Surakarta",
+            "operational_hours": "05.00 - 22.00",
+            "photo_url": "https://dzglkev4c34xb.cloudfront.net/horego.com/pasar-kliwon/restaurant/nasi-liwet-jenang-lemu-mba-danik/ambience/af1qipnweez1f750dyqyqgvo48l__nsixbocjxrdqlx3.jpg"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 43,
+        "fields": {
+            "category": "Nasi Liwet, nasi Liwet",
+            "restaurant": 43
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 57,
+        "fields": {
+            "name": "Nasi Liwet Suwir Biasa",
+            "price": "10000",
+            "menu": 43
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 58,
+        "fields": {
+            "name": "Nasi Liwet Suwir Telur",
+            "price": "14000",
+            "menu": 43
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 44,
+        "fields": {
+            "name": "Sate Kambing Pak Katno",
+            "district": "Pasar_Kliwon",
+            "address": "Jl. Kyai Mojo, Semanggi, Kec. Ps. Kliwon, Kota Surakarta",
+            "operational_hours": "09.00 - 21.00",
+            "photo_url": "https://lh5.googleusercontent.com/p/AF1QipN9OZiZYTVPlcghqK4sPNPC1T3X_tcJoY4xWfGV=w408-h306-k-no"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 44,
+        "fields": {
+            "category": "Sate",
+            "restaurant": 44
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 59,
+        "fields": {
+            "name": "Sate Buntel",
+            "price": "40000",
+            "menu": 44
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 45,
+        "fields": {
+            "name": "Sate Kambing Bang Umar",
+            "district": "Pasar_Kliwon",
+            "address": "Jalan Veteran No.145 Gading, Joyosuran, Ps. Kliwon, Kec. Ps. Kliwon, Kota Surakarta",
+            "operational_hours": "07.00 - 21.00",
+            "photo_url": "https://lh5.googleusercontent.com/p/AF1QipP6ARy9oZIjApv1H-No_TBFnEaejyXKImLn85Rl=w408-h306-k-no"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 45,
+        "fields": {
+            "category": "Sate",
+            "restaurant": 45
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 60,
+        "fields": {
+            "name": "Sate",
+            "price": "30000",
+            "menu": 45
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 46,
+        "fields": {
+            "name": "Sate Kambing Mas Mario",
+            "district": "Pasar_Kliwon",
+            "address": "Jl. Kapten Mulyadi, Kedung Lumbu, Kec. Ps. Kliwon, Kota Surakarta",
+            "operational_hours": "07.30 - 16.00",
+            "photo_url": "https://lh3.googleusercontent.com/p/AF1QipN5tThzdd4wFqH3bunWUZFn9z2cEX0OFJxyORqb=s680-w680-h510"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 46,
+        "fields": {
+            "category": "Sate, sate",
+            "restaurant": 46
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 61,
+        "fields": {
+            "name": "Sate Buntel",
+            "price": "30000",
+            "menu": 46
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 62,
+        "fields": {
+            "name": "Sate Daging",
+            "price": "30000",
+            "menu": 46
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 47,
+        "fields": {
+            "name": "Sate Kambing Pak Narto",
+            "district": "Pasar_Kliwon",
+            "address": "Jl. Kyai Mojo No.121, Ps. Kliwon, Kec. Ps. Kliwon, Kota Surakarta",
+            "operational_hours": "08.00 - 16.00",
+            "photo_url": "https://lh3.googleusercontent.com/p/AF1QipMWF1yrP1GoZoItIE5hg6h886NrFV1tJGIb6-fc=s680-w680-h510"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 47,
+        "fields": {
+            "category": "Sate, sate",
+            "restaurant": 47
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 63,
+        "fields": {
+            "name": "Sate Kambing",
+            "price": "30000",
+            "menu": 47
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 64,
+        "fields": {
+            "name": "Sate Buntel",
+            "price": "40000",
+            "menu": 47
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 48,
+        "fields": {
+            "name": "Nasi Liwet Bu Kirmadi",
+            "district": "Pasar_Kliwon",
+            "address": "Jl. Kyai Mojo No.82, Semanggi, Kec. Ps. Kliwon, Kota Surakarta",
+            "operational_hours": "19.00 - 05.00",
+            "photo_url": "https://lh3.googleusercontent.com/p/AF1QipM1CMddtWTnFV3AjlM51y_ZzT8_PxMXic18iDHo=s680-w680-h510"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 48,
+        "fields": {
+            "category": "Nasi Liwet, nasi Liwet",
+            "restaurant": 48
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 65,
+        "fields": {
+            "name": "Nasi Liwet Biasa",
+            "price": "10000",
+            "menu": 48
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 66,
+        "fields": {
+            "name": "Nasi Liwet Paha",
+            "price": "18000",
+            "menu": 48
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 49,
+        "fields": {
+            "name": "Nasi Liwet Bu Enjang",
+            "district": "Pasar_Kliwon",
+            "address": "Jl. Kyai Mojo No.102, Joyosuran, Kec. Ps. Kliwon, Kota Surakarta",
+            "operational_hours": "17.00 - 02.00",
+            "photo_url": "https://lh3.googleusercontent.com/p/AF1QipPOWaVPEUnfqwdFZpRTYcbgQ7oVGznnS2hGEq8h=s680-w680-h510"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 49,
+        "fields": {
+            "category": "Nasi Liwet, nasi Liwet",
+            "restaurant": 49
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 67,
+        "fields": {
+            "name": "Nasi Liwer Suwir",
+            "price": "19000",
+            "menu": 49
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 68,
+        "fields": {
+            "name": "Nasi Liwet Suwir Telur",
+            "price": "27000",
+            "menu": 49
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 50,
+        "fields": {
+            "name": "Nasi Liwet Bu Sarmi",
+            "district": "Pasar_Kliwon",
+            "address": "Jl. Kapten Mulyadi, Kedung Lumbu, Kec. Ps. Kliwon, Kota Surakarta",
+            "operational_hours": "18.00 - 12.00",
+            "photo_url": "https://lh3.googleusercontent.com/p/AF1QipOLWTwG-XB3G72gW8cVO69dr88DerQy2OB5n8hq=s680-w680-h510"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 50,
+        "fields": {
+            "category": "Nasi Liwet",
+            "restaurant": 50
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 69,
+        "fields": {
+            "name": "Nasi Liwet Biasa",
+            "price": "10000",
+            "menu": 50
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 51,
+        "fields": {
+            "name": "Selat Gajahan",
+            "district": "Pasar_Kliwon",
+            "address": "Jl. Padmonegoro No.5, Gajahan, Kec. Ps. Kliwon, Kota Surakarta",
+            "operational_hours": "09.00 - 17.00",
+            "photo_url": "https://lh3.googleusercontent.com/p/AF1QipMZADSIht4u42XJ5o5BQcB63ijcSQOelfX_w-Ru=s680-w680-h510"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 51,
+        "fields": {
+            "category": "Selat Solo, selat Solo",
+            "restaurant": 51
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 70,
+        "fields": {
+            "name": "Selat Segar",
+            "price": "30000",
+            "menu": 51
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 71,
+        "fields": {
+            "name": "Selat Galantin",
+            "price": "30000",
+            "menu": 51
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 52,
+        "fields": {
+            "name": "Selat Solo Sasmito",
+            "district": "Pasar_Kliwon",
+            "address": "Ps. Klewer, Lantai 3 Jl. DR. Radjiman No.1, Gajahan, Kec. Ps. Kliwon, Kota Surakarta",
+            "operational_hours": "11.00 - 16.00",
+            "photo_url": "https://lh3.googleusercontent.com/p/AF1QipPNCF9G45WskQt63sMktiuPN2yj9POFGbJ890RR=s680-w680-h510"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 52,
+        "fields": {
+            "category": "Selat Solo",
+            "restaurant": 52
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 72,
+        "fields": {
+            "name": "Selat Solo",
+            "price": "25000",
+            "menu": 52
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 53,
+        "fields": {
+            "name": "Tengkleng Klewer Ibu Edi",
+            "district": "Pasar_Kliwon",
+            "address": "Jl. DR. Radjiman, Kauman, Gajahan, Kec. Ps. Kliwon, Kota Surakarta",
+            "operational_hours": "12.00 - 15.00",
+            "photo_url": "https://assets.promediateknologi.id/crop/0x0:0x0/750x500/webp/photo/2023/03/10/Tengkleng-bu-Edi-Klewer-4-1575678873.jpg"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 53,
+        "fields": {
+            "category": "Tengkleng",
+            "restaurant": 53
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 73,
+        "fields": {
+            "name": "Tengkleng Campur",
+            "price": "50000",
+            "menu": 53
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 54,
+        "fields": {
+            "name": "Pecel Menangan Surakarta",
+            "district": "Pasar_Kliwon",
+            "address": "Jl. Citarum No.34, Joyosuran, Kec. Ps. Kliwon, Kota Surakarta",
+            "operational_hours": "06.00 - 15.00",
+            "photo_url": "https://lh3.googleusercontent.com/p/AF1QipMX7YZ0JeUlpqosb0HoDv2cpM3krRcDfwVqoPC9=s680-w680-h510"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 54,
+        "fields": {
+            "category": "Pecel Solo, pecel Solo, pecel Solo",
+            "restaurant": 54
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 74,
+        "fields": {
+            "name": "Nasi Pecel Putih",
+            "price": "8000",
+            "menu": 54
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 75,
+        "fields": {
+            "name": "Nasi Pecel Merah",
+            "price": "10000",
+            "menu": 54
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 76,
+        "fields": {
+            "name": "Nasi Pecel Tumpang",
+            "price": "10000",
+            "menu": 54
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 55,
+        "fields": {
+            "name": "Warung Pecel Tumpang Mbok Mitro",
+            "district": "Pasar_Kliwon",
+            "address": "Jl. Kali Sampang No.5, Ps. Kliwon, Kec. Ps. Kliwon, Kota Surakarta",
+            "operational_hours": "06.00 - 11.30",
+            "photo_url": "https://lh3.googleusercontent.com/p/AF1QipPWsGblBLXyAqX43m_HbE1rkvDgDgGjUqxcMFQ=s680-w680-h510"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 55,
+        "fields": {
+            "category": "Pecel Solo, pecel Solo",
+            "restaurant": 55
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 77,
+        "fields": {
+            "name": "Nasi Pecel Bakwan",
+            "price": "10000",
+            "menu": 55
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 78,
+        "fields": {
+            "name": "Nasi Pecel Sayur",
+            "price": "7000",
+            "menu": 55
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 56,
+        "fields": {
+            "name": "Warung Makan Pecel Gabudan",
+            "district": "Pasar_Kliwon",
+            "address": "Jl. Kapten Mulyadi No.381, Joyosuran, Kec. Ps. Kliwon, Kota Surakarta",
+            "operational_hours": "07.00 - 12.00",
+            "photo_url": "https://lh3.googleusercontent.com/proxy/RzLmwZH-P1dZw-HJxwMeLIkJY5ApAKteE1yM_kWZsW-PXEYlB_N8c49YiRgMrb3ijNJVx11BvkuKJHz_lpXkmBk2b-b_xkLbw1jGJtMMw4xfzoLVTdBkxqE36X4ylkFoU4K6V-r4GL0KRpYPx2nVZPFuaMJ2qTj-huhDng=s680-w680-h510"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 56,
+        "fields": {
+            "category": "Pecel Solo",
+            "restaurant": 56
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 79,
+        "fields": {
+            "name": "Nasi Pecel Sayur",
+            "price": "7000",
+            "menu": 56
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 57,
+        "fields": {
+            "name": "Warung Tengkleng Bu Edi",
+            "district": "Pasar_Kliwon",
+            "address": "Jl. Samanhudi No. 23, Pasar Kliwon",
+            "operational_hours": "17.00 - 23.00",
+            "photo_url": "https://images.app.goo.gl/uSFNaQRMB3r4ymQV6"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 57,
+        "fields": {
+            "category": "Tengkleng",
+            "restaurant": 57
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 80,
+        "fields": {
+            "name": "Tengkleng",
+            "price": "12000",
+            "menu": 57
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 58,
+        "fields": {
+            "name": "Sate Kere Yu Rebi",
+            "district": "Pasar_Kliwon",
+            "address": "Jl. Kapten Mulyadi No. 115, Pasar Kliwon",
+            "operational_hours": "18.00 - 02.00",
+            "photo_url": "https://images.app.goo.gl/6xdnG71NwwCNahjm9"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 58,
+        "fields": {
+            "category": "Sate Kere",
+            "restaurant": 58
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 81,
+        "fields": {
+            "name": "Sate Kere",
+            "price": "15000",
+            "menu": 58
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 59,
+        "fields": {
+            "name": "Warung Selat Solo Pak Marto",
+            "district": "Pasar_Kliwon",
+            "address": "Jl. Veteran No. 80, Pasar Kliwon",
+            "operational_hours": "17.00 - 01.00",
+            "photo_url": "https://images.app.goo.gl/iguPVoWHkqQSuv9M7"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 59,
+        "fields": {
+            "category": "Selat Solo",
+            "restaurant": 59
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 82,
+        "fields": {
+            "name": "Selat Solo",
+            "price": "15000",
+            "menu": 59
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 60,
+        "fields": {
+            "name": "Warung Sate Buntel Pak Amat",
+            "district": "Pasar_Kliwon",
+            "address": "Jl. Sungai Musi No. 28, Pasar Kliwon",
+            "operational_hours": "10.00 - 18.00",
+            "photo_url": "https://images.app.goo.gl/BKG7WNkoHL8Z97tW6"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 60,
+        "fields": {
+            "category": "Sate Buntel",
+            "restaurant": 60
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 83,
+        "fields": {
+            "name": "Sate Buntel",
+            "price": "15000",
+            "menu": 60
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 61,
+        "fields": {
+            "name": "Warung Selat  Mbak Lies Pasar Kliwon",
+            "district": "Pasar_Kliwon",
+            "address": "Jl. Kapten Mulyadi No. 202, Pasar Kliwon",
+            "operational_hours": "10.00 - 21.00",
+            "photo_url": "https://images.app.goo.gl/3RSiC6a6avBuznqe8"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 61,
+        "fields": {
+            "category": "Selat solo",
+            "restaurant": 61
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 84,
+        "fields": {
+            "name": "Selat Solo",
+            "price": "18000",
+            "menu": 61
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 85,
+        "fields": {
+            "name": " Selat Lidah",
+            "price": "25000",
+            "menu": 61
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 62,
+        "fields": {
+            "name": "Warung Tengkleng Pak Mulyo",
+            "district": "Pasar_Kliwon",
+            "address": "Jl. Ir. Juanda No. 31, Sudiroprajan, Pasar Kliwon",
+            "operational_hours": "06.00 - 14.00",
+            "photo_url": "https://images.app.goo.gl/WT5CF5bpeqAqe9r6A"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 62,
+        "fields": {
+            "category": "Tengkleng",
+            "restaurant": 62
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 86,
+        "fields": {
+            "name": "Tengkleng",
+            "price": "15000",
+            "menu": 62
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 63,
+        "fields": {
+            "name": "Nasi Liwet Bu Wongso Lemu",
+            "district": "Pasar_Kliwon",
+            "address": "Jl. Brigjen Sudiarto No. 89, Pasar Kliwon",
+            "operational_hours": "17.00 - 23.00",
+            "photo_url": "https://images.app.goo.gl/rarzKu3a2DfWEUH67"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 63,
+        "fields": {
+            "category": "Nasi,ayam",
+            "restaurant": 63
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 87,
+        "fields": {
+            "name": "Nasi Liwet",
+            "price": "20000",
+            "menu": 63
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 88,
+        "fields": {
+            "name": " Ayam Kampung",
+            "price": "35000",
+            "menu": 63
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 64,
+        "fields": {
+            "name": "Pecel Solo Bu Tin",
+            "district": "Pasar_Kliwon",
+            "address": "Jl. Letjen Suprapto No. 56, Pasar Kliwon",
+            "operational_hours": "06.00 - 13.00",
+            "photo_url": "https://images.app.goo.gl/qZ85UVTNbS3nTQNW7"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 64,
+        "fields": {
+            "category": "Pecel",
+            "restaurant": 64
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 89,
+        "fields": {
+            "name": "Pecel Solo",
+            "price": "12000",
+            "menu": 64
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 65,
+        "fields": {
+            "name": "Sate Kambing Mbok Galak",
+            "district": "Pasar_Kliwon",
+            "address": "Jl. Kyai Gedhe Solo No. 50, Pasar Kliwon",
+            "operational_hours": "17.00 - 24.00",
+            "photo_url": "https://images.app.goo.gl/dE6DsqWcJHSjBYkx6"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 65,
+        "fields": {
+            "category": "Sate,tongseng",
+            "restaurant": 65
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 90,
+        "fields": {
+            "name": "Sate Kambing",
+            "price": "25000",
+            "menu": 65
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 91,
+        "fields": {
+            "name": " Tongseng Kambing",
+            "price": "50000",
+            "menu": 65
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 66,
+        "fields": {
+            "name": "Warung Pecel Ndeso",
+            "district": "Pasar_Kliwon",
+            "address": "Jl. Veteran No. 42, Pasar Kliwon",
+            "operational_hours": "06.00 - 16.00",
+            "photo_url": "https://images.app.goo.gl/mYeCmR1fG8FMV6Kt7"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 66,
+        "fields": {
+            "category": "Pecel,olahan Tempe",
+            "restaurant": 66
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 92,
+        "fields": {
+            "name": "Pecel",
+            "price": "10000",
+            "menu": 66
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 93,
+        "fields": {
+            "name": " Tempe Mendoan",
+            "price": "20000",
+            "menu": 66
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 67,
+        "fields": {
+            "name": "Nasi Liwet Mbak Tutik",
+            "district": "Pasar_Kliwon",
+            "address": "Jl. Dr. Wahidin No. 78, Pasar Kliwon",
+            "operational_hours": "06.00 - 15.00",
+            "photo_url": "https://images.app.goo.gl/tA3ngZNFXdGEgZuJ9"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 67,
+        "fields": {
+            "category": "Nasi Liwet",
+            "restaurant": 67
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 94,
+        "fields": {
+            "name": "Nasi Liwet",
+            "price": "15000",
+            "menu": 67
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 68,
+        "fields": {
+            "name": "Selat Solo Enak",
+            "district": "Banjarsari",
+            "address": "Jl. Bone Utama, Banyuanyar, Kec. Banjarsari, Kota Surakarta, Jawa Tengah 57137",
+            "operational_hours": "09.00 - 16.00",
+            "photo_url": "https://lh5.googleusercontent.com/p/AF1QipMDsmo7h9tKlnTD8uakNX5F1Xs1ARJRKd_drutj=w426-h240-k-no"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 68,
+        "fields": {
+            "category": "Selat Solo",
+            "restaurant": 68
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 95,
+        "fields": {
+            "name": "Selat Solo",
+            "price": "20000",
+            "menu": 68
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 69,
+        "fields": {
+            "name": "Warung Selat Sop Kurnia",
+            "district": "Banjarsari",
+            "address": "Jl. Letjen Suprapto No.94, Banyuanyar, Kec. Banjarsari, Kota Surakarta, Jawa Tengah 57137",
+            "operational_hours": "07.00 - 16.00",
+            "photo_url": "https://lh5.googleusercontent.com/p/AF1QipMNrtX1u1JXYTQ8mK5m0y6wvWRCQ75wCmrnyTob=w408-h271-k-no"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 69,
+        "fields": {
+            "category": "Selat Solo",
+            "restaurant": 69
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 96,
+        "fields": {
+            "name": "Selat Galantin",
+            "price": "20000",
+            "menu": 69
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 70,
+        "fields": {
+            "name": "Warung Selat Steak Ranu Djayasri",
+            "district": "Banjarsari",
+            "address": "Jl. Adi Sumarmo Gg. Nila IV, RT./rw/RW.02/01, komplang, Kadipiro, Kec. Banjarsari, Kota Surakarta, Jawa Tengah 57136",
+            "operational_hours": "10.00 - 21.00",
+            "photo_url": "https://lh5.googleusercontent.com/p/AF1QipPf_-D_do4Bq3Wms82sQaQECz2e0KDjW55NzJne=w426-h240-k-no"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 70,
+        "fields": {
+            "category": "Selat Solo",
+            "restaurant": 70
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 97,
+        "fields": {
+            "name": "Selat Galantin",
+            "price": "10",
+            "menu": 70
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 71,
+        "fields": {
+            "name": "Selat Viens Pusat",
+            "district": "Banjarsari",
+            "address": "Jl. Hasanudin No.99 D/E, Punggawan, Kec. Banjarsari, Kota Surakarta, Jawa Tengah 57139",
+            "operational_hours": "07.30 - 17.00",
+            "photo_url": "https://lh5.googleusercontent.com/p/AF1QipM7VmK4sjLJcqd4VA_f0FEle4XkxJQi7xv_afwb=w408-h306-k-no"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 71,
+        "fields": {
+            "category": "Selat Solo, selat Solo, selat Solo",
+            "restaurant": 71
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 98,
+        "fields": {
+            "name": "Selat Daging Iga",
+            "price": "22000",
+            "menu": 71
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 99,
+        "fields": {
+            "name": "Selat Double Daging",
+            "price": "22000",
+            "menu": 71
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 100,
+        "fields": {
+            "name": "Selat Daging Cacah",
+            "price": "18000",
+            "menu": 71
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 72,
+        "fields": {
+            "name": "Pecel Solo",
+            "district": "Banjarsari",
+            "address": "Jl. Prof. DR. Supomo No.55, Mangkubumen, Kec. Banjarsari, Kota Surakarta, Jawa Tengah 57139",
+            "operational_hours": "08.00 - 16.00",
+            "photo_url": "https://lh5.googleusercontent.com/p/AF1QipNH_7cRFYmcUVjg4lOKGzmnu0SXbozEQZuHYvUB=w408-h611-k-no"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 72,
+        "fields": {
+            "category": "Pecel Solo, pecel Solo",
+            "restaurant": 72
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 101,
+        "fields": {
+            "name": "Pecel Tanpa Nasi",
+            "price": "20000",
+            "menu": 72
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 102,
+        "fields": {
+            "name": "Nasi Pecel Solo",
+            "price": "25000",
+            "menu": 72
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 73,
+        "fields": {
+            "name": "Pecel Bu Kis Sumber",
+            "district": "Banjarsari",
+            "address": "Jl. Letjen Suprapto No.29, Sumber, Kec. Banjarsari, Kota Surakarta, Jawa Tengah 57138",
+            "operational_hours": "07.30 - 14.30",
+            "photo_url": "https://lh5.googleusercontent.com/p/AF1QipMho5GoHRo6KcyK0tXyijeAvAypx-__Z9FX7UO_=w408-h306-k-no"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 73,
+        "fields": {
+            "category": "Pecel Solo",
+            "restaurant": 73
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 103,
+        "fields": {
+            "name": "Nasi Pecel",
+            "price": "25000",
+            "menu": 73
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 74,
+        "fields": {
+            "name": "Pecel Ndeso Bu Sukisni",
+            "district": "Banjarsari",
+            "address": "Shelter PKL Manahan, Jl. K.S. Tubun No.103, Manahan, Kec. Banjarsari, Kota Surakarta, Jawa Tengah 57139",
+            "operational_hours": "06.00 - 12.00",
+            "photo_url": "https://lh5.googleusercontent.com/p/AF1QipP8ZNo4t1RtR2l-uIiMRcQfXUaQ3IyoUqzx4Wio=w408-h725-k-no"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 74,
+        "fields": {
+            "category": "Pecel Solo",
+            "restaurant": 74
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 104,
+        "fields": {
+            "name": "Pecel Ndeso",
+            "price": "10000",
+            "menu": 74
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 75,
+        "fields": {
+            "name": "Tengkleng Yu Tentrem",
+            "district": "Banjarsari",
+            "address": "Kampung Ngadisono, Jl. Letjen Sutoyo, Kadipiro, Kec. Banjarsari, Kota Surakarta, Jawa Tengah 57136",
+            "operational_hours": "10.00 - 02.00",
+            "photo_url": "https://lh5.googleusercontent.com/p/AF1QipOWafR1iNAn81cFc37YCqLIhGYCiFrUTneaP3UL=w426-h240-k-no"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 75,
+        "fields": {
+            "category": "Tengkleng",
+            "restaurant": 75
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 105,
+        "fields": {
+            "name": "Tengkleng",
+            "price": "50000",
+            "menu": 75
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 76,
+        "fields": {
+            "name": "Sate Kambing Buntel Pak H Kasdi",
+            "district": "Banjarsari",
+            "address": "Jl. Walter Monginsidi No.107, Kestalan, Kec. Banjarsari, Kota Surakarta, Jawa Tengah 57133",
+            "operational_hours": "07.00 - 21.00",
+            "photo_url": "https://lh5.googleusercontent.com/p/AF1QipPapI5jTGLw66SPFKFa3Q1C4L-OG7kfFbZujtBT=w408-h306-k-no"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 76,
+        "fields": {
+            "category": "Sate Buntel, tengkleng",
+            "restaurant": 76
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 106,
+        "fields": {
+            "name": "Campur Buntel",
+            "price": "45000",
+            "menu": 76
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 107,
+        "fields": {
+            "name": "Tengkleng",
+            "price": "40000",
+            "menu": 76
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 77,
+        "fields": {
+            "name": "Warung Sate Kambing Pak Mo",
+            "district": "Banjarsari",
+            "address": "Jl. Hasanudin, Punggawan, Kec. Banjarsari, Kota Surakarta, Jawa Tengah 57132",
+            "operational_hours": "09.00 - 21.00",
+            "photo_url": "https://lh5.googleusercontent.com/p/AF1QipOWAhUGKHlEm6AsMG2qvxaObJDnOwo1E1_lvp-A=w426-h240-k-no"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 77,
+        "fields": {
+            "category": "Sate Buntel, tengkleng",
+            "restaurant": 77
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 108,
+        "fields": {
+            "name": "Sate Buntel",
+            "price": "35000",
+            "menu": 77
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 78,
+        "fields": {
+            "name": "Nasi Liwet Bu Wongso Lemu",
+            "district": "Banjarsari",
+            "address": "Jl. Teuku Umar, Keprabon, Kec. Banjarsari, Kota Surakarta, Jawa Tengah 57131",
+            "operational_hours": "16.00 - 01.00",
+            "photo_url": "https://lh5.googleusercontent.com/p/AF1QipP5dZJP_wlcqkzdXUS_CP5d-zvKFmK0MgHfKDY9=w408-h544-k-no"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 78,
+        "fields": {
+            "category": "Nasi Liwet",
+            "restaurant": 78
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 109,
+        "fields": {
+            "name": "Nasi Liwet",
+            "price": "38000",
+            "menu": 78
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 79,
+        "fields": {
+            "name": "Warung Nasi Liwet Manyar",
+            "district": "Banjarsari",
+            "address": "Jl. Dr. Cipto Mangunkusumo No.29, Sriwedari, Kec. Laweyan, Kota Surakarta, Jawa Tengah 57141",
+            "operational_hours": "07.00 - 08.00",
+            "photo_url": "https://lh5.googleusercontent.com/p/AF1QipOafoztt-dbcKW8lld48T-jg6DDnIqkxJ3XteAt=w426-h240-k-no"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 79,
+        "fields": {
+            "category": "Nasi Liwet",
+            "restaurant": 79
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 110,
+        "fields": {
+            "name": "Nasi Liwet",
+            "price": "15000",
+            "menu": 79
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 80,
+        "fields": {
+            "name": "Nasi Liwet Bu Tini",
+            "district": "Banjarsari",
+            "address": "Jl. Walter Monginsidi No.104, Kestalan, Kec. Banjarsari, Kota Surakarta, Jawa Tengah 57133",
+            "operational_hours": "05.00 - 12.00",
+            "photo_url": "https://lh5.googleusercontent.com/p/AF1QipOS9E96ypOGqKUa-82zj-tNDRm6prLYs7bbD8IQ=s480-k-no"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 80,
+        "fields": {
+            "category": "Nasi Liwet",
+            "restaurant": 80
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 111,
+        "fields": {
+            "name": "Nasi Liwet",
+            "price": "25000",
+            "menu": 80
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 81,
+        "fields": {
+            "name": "Sate Kere Barokah",
+            "district": "Banjarsari",
+            "address": "FR4G+763, Kadipiro, Banjarsari, Surakarta City, Central Java 57136",
+            "operational_hours": "05.00 - 21.00",
+            "photo_url": "https://lh5.googleusercontent.com/p/AF1QipPxKa6ORGNVcqhuthsZ4hZzPooCrVxdV6JzCooG=w408-h544-k-no"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 81,
+        "fields": {
+            "category": "Sate Kere",
+            "restaurant": 81
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 112,
+        "fields": {
+            "name": "Sate Kere",
+            "price": "25000",
+            "menu": 81
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 82,
+        "fields": {
+            "name": "Sate Kambing Pak Mardi Mangkunegaran",
+            "district": "Banjarsari",
+            "address": "Jl. Yosodipuro No.22, Ketelan, Kec. Banjarsari, Kota Surakarta, Jawa Tengah 57131",
+            "operational_hours": "07.00 - 15.00",
+            "photo_url": "https://lh5.googleusercontent.com/p/AF1QipMB4TyGGl50ZyIZ2Vn7rUsEFnErLdrQ5MtexvHN=w408-h306-k-no"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 82,
+        "fields": {
+            "category": "Sate Buntel",
+            "restaurant": 82
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 113,
+        "fields": {
+            "name": "Sate Buntel",
+            "price": "34000",
+            "menu": 82
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 83,
+        "fields": {
+            "name": "Sate Kambing Pak H Bejo",
+            "district": "Banjarsari",
+            "address": "Jl. Sugiyopranoto, Keprabon, Kec. Banjarsari, Kota Surakarta, Jawa Tengah 57131",
+            "operational_hours": "07.30 - 16.00",
+            "photo_url": "https://lh5.googleusercontent.com/p/AF1QipP18qiJcUYkF_XYySQywApmiYM_IT59uXlQ6p_m=w408-h306-k-no"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 83,
+        "fields": {
+            "category": "Sate Buntel",
+            "restaurant": 83
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 114,
+        "fields": {
+            "name": "Sate Buntel",
+            "price": "60000",
+            "menu": 83
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 84,
+        "fields": {
+            "name": "Tengkleng Solo Bu Jito Dlidir",
+            "district": "Banjarsari",
+            "address": "Jl. Kolonel Sugiyono No.67, Kadipiro, Kec. Banjarsari, Kota Surakarta, Jawa Tengah 57136",
+            "operational_hours": "09.00 - 18.30",
+            "photo_url": "https://lh5.googleusercontent.com/p/AF1QipNofuxkf7sAy1CAKHzkox7iwCGriQPxfNdhKHFf=w426-h240-k-no"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 84,
+        "fields": {
+            "category": "Tengkleng",
+            "restaurant": 84
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 115,
+        "fields": {
+            "name": "Tengkleng",
+            "price": "30000",
+            "menu": 84
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 85,
+        "fields": {
+            "name": "Tengkleng Kambing Mas Mul",
+            "district": "Banjarsari",
+            "address": "Cengklik, RT.03/RW.20, Nusukan, Kec. Banjarsari, Kota Surakarta, Jawa Tengah 57134",
+            "operational_hours": "11.00 - 23.00",
+            "photo_url": "https://lh5.googleusercontent.com/p/AF1QipNWmENCMwPPlFr1kwIfMZ8n-innRVMH045_SnWJ=w480-h240-k-no"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 85,
+        "fields": {
+            "category": "Tengkleng",
+            "restaurant": 85
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 116,
+        "fields": {
+            "name": "Tengkleng",
+            "price": "34000",
+            "menu": 85
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 86,
+        "fields": {
+            "name": "Pecel Ndeso Yu Djasmo",
+            "district": "Banjarsari",
+            "address": "Jl. Mliwis 6 No.18, Manahan, Kec. Banjarsari, Kota Surakarta, Jawa Tengah 57139",
+            "operational_hours": "08.00 - 20.15",
+            "photo_url": "https://lh5.googleusercontent.com/p/AF1QipOGdH71SvDBwa18wT_7fkBXM4tRo4sECBALKq2f=s723-k-no"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 86,
+        "fields": {
+            "category": "Pecel Solo",
+            "restaurant": 86
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 117,
+        "fields": {
+            "name": "Pecel Ndeso",
+            "price": "11000",
+            "menu": 86
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 87,
+        "fields": {
+            "name": "Warung Makan Pecel Sor Asem",
+            "district": "Banjarsari",
+            "address": "Jl. Seram, Keprabon, Kec. Banjarsari, Kota Surakarta, Jawa Tengah 57131",
+            "operational_hours": "06.30 - 14.30",
+            "photo_url": "https://lh5.googleusercontent.com/p/AF1QipNdWkLFuh8PMe5VFekRi7uAy4o3qBZt9LdLReAF=w408-h306-k-no"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 87,
+        "fields": {
+            "category": "Pecel Solo",
+            "restaurant": 87
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 118,
+        "fields": {
+            "name": "Pecel Solo",
+            "price": "25000",
+            "menu": 87
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 88,
+        "fields": {
+            "name": "Nasi liwet mbok mami mbak kus",
+            "district": "Laweyan",
+            "address": "Jl. Dr. Rajiman No.580, Sondakan, Kec. Laweyan, Kota Surakarta, Jawa Tengah 57148",
+            "operational_hours": "17:30 - 02:00",
+            "photo_url": "https://lh3.googleusercontent.com/p/AF1QipNmIwDHHX1PC4yP4HDZrPkNscoaSlni_1Czo3Nu=s1360-w1360-h1020"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 88,
+        "fields": {
+            "category": "Nasi Liwet",
+            "restaurant": 88
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 119,
+        "fields": {
+            "name": "Nasi Liwet",
+            "price": "25000",
+            "menu": 88
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 89,
+        "fields": {
+            "name": "Warung lesehan nasi liwet mbak yanti purwosari",
+            "district": "Laweyan",
+            "address": "Jl. Dr. Rajiman, Sondakan, Kec. Laweyan, Kota Surakarta, Jawa Tengah 57147, Indonesia",
+            "operational_hours": "17:30 - 12:00",
+            "photo_url": "https://lh3.googleusercontent.com/p/AF1QipNR05TEFkMwEJcI2lBKX7nNArNpIDVYzYWpTrjH=s680-w680-h510"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 89,
+        "fields": {
+            "category": "Nasi Liwet",
+            "restaurant": 89
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 120,
+        "fields": {
+            "name": "Nasi Liwet",
+            "price": "25000",
+            "menu": 89
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 90,
+        "fields": {
+            "name": "Sate kere yu rebi",
+            "district": "Laweyan",
+            "address": "Jl. Kebangkitan Nasional No.10, Sriwedari, Laweyan, Surakarta",
+            "operational_hours": "10:00 - 20:00",
+            "photo_url": "https://media-cdn.tripadvisor.com/media/photo-s/13/7c/39/e2/sate-kere-yu-rebi-belakang.jpg"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 90,
+        "fields": {
+            "category": "Sate Kere",
+            "restaurant": 90
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 121,
+        "fields": {
+            "name": "Sate Kere",
+            "price": "30000",
+            "menu": 90
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 91,
+        "fields": {
+            "name": "Nasi liwek mbak bety",
+            "district": "Laweyan",
+            "address": "Jl. Dr. Rajiman No.244, Sriwedari, Kec. Laweyan, Kota Surakarta, Jawa Tengah 57149, Indonesia",
+            "operational_hours": "17:00 - 21:00",
+            "photo_url": "https://lh3.googleusercontent.com/p/AF1QipM6rrHXB96Ao-gUnkzYUnVPY5FrutslQrN5Sr-y=s680-w680-h510"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 91,
+        "fields": {
+            "category": "Nasi Liwet",
+            "restaurant": 91
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 122,
+        "fields": {
+            "name": "Nasi Liwet",
+            "price": "35000",
+            "menu": 91
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 92,
+        "fields": {
+            "name": "Sate sapi/sate kere yu tari, laweyan",
+            "district": "Laweyan",
+            "address": "Parkiran Sami Luwes, Jl. Honggowongso No.28-107",
+            "operational_hours": "09:00 - 14:00",
+            "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGBnzK_giYIW8WgO1jjpT4grBjJSMNtCKB0w&s"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 92,
+        "fields": {
+            "category": "Sate Kere",
+            "restaurant": 92
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 123,
+        "fields": {
+            "name": "Sate Kere",
+            "price": "40000",
+            "menu": 92
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 93,
+        "fields": {
+            "name": "Sate kambing & tengkleng rica rica pak manto",
+            "district": "Laweyan",
+            "address": "Jalan Honggowongso Nomor 36, Sriwedari, Laweyan, Kota Surakarta",
+            "operational_hours": "07:30 - 20:00",
+            "photo_url": "https://asset.kompas.com/crops/VFDypkYLPeBG6xiXZ8oBOqgVm6w=/106x0:1186x720/750x500/data/photo/2023/08/30/64eea9995c61e.jpg"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 93,
+        "fields": {
+            "category": "Tengkleng",
+            "restaurant": 93
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 124,
+        "fields": {
+            "name": "Tengkleng",
+            "price": "55000",
+            "menu": 93
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 94,
+        "fields": {
+            "name": "Sate buntel badaran",
+            "district": "Laweyan",
+            "address": "Jl. Kenanga No.59, Badran, Purwosari, Kec. Laweyan, Kota Surakarta, Jawa Tengah 57142, Indonesia",
+            "operational_hours": "9:00 - 21:00",
+            "photo_url": "https://lh3.googleusercontent.com/p/AF1QipNLHG2VDQ-sNsg_uU-9Hv6PkHWOhg_zaeu1v9Z9=s680-w680-h510"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 94,
+        "fields": {
+            "category": "Sate Buntel",
+            "restaurant": 94
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 125,
+        "fields": {
+            "name": "Sate Buntel",
+            "price": "50000",
+            "menu": 94
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 95,
+        "fields": {
+            "name": "Rm pecel bu kis",
+            "district": "Laweyan",
+            "address": "Jalan Gleges, Sriwedari, Kec. Laweyan, Kota Surakarta.",
+            "operational_hours": "14:00 - 21:00",
+            "photo_url": "https://asset-2.tstatic.net/tribunnews/foto/bank/images/ilustrasi-sajian-pecel-daerah-jawa-timur.jpg"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 95,
+        "fields": {
+            "category": "Pecel Solo",
+            "restaurant": 95
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 126,
+        "fields": {
+            "name": "Pecel Solo",
+            "price": "30000",
+            "menu": 95
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 96,
+        "fields": {
+            "name": "Sate kambing man gullit",
+            "district": "Laweyan",
+            "address": "Jl. Parang Kesit No.42, Sondakan, Kec. Laweyan, Kota Surakarta, Jawa Tengah 57147, Indonesia",
+            "operational_hours": "7:00 - 15:00",
+            "photo_url": "https://lh5.googleusercontent.com/p/AF1QipOl5HOKz41oXvpFCUStgeAtDRMr2ey6DTab94kz=w260-h175-n-k-no"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 96,
+        "fields": {
+            "category": "Sate Buntel",
+            "restaurant": 96
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 127,
+        "fields": {
+            "name": "Sate Buntel",
+            "price": "50000",
+            "menu": 96
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 97,
+        "fields": {
+            "name": "Pecel ndesso",
+            "district": "Laweyan",
+            "address": "Solosquare Mall, Jalan Slamet Riyadi nomor 451-454 lt.3 foodcourt, Pajang, Kecamatan Laweyan, Kota Surakarta, Provinsi Jawa Tengah",
+            "operational_hours": "10:00 - 18:00",
+            "photo_url": "https://surakarta.go.id/wp-content/uploads/2017/09/Pecel-Ndeso-Solo-300x199.jpg"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 97,
+        "fields": {
+            "category": "Pecel Solo",
+            "restaurant": 97
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 128,
+        "fields": {
+            "name": "Pecel Solo",
+            "price": "35000",
+            "menu": 97
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 98,
+        "fields": {
+            "name": "Selat solo tenda biru - dr. wahidin",
+            "district": "Laweyan",
+            "address": "Jl. Dr. Wahidin No.26, Purwosari, Kec. Laweyan, Kota Surakarta, Jawa Tengah 57142, Indonesia",
+            "operational_hours": "8:00 - 21:00",
+            "photo_url": "https://lh3.googleusercontent.com/p/AF1QipNicsNKJkpRYnxfpYlMGQI8QWPICgiWDg1TcH6-=s680-w680-h510"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 98,
+        "fields": {
+            "category": "Selat Solo",
+            "restaurant": 98
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 129,
+        "fields": {
+            "name": "Selat Solo",
+            "price": "50000",
+            "menu": 98
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 99,
+        "fields": {
+            "name": "Selat solo tenda biru - kh. samanhudi",
+            "district": "Laweyan",
+            "address": "Jl. K.H Samanhudi No.1, Purwosari, Kec. Laweyan, Kota Surakarta, Jawa Tengah 57142, Indonesia",
+            "operational_hours": "9:00 - 18:00",
+            "photo_url": "https://lh3.googleusercontent.com/p/AF1QipOWbbFTC7XUVqdRnm3aBITNYdgFOgLxuWTzOG60=s680-w680-h510"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 99,
+        "fields": {
+            "category": "Selat Solo",
+            "restaurant": 99
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 130,
+        "fields": {
+            "name": "Selat Solo",
+            "price": "25000",
+            "menu": 99
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 100,
+        "fields": {
+            "name": "Pecel madiun laris manis siwalan",
+            "district": "Laweyan",
+            "address": "Jalan Siwalan nomor 57, Jajar, Kecamatan Laweyan, Kota Surakarta, Provinsi Jawa Tengah",
+            "operational_hours": "07:00 - 15:00",
+            "photo_url": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/16/c2/4f/7a/the-interior.jpg?w=1100&h=-1&s=1"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 100,
+        "fields": {
+            "category": "Pecel Solo",
+            "restaurant": 100
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 131,
+        "fields": {
+            "name": "Pecel Solo",
+            "price": "15000",
+            "menu": 100
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 101,
+        "fields": {
+            "name": "Sate kere mbah yem",
+            "district": "Laweyan",
+            "address": "Jl. Sukoreno, Kemlayan, Kec. Serengan, Kota Surakarta, Jawa Tengah 57151, Indonesia",
+            "operational_hours": "10:00 - 13:00",
+            "photo_url": "https://lh3.googleusercontent.com/p/AF1QipMf2x65KZiMGacnZUwHza4SfyWknHaU5unE1CzW=s680-w680-h510"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 101,
+        "fields": {
+            "category": "Sate Kere",
+            "restaurant": 101
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 132,
+        "fields": {
+            "name": "Sate Kere",
+            "price": "50000",
+            "menu": 101
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 102,
+        "fields": {
+            "name": "Pecel pincuk khas nganjuk",
+            "district": "Laweyan",
+            "address": "Jalan Cermai Raya nomor 14, Karangasem, Kecamatan Laweyan, Kota Surakarta, Provinsi Jawa Tengah",
+            "operational_hours": "06:00 - 18:00",
+            "photo_url": "https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/0bc09b60-41c9-48c4-b6ca-fb572f20d62b_3f14fa81-be29-462e-8c1d-667699d8ed04_Go-Biz_20200511_122023.jpeg"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 102,
+        "fields": {
+            "category": "Pecel Solo",
+            "restaurant": 102
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 133,
+        "fields": {
+            "name": "Pecel Solo",
+            "price": "30000",
+            "menu": 102
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 103,
+        "fields": {
+            "name": "Tengkleng mbak diah kerten",
+            "district": "Laweyan",
+            "address": "Kerten, Laweyan, Surakarta City, Central Java 57143, Indonesia",
+            "operational_hours": "21:00 - 10:00",
+            "photo_url": "https://lh3.googleusercontent.com/p/AF1QipMIUoGxI1_Odi8_7KfIBErN3eTToQxcWW9HzHq7=s680-w680-h510"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 103,
+        "fields": {
+            "category": "Tengkleng",
+            "restaurant": 103
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 134,
+        "fields": {
+            "name": "Tengkleng",
+            "price": "75000",
+            "menu": 103
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 104,
+        "fields": {
+            "name": "Tengkleng pak dar sriwedari",
+            "district": "Laweyan",
+            "address": "Jl. Kebangkitan Nasional, Sriwedari, Kec. Laweyan, Kota Surakarta, Jawa Tengah 57141, Indonesia",
+            "operational_hours": "9:30 - 14:00",
+            "photo_url": "https://lh3.googleusercontent.com/p/AF1QipOnfV-hvIqRZ6ho5CKKSFN7awYdR2L8Coe-b4nr=s680-w680-h510"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 104,
+        "fields": {
+            "category": "Tengkleng",
+            "restaurant": 104
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 135,
+        "fields": {
+            "name": "Tengkleng",
+            "price": "50000",
+            "menu": 104
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 105,
+        "fields": {
+            "name": "Nasi liwet bu nisa",
+            "district": "Laweyan",
+            "address": "Jl. Dr. Rajiman No.583, Sondakan, Kec. Laweyan, Kota Surakarta, Jawa Tengah 57148, Indonesia",
+            "operational_hours": "18:00 - 5:00",
+            "photo_url": "https://lh3.googleusercontent.com/p/AF1QipPT_bu0-aXVAqG8oNZaxPg5x6GjvzfzUZqqgpVX=s680-w680-h510"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 105,
+        "fields": {
+            "category": "Nasi Liwet",
+            "restaurant": 105
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 136,
+        "fields": {
+            "name": "Nasi Liwet",
+            "price": "25000",
+            "menu": 105
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 106,
+        "fields": {
+            "name": "Sate tengkleng laweyan asli solo",
+            "district": "Laweyan",
+            "address": "Jl. Ring Road Utara RT07 RW.10 CondongCatur, Timur Polda DIY",
+            "operational_hours": "11:00 - 19:00",
+            "photo_url": "https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/49ebe78b-4f47-4365-9289-e409c29c45bb_IMG_20190927_105756_308.jpg"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 106,
+        "fields": {
+            "category": "Tengkleng",
+            "restaurant": 106
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 137,
+        "fields": {
+            "name": "Tengkleng",
+            "price": "45000",
+            "menu": 106
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 107,
+        "fields": {
+            "name": "Selat solo tenda biru",
+            "district": "Laweyan",
+            "address": "Jl. Dr. Wahidin No.26, Kelurahan Purwosari, Kecamatan Laweyan, Kota Solo.",
+            "operational_hours": "08:00 - 21:00",
+            "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTt5ilh7BGKBGQGl83zNASWIQYO5svkcwKPaA&s"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 107,
+        "fields": {
+            "category": "Selat Solo",
+            "restaurant": 107
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 138,
+        "fields": {
+            "name": "Selat Solo",
+            "price": "35000",
+            "menu": 107
+        }
+    },
+    {
+        "model": "restaurant.restaurant",
+        "pk": 108,
+        "fields": {
+            "name": "Nasi liwet sukini",
+            "district": "Laweyan",
+            "address": "Jl. Parang Kusumo No.26, Sondakan, Kec. Laweyan, Kota Surakarta, Jawa Tengah 57147, Indonesia",
+            "operational_hours": "6:00 - 10:00",
+            "photo_url": "https://lh3.googleusercontent.com/p/AF1QipPq633negWGHgMmxT42phWu_oy2gll04o9ml5PX=s680-w680-h510"
+        }
+    },
+    {
+        "model": "restaurant.menu",
+        "pk": 108,
+        "fields": {
+            "category": "Nasi Liwet",
+            "restaurant": 108
+        }
+    },
+    {
+        "model": "restaurant.food",
+        "pk": 139,
+        "fields": {
+            "name": "Nasi Liwet",
+            "price": "25000",
+            "menu": 108
+        }
+    }
+]
