@@ -316,7 +316,6 @@ def edit_review_flutter(request, review_id):
 @login_required
 def delete_review_flutter(request, review_id):
     try:
-        logger.info(f"User: {request.user}, Review ID: {review_id}")
         # Periksa apakah user memiliki role customer
         if not hasattr(request.user, 'customer'):
             return JsonResponse(
