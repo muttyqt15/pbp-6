@@ -391,7 +391,7 @@ def fetch_profile(request):
         if user.is_customer:
             # Jika pengguna adalah Customer
             customer = Customer.objects.get(user=user)
-            profile = CustomerProfile.objects.get(user=customer)
+            profile, created = CustomerProfile.objects.get_or_create(user=customer)
             profile_data = {
                 'role': 'customer',
                 'username': user.username,
@@ -403,7 +403,7 @@ def fetch_profile(request):
         elif user.is_resto_owner:
             # Jika pengguna adalah RestaurantOwner
             restaurant_owner = RestaurantOwner.objects.get(user=user)
-            profile = OwnerProfile.objects.get(user=restaurant_owner)
+            profile, created = OwnerProfile.objects.get_or_create(user=restaurant_owner)
             profile_data = {
                 'role': 'restaurant_owner',
                 'username': user.username,
@@ -417,6 +417,7 @@ def fetch_profile(request):
         return JsonResponse({'success': True, 'profile': profile_data}, status=200)
 
     except Exception as e:
+        print(e)
         return JsonResponse({'success': False, 'message': str(e)}, status=500)
 
 

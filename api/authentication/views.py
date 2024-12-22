@@ -57,6 +57,7 @@ def signup_flutter(request):
         data = json.loads(request.body)
         print(data)
         username = data['username']
+        email = data['email']
         password1 = data['password1']
         password2 = data['password2']
         role = data['role']
@@ -76,13 +77,13 @@ def signup_flutter(request):
             }, status=400)
         
         # Create the new user
-        user = User.objects.create_user(username=username, password=password1)
+        user = User.objects.create_user(username=username, password=password1, email=email)
         user.role = role
         user.save()
         
         return JsonResponse({
             "username": user.username,
-            "status": 'success',
+            "status": True,
             "message": "User created successfully!"
         }, status=200)
     
