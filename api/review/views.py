@@ -16,8 +16,7 @@ from api.restaurant.models import Restaurant
 from django.core.files.base import ContentFile
 from django.core.paginator import Paginator
 from django.views.decorators.http import require_http_methods
-import logging
-logger = logging.getLogger(__name__)
+from django.utils.html import strip_tags
 
 # Custom decorator to check if the user has a customer profile
 def customer_required(view_func):
@@ -27,6 +26,13 @@ def customer_required(view_func):
         else:
             return HttpResponseForbidden("Only customers can access this page.")
     return _wrapped_view
+
+def login_required_json(view_func):
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return JsonResponse({"status": "error", "message": "User not authenticated"}, status=403)
+        return view_func(request, *args, **kwargs)
+    return wrapper
 
 @login_required
 @require_POST
@@ -185,109 +191,123 @@ def user_reviews_flutter(request):
     
 
 @csrf_exempt
-@login_required
+@login_required_json
 def create_review_flutter(request):
     if request.method == 'POST':
         try:
-            # Debugging headers dan cookies
-            print(f"Headers: {request.headers}")
-            print(f"Cookies: {request.COOKIES}")
-            
-            display_name = request.POST.get('display_name', None)  # Bisa None
-            restoran_id = request.POST.get('restoran_id')
-            judul_ulasan = request.POST.get('judul_ulasan')
-            teks_ulasan = request.POST.get('teks_ulasan')
-            penilaian = request.POST.get('penilaian')
+            # Parse body JSON
+            data = json.loads(request.body)
+
+            display_name = data.get('display_name', None)
+            restoran_id = data.get('restoran_id')
+            judul_ulasan = data.get('judul_ulasan')
+            teks_ulasan = data.get('teks_ulasan')
+            penilaian = data.get('penilaian')
 
             # Validasi input
             if not all([restoran_id, judul_ulasan, teks_ulasan, penilaian]):
                 return JsonResponse({"status": "error", "message": "All fields except display_name are required."}, status=400)
 
-            # Validasi restoran
             restoran = get_object_or_404(Restaurant, id=restoran_id)
 
-            # Buat review
+            # Buat review baru
             new_review = Review.objects.create(
                 customer=request.user.customer,
                 restoran=restoran,
                 judul_ulasan=judul_ulasan,
                 teks_ulasan=teks_ulasan,
                 penilaian=int(penilaian),
-                display_name=display_name  # Bisa None
+                display_name=display_name,
             )
 
-            # Handle image
-            image_base64 = request.POST.get('image_base64', None)
+            # Handle image (optional)
+            # Proses image_base64 jika tersedia
+            image_base64 = data.get('image_base64', None)
             if image_base64:
+                # Tentukan ekstensi berdasarkan prefix base64
+                if image_base64.startswith('data:image/png;base64,'):
+                    ext = 'png'
+                    image_base64 = image_base64.replace('data:image/png;base64,', '')
+                elif image_base64.startswith('data:image/jpeg;base64,') or image_base64.startswith('data:image/jpg;base64,'):
+                    ext = 'jpg'
+                    image_base64 = image_base64.replace('data:image/jpeg;base64,', '').replace('data:image/jpg;base64,', '')
+                else:
+                    ext = 'png'  # Default ke PNG jika tipe tidak dikenali
+
+                # Decode base64 dan simpan file
                 image_data = base64.b64decode(image_base64)
+                filename = f"uploaded_image_{new_review.pk}.{ext}"  # Nama file unik berdasarkan ID review
                 ReviewImage.objects.create(
                     review=new_review,
-                    image=ContentFile(image_data, name="uploaded_image.jpg")
+                    image=ContentFile(image_data, name=filename)
                 )
-
             return JsonResponse({"status": "success", "message": "Review created successfully."}, status=201)
 
+        except json.JSONDecodeError:
+            return JsonResponse({"status": "error", "message": "Invalid JSON input."}, status=400)
         except Exception as e:
             return JsonResponse({"status": "error", "message": f"An error occurred: {str(e)}"}, status=500)
 
     return JsonResponse({"status": "error", "message": "Invalid HTTP method."}, status=405)
 
-
 @login_required
 @csrf_exempt
-def edit_review_flutter(request, id):
+@require_http_methods(["POST", "GET"])
+def edit_review_flutter(request, review_id):
     try:
-        # Ambil review berdasarkan ID dan pastikan milik user yang sedang login
-        review = get_object_or_404(Review, pk=id, customer=request.user.customer)
+        # Verify review ownership
+        review = get_object_or_404(Review, id=review_id, customer=request.user.customer)
 
-        if request.method == 'POST':
+        if request.method == "POST":
             try:
                 data = json.loads(request.body)
+
+                # Update fields
+                review.judul_ulasan = data.get("judul_ulasan", review.judul_ulasan)
+                review.teks_ulasan = strip_tags(data.get("teks_ulasan", review.teks_ulasan))
+                review.penilaian = int(data.get("penilaian", review.penilaian))
+                review.display_name = data.get("display_name", review.display_name)
+
+                # Handle new image
+                if "new_image_base64" in data and data["new_image_base64"]:
+                    image_data = base64.b64decode(data["new_image_base64"].split(",")[1])
+                    filename = f"review_{review.id}.jpeg"
+                    ReviewImage.objects.create(
+                        review=review,
+                        image=ContentFile(image_data, name=filename),
+                    )
+
+                # Save updated review
+                review.save()
+                return JsonResponse({
+                    "status": "success",
+                    "message": "Review updated successfully.",
+                    "data": {
+                        "judul_ulasan": review.judul_ulasan,
+                        "teks_ulasan": review.teks_ulasan,
+                        "penilaian": review.penilaian,
+                        "display_name": review.display_name,
+                        "images": [image.image.url for image in review.images.all()],
+                    },
+                })
             except json.JSONDecodeError:
                 return JsonResponse({"status": "error", "message": "Invalid JSON format."}, status=400)
-
-            # Validasi penilaian
-            new_penilaian = data.get("penilaian", review.penilaian)
-            if new_penilaian is not None:
-                try:
-                    new_penilaian = int(new_penilaian)
-                    if new_penilaian < 1 or new_penilaian > 5:
-                        raise ValueError
-                except ValueError:
-                    return JsonResponse({"status": "error", "message": "Penilaian harus antara 1-5"}, status=400)
-
-            # Update field berdasarkan data JSON
-            review.judul_ulasan = data.get("judul_ulasan", review.judul_ulasan)
-            review.teks_ulasan = data.get("teks_ulasan", review.teks_ulasan)
-            review.penilaian = new_penilaian
-            review.display_name = data.get("display_name", review.display_name)
-
-            # Simpan perubahan
-            review.save()
-
-            # Response setelah update
-            return JsonResponse({
-                "status": "success",
-                "message": "Review updated successfully.",
-                "data": {
-                    "id": str(review.pk),
-                    "restoran_name": review.restoran.name if review.restoran else "Nama Restoran",
-                    "judul_ulasan": review.judul_ulasan,
-                    "teks_ulasan": review.teks_ulasan,
-                    "penilaian": review.penilaian,
-                    "tanggal": review.tanggal.strftime('%Y-%m-%d'),
-                    "display_name": review.get_display_name,
-                    "total_likes": review.likes.count(),
-                    "images": [
-                        request.build_absolute_uri(image.image.url) for image in review.images.all()
-                    ],
-                }
-            }, status=200)
-
-        return JsonResponse({"status": "error", "message": "Invalid HTTP method."}, status=405)
-
-    except Exception as e:
-        return JsonResponse({"status": "error", "message": str(e)}, status=500)
+            except Exception as e:
+                return JsonResponse({"status": "error", "message": str(e)}, status=500)
+        
+        # GET request to return current review details
+        return JsonResponse({
+            "status": "success",
+            "data": {
+                "judul_ulasan": review.judul_ulasan,
+                "teks_ulasan": review.teks_ulasan,
+                "penilaian": review.penilaian,
+                "display_name": review.display_name,
+                "images": [image.image.url for image in review.reviewimage_set.all()],
+            },
+        })
+    except Review.DoesNotExist:
+        return JsonResponse({"status": "error", "message": "Review not found."}, status=404)
 
 
 # Delete a review (Flutter-specific)
