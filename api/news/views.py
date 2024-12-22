@@ -14,6 +14,9 @@ from django.utils.html import strip_tags
 from api.authentication.decorators import resto_owner_only
 import uuid
 import os
+import base64
+from django.core.files.base import ContentFile
+from django.contrib.auth.decorators import login_required
 
 def show_main(request):
     is_restaurant_owner = RestaurantOwner.objects.filter(user=request.user).exists() if request.user.is_authenticated else False
@@ -200,78 +203,134 @@ def fshow_berita_id(request, berita_id):
         return JsonResponse(berita_data, safe=False)
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
-import json
-
+        
 @csrf_exempt
 def fadd_berita_ajax(request):
+    print("DEBUG: Received cookies:", request.COOKIES)
+    if not request.user.is_authenticated:
+        print("ERROR: User not authenticated.")
+        return JsonResponse({"status": 401, "message": "User not authenticated."}, status=401)
+
     if request.method == 'POST':
         try:
-            # Decode JSON dari request body
-            data = json.loads(request.body)
-            judul = strip_tags(data.get("judul"))
-            konten = strip_tags(data.get("konten"))
+            judul = strip_tags(request.POST.get("judul"))
+            konten = strip_tags(request.POST.get("konten"))
+            gambar_file = request.FILES.get("gambar")  # Untuk file multipart
+            gambar_base64 = request.POST.get("gambar_base64")  # Untuk gambar base64
 
-            # Validasi data
+            print("DEBUG: Judul:", judul)
+            print("DEBUG: Konten:", konten)
+
             if not judul or not konten:
+                print("ERROR: Judul atau Konten kosong.")
                 return JsonResponse({"status": 400, "message": "Judul dan Konten tidak boleh kosong."}, status=400)
 
-            # Handle gambar dummy
-            gambar = request.FILES.get("gambar")
-            if not gambar:
-                dummy_image_path = 'media/news/dummy.jpg'
-                dummy_file = open(dummy_image_path, 'rb')  
-                gambar = File(dummy_file)
-                gambar.name = 'dummy_image.jpg'
-
-            # Simpan berita
             restaurant_owner = RestaurantOwner.objects.get(user=request.user)
+            print("DEBUG: RestaurantOwner ditemukan:", restaurant_owner)
+
+            # Simpan berita tanpa gambar terlebih dahulu untuk mendapatkan ID
             berita = Berita(
                 author=restaurant_owner,
                 judul=judul,
-                gambar=gambar,
                 konten=konten
             )
             berita.save()
-            dummy_file.close()  
+
+            # Proses gambar jika ada
+            if gambar_base64:
+                format, imgstr = gambar_base64.split(';base64,') if ';base64,' in gambar_base64 else (None, gambar_base64)
+                ext = format.split('/')[-1] if format else 'png'
+                gambar_name = f"berita_{berita.id}_{timezone.now().date()}_{timezone.now().time()}.{ext}"
+                gambar = ContentFile(base64.b64decode(imgstr), name=gambar_name)
+                berita.gambar = gambar
+            elif gambar_file:
+                ext = gambar_file.name.split('.')[-1]
+                gambar_name = f"berita_{berita.id}.{ext}"
+                gambar_file.name = gambar_name
+                berita.gambar = gambar_file
+            else:
+                # Gunakan dummy image jika tidak ada gambar
+                berita.gambar = 'news/dummy.jpg'
+
+            # Simpan ulang berita dengan gambar
+            berita.save()
+            print("DEBUG: Berita berhasil disimpan dengan ID:", berita.id)
 
             return JsonResponse({"status": 200, "message": "Berita berhasil dibuat"}, status=200)
 
         except RestaurantOwner.DoesNotExist:
+            print(f"ERROR: User {request.user} bukan RestaurantOwner.")
             return JsonResponse({"status": 403, "message": "User is not a Restaurant Owner."}, status=403)
         except Exception as e:
-            print("Error:", e)
+            print("ERROR: Exception saat menangani request:", str(e))
             return JsonResponse({"status": 500, "message": f"Error: {str(e)}"}, status=500)
+
+    print("ERROR: Metode request tidak valid.")
     return JsonResponse({"status": 405, "message": "Invalid method."}, status=405)
 
 @csrf_exempt
 def fedit_berita(request, berita_id):
     try:
         berita = get_object_or_404(Berita, pk=berita_id)
+
         if request.method == 'POST':
-            # Decode JSON data
-            data = json.loads(request.body)
-            judul = strip_tags(data.get("judul"))
-            konten = strip_tags(data.get("konten"))
+            judul = strip_tags(request.POST.get("judul"))
+            konten = strip_tags(request.POST.get("konten"))
+            gambar_file = request.FILES.get("gambar")  # Untuk file multipart
+            gambar_base64 = request.POST.get("gambar_base64")  # Untuk gambar base64
+
+            # Validasi judul dan konten
+            if not judul or not konten:
+                return JsonResponse(
+                    {"status": 400, "message": "Judul dan Konten wajib diisi."},
+                    status=400,
+                )
 
             # Update judul dan konten
-            berita.judul = strip_tags(judul)
-            berita.konten = strip_tags(konten)
+            berita.judul = judul
+            berita.konten = konten
 
-            # Handle file gambar jika ada
-            if 'image' in request.FILES:
-                # Hapus gambar lama jika ada
-                if berita.gambar and os.path.isfile(berita.gambar.path):
-                    os.remove(berita.gambar.path)
-                # Simpan gambar baru
-                unique_name = f"{uuid.uuid4()}_{request.FILES['image'].name}"
-                berita.gambar = request.FILES['image']
-                berita.gambar.name = unique_name
+            # Proses gambar baru jika ada
+            if gambar_base64:
+                # Decode base64 dan simpan sebagai file
+                format, imgstr = gambar_base64.split(';base64,') if ';base64,' in gambar_base64 else (None, gambar_base64)
+                ext = format.split('/')[-1] if format else 'png'
+                gambar = ContentFile(base64.b64decode(imgstr), name=f"berita_{berita.id}_{timezone.now().date()}_{timezone.now().time()}.{ext}")
+                if berita.gambar:
+                    berita.gambar.delete()  # Hapus gambar lama
+                berita.gambar = gambar
+            elif gambar_file:
+                # Simpan file gambar baru
+                if berita.gambar:
+                    berita.gambar.delete()  # Hapus gambar lama
+                berita.gambar = gambar_file
+            # Jika tidak ada gambar baru, biarkan gambar yang lama tetap ada
+            else:
+                print("DEBUG: Tidak ada perubahan pada gambar.")
 
-            berita.tanggal_pembaruan = timezone.now()
             berita.save()
+            return JsonResponse({"status": 200, "message": "Berita berhasil diperbarui"}, status=200)
 
-            return JsonResponse({'status': 200, "message": "Berita berhasil diperbarui"}, status=200)
+        return JsonResponse({"status": 405, "message": "Invalid method."}, status=405)
 
-        return HttpResponse(serializers.serialize('json', [berita]), content_type="application/json")
     except Exception as e:
-        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+        return JsonResponse({"status": 500, "message": f"Error: {str(e)}"}, status=500)
+
+@csrf_exempt
+def get_user_role(request):
+    try:
+        restaurant_owner = RestaurantOwner.objects.get(user=request.user)
+        if restaurant_owner:
+            return JsonResponse({
+                "status": 200,
+                "role": "restaurant_owner",
+                "is_owner": True
+            })
+        else:
+            return JsonResponse({
+                "status": 200,
+                "role": "customer",
+                "is_owner": False
+            })
+    except Exception as e:
+        return JsonResponse({"status": 500, "message": f"Error: {str(e)}"}, status=500)
