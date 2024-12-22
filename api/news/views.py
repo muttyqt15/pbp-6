@@ -318,6 +318,7 @@ def fedit_berita(request, berita_id):
 
 @csrf_exempt
 def get_user_role(request):
+    print(request)
     try:
         restaurant_owner = RestaurantOwner.objects.get(user=request.user)
         if restaurant_owner:
