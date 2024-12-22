@@ -14,24 +14,6 @@ def bookmark_list(request):
     }
     return render(request, 'bookmark_list.html', context)
 
-# @login_required
-# @csrf_exempt
-# def toggle_bookmark(request, restaurant_id):
-#     if request.method == 'POST':
-#         print(restaurant_id)
-#         restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
-#         bookmark, created = Bookmark.objects.get_or_create(
-#             user=request.user,
-#             restaurant=restaurant
-#         )
-        
-#         if not created:
-#             bookmark.delete()
-#             return JsonResponse({'status': 'removed', "is_favorited": False, "message": "Berhasil!"})
-        
-#         return JsonResponse({'status': 'added', "is_favorited": True, "message": "Berhasil!"})
-    
-#     return JsonResponse({'error': 'Invalid request'}, status=400)
 @login_required
 @csrf_exempt
 def toggle_bookmark(request, restaurant_id):
@@ -56,7 +38,6 @@ def toggle_bookmark(request, restaurant_id):
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=400)
 
-
 @csrf_exempt
 @require_http_methods(["POST", "DELETE"])
 @login_required
@@ -76,8 +57,6 @@ def delete_bookmark(request, bookmark_id):
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': f'Failed to remove bookmark: {str(e)}'}, status=500)
 
-
-
 @login_required
 def get_bookmarks(request):
     # Query all bookmarks for the logged-in user
@@ -95,13 +74,4 @@ def get_bookmarks(request):
     ]
 
     return JsonResponse({'bookmarks': data}, safe=False)
-
-
-
-# @login_required
-# @csrf_exempt
-# def delete_bookmark(request, bookmark_id):
-#     bookmark = get_object_or_404(Bookmark, pk=bookmark_id, user=request.user)
-#     bookmark.delete()
-#     return redirect('bookmark:bookmark_list')
 
