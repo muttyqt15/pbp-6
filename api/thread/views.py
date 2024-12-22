@@ -8,17 +8,14 @@ from django.shortcuts import (
     redirect,
     render,
 )
-from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from api.user_profile.models import CustomerProfile, OwnerProfile
 from django.core.files.base import ContentFile
-from api.authentication.decorators import login_required_json
 import base64
 import json
 
 
-@login_required()
 def index(request):
     if request.method == "POST":
         form = ThreadForm(request.POST, request.FILES)
@@ -35,7 +32,6 @@ def index(request):
     )
 
 
-@login_required()
 @require_http_methods(["POST", "GET"])
 def like_thread(request, id):
     if request.method == "POST":
@@ -49,7 +45,6 @@ def like_thread(request, id):
     return HttpResponseForbidden()
 
 
-@login_required()
 @require_http_methods(["POST", "GET"])
 def like_comment(request, comment_id):
     if request.method == "POST":
@@ -63,7 +58,6 @@ def like_comment(request, comment_id):
     return HttpResponseForbidden()
 
 
-@login_required()
 @require_http_methods(["POST", "GET"])
 def delete_thread(request, id):
     thread = get_object_or_404(Thread, id=id)
@@ -86,7 +80,6 @@ def delete_thread(request, id):
         )
 
 
-@login_required()
 @require_http_methods(["POST", "GET"])
 def delete_comment(request, id):
     comment = get_object_or_404(Comment, id=id)
@@ -109,7 +102,6 @@ def delete_comment(request, id):
         )
 
 
-@login_required
 @require_http_methods(["POST", "GET"])
 @csrf_exempt
 def edit_thread(request, id):
@@ -174,7 +166,6 @@ def edit_thread(request, id):
         )
 
 
-@login_required()
 def detail_thread(request, id):
     thread = get_object_or_404(Thread, id=id)
     if request.method == "POST":
@@ -255,10 +246,11 @@ def fget_thread(request):
         return JsonResponse({"success": False, "error": str(e)}, status=500)
 
 
-@login_required
 @csrf_exempt
 @require_http_methods(["POST"])
 def fcreate_thread(request):
+    print("createa")
+    print(request.user)
     try:
         data = json.loads(request.body)
         form = ThreadForm(data)
@@ -297,10 +289,11 @@ def fcreate_thread(request):
 
 
 # Like a thread (Flutter-specific)
-@login_required_json
 @csrf_exempt
 @require_http_methods(["POST"])
 def flike_thread(request, thread_id):
+    print("like")
+    print(request.user)
     thread = get_object_or_404(Thread, id=thread_id)
     liked = request.user in thread.likes.all()
     if liked:
@@ -313,7 +306,6 @@ def flike_thread(request, thread_id):
 
 
 # Delete a thread (Flutter-specific)
-@login_required_json
 @csrf_exempt
 def fdelete_thread(request, thread_id):
     thread = get_object_or_404(Thread, id=thread_id)
@@ -329,7 +321,6 @@ def fdelete_thread(request, thread_id):
 
 
 # Edit a thread (Flutter-specific)
-@login_required_json
 @csrf_exempt
 def fedit_thread(request, thread_id):
     thread = get_object_or_404(Thread, id=thread_id)
@@ -427,7 +418,6 @@ def fget_thread_details(request, thread_id):
 
 
 # Add a comment to a thread (Flutter-specific)
-@login_required_json
 @csrf_exempt
 @require_http_methods(["POST"])
 def fadd_comment(request, thread_id):
@@ -460,7 +450,6 @@ def fadd_comment(request, thread_id):
 
 
 # Like a comment (Flutter-specific)
-@login_required_json
 @csrf_exempt
 @require_http_methods(["POST"])
 def flike_comment(request, comment_id):
@@ -476,7 +465,6 @@ def flike_comment(request, comment_id):
 
 
 # Delete a comment (Flutter-specific)
-@login_required_json
 @csrf_exempt
 def fdelete_comment(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
