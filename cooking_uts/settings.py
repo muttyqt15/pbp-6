@@ -69,8 +69,11 @@ SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SAMESITE = "None"
 SESSION_COOKIE_SAMESITE = "None"
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:53014",  # Flutter Web App
+    "http://localhost:8000",  # Local development server on port 8000
+    "https://muttaqin-muzakkir-utspbp.pbp.cs.ui.ac.id",  # Production domain with https
+    "http://34.101.100.85:8000",  # External IP in production (use https)
 ]
+
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
