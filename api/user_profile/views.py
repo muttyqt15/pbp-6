@@ -27,7 +27,8 @@ def other_profile_view(request):
             userNow = CustomerProfile.objects.get(user=user_customer)
 
         return render(request, 'my_profile.html', {
-            'userNow': userNow
+            'userNow': userNow,
+            'user': user
         })
     except OwnerProfile.DoesNotExist:
         # Jika OwnerProfile tidak ada, arahkan ke form untuk membuat profil atau halaman error
@@ -57,7 +58,8 @@ def profile_view(request):
             userNow = CustomerProfile.objects.get(user=user_customer)
 
         return render(request, 'my_profile.html', {
-            'userNow': userNow
+            'userNow': userNow,
+            'user': user
         })
     
     except OwnerProfile.DoesNotExist:
@@ -397,7 +399,8 @@ def fetch_profile(request):
                 'username': user.username,
                 'email': user.email,
                 'bio': profile.bio,
-                'profile_pic': profile.profile_pic_url
+                'profile_pic': profile.profile_pic_url,
+                'profile_pic_file': profile.profile_pic.url if profile.profile_pic else ''
             }
 
         elif user.is_resto_owner:
@@ -409,7 +412,8 @@ def fetch_profile(request):
                 'username': user.username,
                 'email': user.email,
                 'bio': profile.bio,
-                'profile_pic': profile.profile_pic_url
+                'profile_pic': profile.profile_pic_url,
+                'profile_pic_file': profile.profile_pic.url if profile.profile_pic else ''
             }
         else:
             return JsonResponse({'success': False, 'message': 'User role not recognized'}, status=400)

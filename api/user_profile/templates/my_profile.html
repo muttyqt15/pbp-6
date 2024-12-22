@@ -21,14 +21,15 @@
             <div class="text-center">
                 <h2 class="text-xl md:text-2xl font-semibold mb-4">Avatar</h2>
 
+                <!-- Debug statement to print userNow.profile_pic -->
+                <!-- <p>{{ userNow.profile_pic.url }}</p> -->
+
+
                 <!-- userNow.profile_pic -->
-                {% if user %}
-                <img src="{{ userNow.profile_pic_url }}" alt="profile" class="w-32 h-32 md:w-48 md:h-48 rounded-full mx-auto object-cover mb-4">
-                
+                {% if userNow.profile_pic %}
+                    <img src="{{ userNow.profile_pic.url }}" alt="profile" class="w-32 h-32 md:w-48 md:h-48 rounded-full mx-auto object-cover mb-4">
                 {% else %}
-                <div class="w-32 h-32 md:w-48 md:h-48 flex items-center justify-center bg-gray-200 rounded-full mx-auto text-2xl md:text-4xl font-semibold">
-                    <!-- {{ profile.password|first }} -->
-                </div>
+                    <img src="{{ userNow.profile_pic_url }}" alt="profile" class="w-32 h-32 md:w-48 md:h-48 rounded-full mx-auto object-cover mb-4">
                 {% endif %}
 
                 <button id="editProfilePicBtn" class="bg-[#B8A08E] hover:bg-[#a48d7b] text-[#fffbf2] py-2 px-4 rounded-lg">Edit Profile Picture</button>
