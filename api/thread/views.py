@@ -206,6 +206,7 @@ def fget_thread(request):
         for thread in threads:
             author = thread.author
             author_profile = None
+            liked = False
 
             # Check if the author is a Customer or RestaurantOwner and fetch the profile
             if hasattr(author, "customer"):
@@ -375,6 +376,7 @@ def fget_thread_details(request, thread_id):
     for comment in comments:
         author = comment.author
         author_profile = None
+        liked = False
 
         # Check if the author is a Customer or RestaurantOwner and fetch the profile
         if hasattr(author, "customer"):
