@@ -30,7 +30,7 @@ SECRET_KEY = environ.get(
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = environ.get("PRODUCTION", True)
+DEBUG = environ.get("PRODUCTION", False)
 
 ALLOWED_HOSTS = [
     "muttaqin-muzakkir-utspbp.pbp.cs.ui.ac.id",
