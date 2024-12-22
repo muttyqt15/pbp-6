@@ -195,19 +195,21 @@ def user_reviews_flutter(request):
 def create_review_flutter(request):
     if request.method == 'POST':
         try:
-            # Parse body JSON
             data = json.loads(request.body)
 
+            # Ambil data dari request
             display_name = data.get('display_name', None)
             restoran_id = data.get('restoran_id')
             judul_ulasan = data.get('judul_ulasan')
             teks_ulasan = data.get('teks_ulasan')
             penilaian = data.get('penilaian')
+            image_base64 = data.get('image_base64', None)
 
             # Validasi input
             if not all([restoran_id, judul_ulasan, teks_ulasan, penilaian]):
                 return JsonResponse({"status": "error", "message": "All fields except display_name are required."}, status=400)
 
+            # Ambil restoran terkait
             restoran = get_object_or_404(Restaurant, id=restoran_id)
 
             # Buat review baru
@@ -220,28 +222,44 @@ def create_review_flutter(request):
                 display_name=display_name,
             )
 
-            # Handle image (optional)
-            # Proses image_base64 jika tersedia
-            image_base64 = data.get('image_base64', None)
+            # Proses gambar jika ada
             if image_base64:
-                # Tentukan ekstensi berdasarkan prefix base64
-                if image_base64.startswith('data:image/png;base64,'):
-                    ext = 'png'
-                    image_base64 = image_base64.replace('data:image/png;base64,', '')
-                elif image_base64.startswith('data:image/jpeg;base64,') or image_base64.startswith('data:image/jpg;base64,'):
-                    ext = 'jpg'
-                    image_base64 = image_base64.replace('data:image/jpeg;base64,', '').replace('data:image/jpg;base64,', '')
-                else:
-                    ext = 'png'  # Default ke PNG jika tipe tidak dikenali
+                try:
+                    if image_base64.startswith('data:image/png;base64,'):
+                        ext = 'png'
+                        image_base64 = image_base64.replace('data:image/png;base64,', '')
+                    elif image_base64.startswith('data:image/jpeg;base64,'):
+                        ext = 'jpg'
+                        image_base64 = image_base64.replace('data:image/jpeg;base64,', '')
+                    else:
+                        raise ValueError("Unsupported image format")
 
-                # Decode base64 dan simpan file
-                image_data = base64.b64decode(image_base64)
-                filename = f"uploaded_image_{new_review.pk}.{ext}"  # Nama file unik berdasarkan ID review
-                ReviewImage.objects.create(
-                    review=new_review,
-                    image=ContentFile(image_data, name=filename)
-                )
-            return JsonResponse({"status": "success", "message": "Review created successfully."}, status=201)
+                    image_data = base64.b64decode(image_base64)
+                    filename = f"review_{new_review.pk}.{ext}"  # Gunakan nama unik
+                    ReviewImage.objects.create(
+                        review=new_review,
+                        image=ContentFile(image_data, name=filename)
+                    )
+                except Exception as e:
+                    return JsonResponse({"status": "error", "message": f"Image processing error: {e}"}, status=500)
+
+
+            # Return data ke Flutter
+            return JsonResponse({
+                "status": "success",
+                "message": "Review created successfully.",
+                "review": {
+                    "id": str(new_review.pk),
+                    "judul_ulasan": new_review.judul_ulasan,
+                    "teks_ulasan": new_review.teks_ulasan,
+                    "penilaian": new_review.penilaian,
+                    "display_name": new_review.get_display_name,
+                    "images": [
+                        request.build_absolute_uri(image.image.url) for image in new_review.images.all()
+                    ],
+                }
+            }, status=201)
+
 
         except json.JSONDecodeError:
             return JsonResponse({"status": "error", "message": "Invalid JSON input."}, status=400)
@@ -249,6 +267,7 @@ def create_review_flutter(request):
             return JsonResponse({"status": "error", "message": f"An error occurred: {str(e)}"}, status=500)
 
     return JsonResponse({"status": "error", "message": "Invalid HTTP method."}, status=405)
+
 
 @login_required
 @csrf_exempt
@@ -316,7 +335,6 @@ def edit_review_flutter(request, review_id):
 @login_required
 def delete_review_flutter(request, review_id):
     try:
-        logger.info(f"User: {request.user}, Review ID: {review_id}")
         # Periksa apakah user memiliki role customer
         if not hasattr(request.user, 'customer'):
             return JsonResponse(
