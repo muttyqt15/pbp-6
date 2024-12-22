@@ -196,6 +196,7 @@ def detail_thread(request, id):
         {"thread": thread, "comments": comments, "user": request.user, "form": form},
     )
 
+
 def fget_thread(request):
     try:
         # Fetch threads and related author information
@@ -237,7 +238,7 @@ def fget_thread(request):
                     "image": thread.image.url if thread.image else None,
                     "comment_count": thread.comments.count(),
                     "likes_count": thread.likes.count(),
-                    "liked": liked,
+                    "liked": liked if liked else False,
                 }
             )
 
@@ -364,7 +365,11 @@ def fedit_thread(request, thread_id):
 def fget_thread_details(request, thread_id):
     thread = get_object_or_404(Thread, id=thread_id)
     # Fetch threads and related author information
-    comments = Comment.objects.filter(thread=thread).select_related("author").order_by("-created_at")
+    comments = (
+        Comment.objects.filter(thread=thread)
+        .select_related("author")
+        .order_by("-created_at")
+    )
     # Construct the response with additional author details
     comment_list = []
     for comment in comments:
@@ -400,7 +405,7 @@ def fget_thread_details(request, thread_id):
                     else None
                 ),
                 "likes_count": comment.likes.count(),
-                "liked": liked,
+                "liked": liked if liked else False,
             }
         )
     return JsonResponse(
@@ -483,5 +488,6 @@ def fdelete_comment(request, comment_id):
             {"success": False, "message": "Not authorized to delete comment."},
             status=403,
         )
+
 
 # Addded random comment
