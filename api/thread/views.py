@@ -238,7 +238,7 @@ def fget_thread(request):
                     "image": thread.image.url if thread.image else None,
                     "comment_count": thread.comments.count(),
                     "likes_count": thread.likes.count(),
-                    "liked": liked if liked else False,
+                    "liked": liked if liked or liked is not None else False,
                 }
             )
 
@@ -405,7 +405,7 @@ def fget_thread_details(request, thread_id):
                     else None
                 ),
                 "likes_count": comment.likes.count(),
-                "liked": liked if liked else False,
+                "liked": liked if liked or liked is not None else False,
             }
         )
     return JsonResponse(
