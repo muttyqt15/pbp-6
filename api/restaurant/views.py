@@ -824,3 +824,5 @@ def get_restaurants_json_by_id(request, id):
     data = serializers.serialize("json", restaurants)
     return JsonResponse(data, safe=False)
 
+
+
