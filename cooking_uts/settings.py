@@ -37,7 +37,10 @@ ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
     "10.0.2.2",
+    "localhost:58934",
+    "localhost:57932",
 ]
+
 
 
 # Application definition
@@ -65,8 +68,12 @@ CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SAMESITE = "None"
 SESSION_COOKIE_SAMESITE = "None"
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:53014",  # Flutter Web App
+]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -75,7 +82,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
 ]
 
 ROOT_URLCONF = "cooking_uts.urls"
